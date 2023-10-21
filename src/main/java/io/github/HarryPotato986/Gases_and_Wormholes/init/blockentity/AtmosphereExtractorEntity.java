@@ -27,7 +27,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AtmosphereExtractorEntity extends BlockEntity implements MenuProvider {
-    private final ItemStackHandler itemHandler = new ItemStackHandler(2);
+    private final ItemStackHandler itemHandler = new ItemStackHandler(2) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return switch (slot) {
+                case HYDROGEN_INPUT_SLOT -> stack.getItem() == ItemInit.TEMP_BLOCK_ITEM.get();
+                case HYDROGEN_OUTPUT_SLOT -> false;
+                default -> super.isItemValid(slot, stack);
+            };
+        }
+    };
 
     private static final int HYDROGEN_INPUT_SLOT = 0;
     private static final int HYDROGEN_OUTPUT_SLOT = 1;
@@ -127,7 +141,7 @@ public class AtmosphereExtractorEntity extends BlockEntity implements MenuProvid
 
 
     public void tick(Level pLevel, BlockPos pPos, BlockState pState) {
-        if(hasRecipe()) {
+        if(isOutputSlotEmptyOrReceivable() && hasRecipe()) {
             increaseCraftingProgress();
             setChanged(pLevel, pPos, pState);
 
@@ -161,10 +175,11 @@ public class AtmosphereExtractorEntity extends BlockEntity implements MenuProvid
     }
 
     private boolean hasRecipe() {
-        boolean hasCraftingItem = this.itemHandler.getStackInSlot(HYDROGEN_INPUT_SLOT).getItem() == ItemInit.TEMP_BLOCK_ITEM.get();
-        ItemStack result = new ItemStack(ItemInit.BEDROCK_DUST.get());
+        return hasRecipeItemInInputSlot() && canInsertAmountIntoOutputSlot(5) && canInsertItemIntoOutputSlot(ItemInit.BEDROCK_DUST.get());
+    }
 
-        return hasCraftingItem && canInsertAmountIntoOutputSlot(result.getCount()) && canInsertItemIntoOutputSlot(result.getItem());
+    private boolean hasRecipeItemInInputSlot() {
+        return this.itemHandler.getStackInSlot(HYDROGEN_INPUT_SLOT).getItem() == ItemInit.TEMP_BLOCK_ITEM.get();
     }
 
     private boolean canInsertItemIntoOutputSlot(Item item) {
@@ -175,7 +190,10 @@ public class AtmosphereExtractorEntity extends BlockEntity implements MenuProvid
         return this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).getCount() + count <= this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).getMaxStackSize();
     }
 
-
+    private boolean isOutputSlotEmptyOrReceivable() {
+        return this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).isEmpty() ||
+                this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).getCount() < this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).getMaxStackSize();
+    }
 }
 
 
