@@ -16,5 +16,5 @@ public class ItemInit {
 
 
     public static final RegistryObject<BlockItem> TEMP_BLOCK_ITEM = ITEMS.register("temp_block", () -> new BlockItem(BlockInit.TEMP_BLOCK.get(), new Item.Properties()));
-    public static final RegistryObject<BlockItem> ATMOSPHERE_EXTRACTOR_ITEM = ITEMS.register("atmosphere_extractor_block", () -> new BlockItem(BlockInit.ATMOSPHERE_EXTRACTOR.get(), new Item.Properties()));
+    public static final RegistryObject<BlockItem> ATMOSPHERE_EXTRACTOR_ITEM = ITEMS.register("atmosphere_extractor_item", () -> new BlockItem(BlockInit.ATMOSPHERE_EXTRACTOR.get(), new Item.Properties()));
 }

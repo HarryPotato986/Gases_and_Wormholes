@@ -18,6 +18,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         simpleItem(ItemInit.BEDROCK_DUST);
+
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

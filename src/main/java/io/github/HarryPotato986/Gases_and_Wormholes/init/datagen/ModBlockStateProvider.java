@@ -5,6 +5,7 @@ import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -16,6 +17,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         blockWithItem(BlockInit.TEMP_BLOCK);
+        horizontalBlock(BlockInit.ATMOSPHERE_EXTRACTOR.get(),
+                new ModelFile.UncheckedModelFile(modLoc("block/atmosphere_extractor")));
     }
 
     private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
