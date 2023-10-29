@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_bedrock_dust": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "gasesandwormholes:bedrock_dust"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "gasesandwormholes:temp_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_bedrock_dust",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "gasesandwormholes:temp_block"
+    ]
+  },
+  "sends_telemetry_event": false
+}
