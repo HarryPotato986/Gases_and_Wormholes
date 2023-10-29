@@ -20,9 +20,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> pWriter) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockInit.TEMP_BLOCK.get())
-                .pattern("XAX")
-                .pattern("AXA")
-                .pattern("XAX")
+                .pattern(" A ")
+                .pattern("A A")
+                .pattern(" A ")
                 .define('A', ItemInit.BEDROCK_DUST.get())
                 .unlockedBy("has_bedrock_dust", inventoryTrigger(ItemPredicate.Builder.item()
                         .of(ItemInit.BEDROCK_DUST.get()).build()))

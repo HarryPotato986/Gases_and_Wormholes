@@ -1,4 +1,26 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.datagen;
 
-public class ModBlockTagGenerator {
+import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraftforge.common.data.BlockTagsProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.CompletableFuture;
+
+public class ModBlockTagGenerator extends BlockTagsProvider {
+    public ModBlockTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, Gases_and_Wormholes.MODID, existingFileHelper);
+    }
+
+    @Override
+    protected void addTags(HolderLookup.Provider pProvider) {
+
+    }
+
+    @Override
+    public String getName() {
+        return "Block Tags";
+    }
 }
