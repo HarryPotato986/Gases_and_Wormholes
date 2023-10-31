@@ -19,6 +19,7 @@ public class CreativeTabInit {
                         output.accept(ItemInit.TEMP_BLOCK_ITEM.get());
                         output.accept(ItemInit.BEDROCK_DUST.get());
                         output.accept(ItemInit.ATMOSPHERE_EXTRACTOR_ITEM.get());
+                        output.accept(ItemInit.LIQUID_NITROGEN_BUCKET.get());
                     })
                     .build()
     );

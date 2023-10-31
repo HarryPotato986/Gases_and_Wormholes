@@ -1,8 +1,10 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block;
 
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -22,7 +24,8 @@ public class BlockInit {
                     .pushReaction(PushReaction.IGNORE)
             ));
     public static final RegistryObject<Block> ATMOSPHERE_EXTRACTOR = BLOCKS.register("atmosphere_extractor",
-            () -> new AtmosphereExtractor(BlockBehaviour.Properties.copy(Blocks.STONE)
+            () -> new AtmosphereExtractor(BlockBehaviour.Properties.copy(Blocks.STONE)));
 
-            ));
+    public static final RegistryObject<LiquidBlock> LIQUID_NITROGEN_BLOCK = BLOCKS.register("liquid_nitrogen_block",
+            () -> new LiquidBlock(FluidInit.SOURCE_LIQUID_NITROGEN, BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
 }

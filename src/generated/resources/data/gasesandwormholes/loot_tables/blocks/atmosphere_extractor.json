@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gasesandwormholes:atmosphere_extractor_block"
+          "name": "gasesandwormholes:atmosphere_extractor_item"
         }
       ],
       "rolls": 1.0

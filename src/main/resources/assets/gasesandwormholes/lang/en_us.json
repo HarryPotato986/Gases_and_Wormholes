@@ -1,9 +1,12 @@
 {
   "item.gasesandwormholes.bedrock_dust": "Bedrock Dust",
+  "item.gasesandwormholes.liquid_nitrogen_bucket": "Liquid Nitrogen Bucket",
 
 
   "block.gasesandwormholes.temp_block": "Ain't No Way...",
   "block.gasesandwormholes.atmosphere_extractor": "Atmosphere Extractor",
+
+
 
 
   "itemGroup.gases_and_wormholes_tab": "Gases and Wormholes"

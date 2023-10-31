@@ -18,6 +18,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         simpleItem(ItemInit.BEDROCK_DUST);
+        simpleItem(ItemInit.LIQUID_NITROGEN_BUCKET);
 
     }
 

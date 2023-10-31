@@ -2,11 +2,15 @@ package io.github.HarryPotato986.Gases_and_Wormholes;
 
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.CreativeTabInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidTypesInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ItemInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.AtmosphereExtractorScreen;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.MenuTypesInit;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,8 +29,11 @@ public class Gases_and_Wormholes {
         ItemInit.ITEMS.register(bus);
         BlockInit.BLOCKS.register(bus);
         TileEntitiesInit.BLOCK_ENTITIES.register(bus);
+        FluidTypesInit.FLUID_TYPES.register(bus);
+        FluidInit.FLUIDS.register(bus);
         CreativeTabInit.TABS.register(bus);
         MenuTypesInit.MENUS.register(bus);
+
     }
 
 
@@ -40,6 +47,9 @@ public class Gases_and_Wormholes {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             MenuScreens.register(MenuTypesInit.ATMOSPHERE_EXTRACTOR_MENU.get(), AtmosphereExtractorScreen::new);
+
+            ItemBlockRenderTypes.setRenderLayer(FluidInit.SOURCE_LIQUID_NITROGEN.get(), RenderType.translucent());
+            ItemBlockRenderTypes.setRenderLayer(FluidInit.FLOWING_LIQUID_NITROGEN.get(), RenderType.translucent());
         }
     }
 }
