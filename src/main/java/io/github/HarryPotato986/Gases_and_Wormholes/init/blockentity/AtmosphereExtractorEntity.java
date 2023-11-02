@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AtmosphereExtractorEntity extends BlockEntity implements MenuProvider {
-    private final ItemStackHandler itemHandler = new ItemStackHandler(2) {
+    private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
@@ -36,17 +36,19 @@ public class AtmosphereExtractorEntity extends BlockEntity implements MenuProvid
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return switch (slot) {
-                case HYDROGEN_INPUT_SLOT -> stack.getItem() == ItemInit.TEMP_BLOCK_ITEM.get();
-                case HYDROGEN_OUTPUT_SLOT -> false;
+                case INPUT_SLOT -> stack.getItem() == ItemInit.TEMP_BLOCK_ITEM.get();
+                case FLUID_INPUT_SLOT -> true;
+                case OUTPUT_SLOT -> false;
+                case ENERGY_ITEM_SLOT -> stack.getItem() == ItemInit.BEDROCK_DUST.get();
                 default -> super.isItemValid(slot, stack);
             };
         }
     };
 
-    private static final int HYDROGEN_INPUT_SLOT = 0;
-    private static final int HYDROGEN_OUTPUT_SLOT = 1;
-    private static final int OXYGEN_INPUT_SLOT = 2;
-    private static final int OXYGEN_OUTPUT_SLOT = 3;
+    private static final int INPUT_SLOT = 0;
+    private static final int FLUID_INPUT_SLOT = 1;
+    private static final int OUTPUT_SLOT = 2;
+    private static final int ENERGY_ITEM_SLOT = 3;
     private static final int NITROGEN_INPUT_SLOT = 4;
     private static final int NITROGEN_OUTPUT_SLOT = 5;
 
@@ -140,10 +142,10 @@ public class AtmosphereExtractorEntity extends BlockEntity implements MenuProvid
     }
 
 
-    public void tick(Level pLevel, BlockPos pPos, BlockState pState) {
+    public void tick(Level level, BlockPos pPos, BlockState pState) {
         if(isOutputSlotEmptyOrReceivable() && hasRecipe()) {
             increaseCraftingProgress();
-            setChanged(pLevel, pPos, pState);
+            setChanged(level, pPos, pState);
 
             if(hasProgressFinished()) {
                 craftItem();
@@ -160,10 +162,10 @@ public class AtmosphereExtractorEntity extends BlockEntity implements MenuProvid
 
     private void craftItem() {
         ItemStack result = new ItemStack(ItemInit.BEDROCK_DUST.get(),5);
-        this.itemHandler.extractItem(HYDROGEN_INPUT_SLOT,1,false);
+        this.itemHandler.extractItem(INPUT_SLOT,1,false);
 
-        this.itemHandler.setStackInSlot(HYDROGEN_OUTPUT_SLOT, new ItemStack(result.getItem(),
-                this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).getCount() + result.getCount()));
+        this.itemHandler.setStackInSlot(FLUID_INPUT_SLOT, new ItemStack(result.getItem(),
+                this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).getCount() + result.getCount()));
     }
 
     private boolean hasProgressFinished() {
@@ -179,20 +181,20 @@ public class AtmosphereExtractorEntity extends BlockEntity implements MenuProvid
     }
 
     private boolean hasRecipeItemInInputSlot() {
-        return this.itemHandler.getStackInSlot(HYDROGEN_INPUT_SLOT).getItem() == ItemInit.TEMP_BLOCK_ITEM.get();
+        return this.itemHandler.getStackInSlot(INPUT_SLOT).getItem() == ItemInit.TEMP_BLOCK_ITEM.get();
     }
 
     private boolean canInsertItemIntoOutputSlot(Item item) {
-        return this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).isEmpty() || this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).is(item);
+        return this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).isEmpty() || this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).is(item);
     }
 
     private boolean canInsertAmountIntoOutputSlot(int count) {
-        return this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).getCount() + count <= this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).getMaxStackSize();
+        return this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).getCount() + count <= this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).getMaxStackSize();
     }
 
     private boolean isOutputSlotEmptyOrReceivable() {
-        return this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).isEmpty() ||
-                this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).getCount() < this.itemHandler.getStackInSlot(HYDROGEN_OUTPUT_SLOT).getMaxStackSize();
+        return this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).isEmpty() ||
+                this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).getCount() < this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).getMaxStackSize();
     }
 }
 

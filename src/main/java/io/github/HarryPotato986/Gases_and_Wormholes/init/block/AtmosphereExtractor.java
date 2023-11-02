@@ -28,19 +28,6 @@ public class AtmosphereExtractor extends HorizontalDirectionalBaseEntityBlock {
         super(pProperties);
     }
 
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
-
-    @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection().getOpposite());
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(FACING);
-    }
-
     @Override
     public RenderShape getRenderShape(BlockState pState) {
         return RenderShape.MODEL;
