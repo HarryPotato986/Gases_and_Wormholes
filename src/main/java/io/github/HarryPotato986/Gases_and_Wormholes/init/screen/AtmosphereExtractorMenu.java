@@ -33,7 +33,9 @@ public class AtmosphereExtractorMenu extends AbstractContainerMenu {
 
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {
             this.addSlot(new SlotItemHandler(iItemHandler, 0, 80, 11));
-            this.addSlot(new SlotItemHandler(iItemHandler, 1, 80, 59));
+            this.addSlot(new SlotItemHandler(iItemHandler, 1, 26, 59));
+            this.addSlot(new SlotItemHandler(iItemHandler, 2, 80, 59));
+            this.addSlot(new SlotItemHandler(iItemHandler, 3, 134, 59));
         });
 
         addDataSlots(data);

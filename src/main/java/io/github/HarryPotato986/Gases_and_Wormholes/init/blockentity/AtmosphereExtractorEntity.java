@@ -161,11 +161,9 @@ public class AtmosphereExtractorEntity extends BlockEntity implements MenuProvid
     }
 
     private void craftItem() {
-        ItemStack result = new ItemStack(ItemInit.BEDROCK_DUST.get(),5);
         this.itemHandler.extractItem(INPUT_SLOT,1,false);
 
-        this.itemHandler.setStackInSlot(FLUID_INPUT_SLOT, new ItemStack(result.getItem(),
-                this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).getCount() + result.getCount()));
+        this.itemHandler.setStackInSlot(OUTPUT_SLOT, new ItemStack(ItemInit.BEDROCK_DUST.get(),this.itemHandler.getStackInSlot(OUTPUT_SLOT).getCount() + 5));
     }
 
     private boolean hasProgressFinished() {
@@ -185,16 +183,16 @@ public class AtmosphereExtractorEntity extends BlockEntity implements MenuProvid
     }
 
     private boolean canInsertItemIntoOutputSlot(Item item) {
-        return this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).isEmpty() || this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).is(item);
+        return this.itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() || this.itemHandler.getStackInSlot(OUTPUT_SLOT).is(item);
     }
 
     private boolean canInsertAmountIntoOutputSlot(int count) {
-        return this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).getCount() + count <= this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).getMaxStackSize();
+        return this.itemHandler.getStackInSlot(OUTPUT_SLOT).getCount() + count <= this.itemHandler.getStackInSlot(OUTPUT_SLOT).getMaxStackSize();
     }
 
     private boolean isOutputSlotEmptyOrReceivable() {
-        return this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).isEmpty() ||
-                this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).getCount() < this.itemHandler.getStackInSlot(FLUID_INPUT_SLOT).getMaxStackSize();
+        return this.itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() ||
+                this.itemHandler.getStackInSlot(OUTPUT_SLOT).getCount() < this.itemHandler.getStackInSlot(OUTPUT_SLOT).getMaxStackSize();
     }
 }
 

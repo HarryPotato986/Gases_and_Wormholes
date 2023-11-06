@@ -9,5 +9,7 @@
 
 
 
-  "itemGroup.gases_and_wormholes_tab": "Gases and Wormholes"
+  "itemGroup.gases_and_wormholes_tab": "Gases and Wormholes",
+
+  "fluid_type.gasesandwormholes.liquid_nitrogen_fluid": "Liquid Nitrogen"
 }

@@ -19,6 +19,8 @@ public class AtmosphereExtractorScreen extends AbstractContainerScreen<Atmospher
     @Override
     protected void init() {
         super.init();
+        this.inventoryLabelY = 10000;
+        this.titleLabelY = 10000;
     }
 
     @Override
