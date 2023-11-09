@@ -1,0 +1,12 @@
+{
+  "type": "gasesandwormholes:atmosphere_extraction",
+  "ingredients": [
+    {
+      "item": "gasesandwormholes:temp_block"
+    }
+  ],
+  "output": {
+    "item": "gasesandwormholes:bedrock_dust",
+    "count": 4
+  }
+}

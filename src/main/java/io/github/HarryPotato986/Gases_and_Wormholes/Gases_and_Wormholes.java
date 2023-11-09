@@ -6,6 +6,7 @@ import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidTypesInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ItemInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.recipe.ModRecipes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.AtmosphereExtractorScreen;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.MenuTypesInit;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -33,6 +34,7 @@ public class Gases_and_Wormholes {
         FluidInit.FLUIDS.register(bus);
         CreativeTabInit.TABS.register(bus);
         MenuTypesInit.MENUS.register(bus);
+        ModRecipes.SERIALIZERS.register(bus);
 
     }
 
