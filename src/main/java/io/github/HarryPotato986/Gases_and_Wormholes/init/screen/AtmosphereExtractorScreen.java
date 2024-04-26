@@ -2,15 +2,24 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.renderer.*;
+import io.github.HarryPotato986.Gases_and_Wormholes.util.*;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraftforge.fluids.FluidStack;
+
+import java.util.Optional;
 
 public class AtmosphereExtractorScreen extends AbstractContainerScreen<AtmosphereExtractorMenu> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/atmosphere_extractor_gui.png");
+
+    private EnergyDisplayTooltipArea energyInfoArea;
+    private FluidTankRenderer fluidRenderer;
 
     public AtmosphereExtractorScreen(AtmosphereExtractorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -21,6 +30,42 @@ public class AtmosphereExtractorScreen extends AbstractContainerScreen<Atmospher
         super.init();
         this.inventoryLabelY = 10000;
         this.titleLabelY = 10000;
+
+        assignEnergyInfoArea();
+        assignFluidRenderer();
+    }
+
+    private void assignFluidRenderer() {
+        fluidRenderer = new FluidTankRenderer(2000, true, 16, 39);
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
+        renderEnergyAreaTooltip(pGuiGraphics, pMouseX, pMouseY, x, y);
+        renderFluidTooltipArea(pGuiGraphics, pMouseX, pMouseY, x, y, menu.blockEntity.getFluid(), 26, 11, fluidRenderer);
+    }
+
+    private void renderFluidTooltipArea(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, int x, int y,
+                                        FluidStack stack, int offsetX, int offsetY, FluidTankRenderer renderer) {
+        if(isMouseAboveArea(pMouseX, pMouseY, x, y, offsetX, offsetY, renderer)) {
+            pGuiGraphics.renderTooltip(this.font, renderer.getTooltip(stack, TooltipFlag.Default.NORMAL),
+                    Optional.empty(), pMouseX - x, pMouseY - y);
+        }
+    }
+
+    private void renderEnergyAreaTooltip(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, int x, int y) {
+        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 156, 11, 8, 64)) {
+            pGuiGraphics.renderTooltip(this.font, energyInfoArea.getTooltips(),
+                    Optional.empty(), pMouseX - x, pMouseY - y);
+        }
+    }
+
+    private void assignEnergyInfoArea() {
+        this.energyInfoArea = new EnergyDisplayTooltipArea(((width - imageWidth) / 2) + 156,
+                ((height - imageHeight) / 2) + 11, menu.blockEntity.getEnergyStorage());
     }
 
     @Override
@@ -34,6 +79,9 @@ public class AtmosphereExtractorScreen extends AbstractContainerScreen<Atmospher
         guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 
         renderProgressArrow(guiGraphics, x, y);
+
+        energyInfoArea.render(guiGraphics);
+        fluidRenderer.render(guiGraphics, x + 26, y + 11, menu.blockEntity.getFluid());
     }
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
@@ -47,5 +95,13 @@ public class AtmosphereExtractorScreen extends AbstractContainerScreen<Atmospher
         renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, delta);
         renderTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    private boolean isMouseAboveArea(int pMouseX, int pMouseY, int x, int y, int offsetX, int offsetY, FluidTankRenderer renderer) {
+        return MouseUtil.isMouseOver(pMouseX, pMouseY, x + offsetX, y + offsetY, renderer.getWidth(), renderer.getHeight());
+    }
+
+    private boolean isMouseAboveArea(int pMouseX, int pMouseY, int x, int y, int offsetX, int offsetY, int width, int height) {
+        return MouseUtil.isMouseOver(pMouseX, pMouseY, x + offsetX, y + offsetY, width, height);
     }
 }

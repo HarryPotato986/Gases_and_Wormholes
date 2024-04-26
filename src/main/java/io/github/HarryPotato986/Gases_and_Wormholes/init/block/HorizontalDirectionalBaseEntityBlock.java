@@ -1,9 +1,12 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block;
 
+import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -17,7 +20,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
-public class HorizontalDirectionalBaseEntityBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class HorizontalDirectionalBaseEntityBlock extends HorizontalKineticBlock implements EntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     protected HorizontalDirectionalBaseEntityBlock(Properties pProperties) {
         super(pProperties);
@@ -59,5 +62,11 @@ public class HorizontalDirectionalBaseEntityBlock extends HorizontalDirectionalB
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(FACING);
+    }
+
+
+    @Override
+    public Direction.Axis getRotationAxis(BlockState state) {
+        return null;
     }
 }

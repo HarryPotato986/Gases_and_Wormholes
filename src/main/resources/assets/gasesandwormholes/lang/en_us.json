@@ -11,5 +11,9 @@
 
   "itemGroup.gases_and_wormholes_tab": "Gases and Wormholes",
 
-  "fluid_type.gasesandwormholes.liquid_nitrogen_fluid": "Liquid Nitrogen"
+  "fluid_type.gasesandwormholes.liquid_nitrogen_fluid": "Liquid Nitrogen",
+
+
+  "gasesandwormholes.tooltip.liquid.amount.with.capacity": "%s / %s mB",
+  "gasesandwormholes.tooltip.liquid.amount": "%s mB"
 }

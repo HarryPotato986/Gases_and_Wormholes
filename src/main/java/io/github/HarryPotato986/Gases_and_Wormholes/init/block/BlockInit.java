@@ -1,6 +1,9 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block;
 
+import com.simibubi.create.foundation.data.SharedProperties;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.CreativeTabInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -12,9 +15,20 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
+import static com.simibubi.create.foundation.data.TagGen.axeOrPickaxe;
+import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
+import static io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes.REGISTRATE;
+
 public class BlockInit {
+
+    static {
+        REGISTRATE.setCreativeTab(CreativeTabInit.GASES_AND_WORMHOLES_TAB);
+    }
+
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Gases_and_Wormholes.MODID);
 
+    /*
     public static final RegistryObject<Block> TEMP_BLOCK = BLOCKS.register("temp_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_PINK)
@@ -23,9 +37,29 @@ public class BlockInit {
                     .requiresCorrectToolForDrops()
                     .pushReaction(PushReaction.IGNORE)
             ));
+
     public static final RegistryObject<Block> ATMOSPHERE_EXTRACTOR = BLOCKS.register("atmosphere_extractor",
             () -> new AtmosphereExtractor(BlockBehaviour.Properties.copy(Blocks.STONE)));
-
+    */
     public static final RegistryObject<LiquidBlock> LIQUID_NITROGEN_BLOCK = BLOCKS.register("liquid_nitrogen_block",
             () -> new LiquidBlock(FluidInit.SOURCE_LIQUID_NITROGEN, BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
+
+
+
+    public static final BlockEntry<Block> TEMP_BLOCK = REGISTRATE.block("temp_block", Block::new)
+            .properties(p -> p.mapColor(MapColor.COLOR_PINK))
+            .properties(p -> p.strength(5.0f, 17f))
+            .properties(p -> p.lightLevel(state -> 15))
+            .properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
+            .properties(p -> p.pushReaction(PushReaction.IGNORE))
+            .transform(pickaxeOnly())
+            .register();
+
+    public static final BlockEntry<AtmosphereExtractor> ATMOSPHERE_EXTRACTOR = REGISTRATE.block("atmosphere_extractor", AtmosphereExtractor::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.mapColor(MapColor.GOLD))
+            .transform(axeOrPickaxe())
+            //add .transform(BlockStressDefaults.setImpact(2.0)) find a balanced number
+            .register();
+
 }

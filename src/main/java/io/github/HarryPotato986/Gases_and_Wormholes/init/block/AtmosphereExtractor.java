@@ -3,12 +3,14 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.block;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.AtmosphereExtractorEntity;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -62,7 +64,7 @@ public class AtmosphereExtractor extends HorizontalDirectionalBaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new AtmosphereExtractorEntity(pPos, pState);
+        return new AtmosphereExtractorEntity(TileEntitiesInit.ATMOSPHERE_EXTRACTOR_ENTITY.get(), pPos, pState);
     }
 
     @Nullable
@@ -74,5 +76,15 @@ public class AtmosphereExtractor extends HorizontalDirectionalBaseEntityBlock {
 
         return createTickerHelper(pBlockEntityType, TileEntitiesInit.ATMOSPHERE_EXTRACTOR_ENTITY.get(),
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
+    }
+
+    @Override
+    public Direction.Axis getRotationAxis(BlockState state) {
+        return Direction.Axis.Y;
+    }
+
+    @Override
+    public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
+        return face == state.getValue(FACING);
     }
 }
