@@ -1,4 +1,4 @@
-package io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.renderer;
+package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor;
 
 import com.jozufozu.flywheel.backend.Backend;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -7,7 +7,6 @@ import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.AtmosphereExtractorEntity;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -28,12 +27,12 @@ public class AtmosphereExtractorRenderer extends KineticBlockEntityRenderer<Atmo
 
         Direction direction = be.getBlockState()
                 .getValue(FACING);
+        VertexConsumer vb = buffer.getBuffer(RenderType.cutoutMipped());
+
+        int lightInFront = LevelRenderer.getLightColor(be.getLevel(), be.getBlockPos().relative(direction));
 
         SuperByteBuffer shaft = CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALF, be.getBlockState(), direction);
 
-        VertexConsumer vb = buffer.getBuffer(RenderType.solid());
-
-        //shaft.renderInto(ms, vb);
         standardKineticRotationTransform(shaft, be, light).renderInto(ms, vb);
 
     }

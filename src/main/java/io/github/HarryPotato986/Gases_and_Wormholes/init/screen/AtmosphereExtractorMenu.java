@@ -1,7 +1,7 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.screen;
 
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.AtmosphereExtractorEntity;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -32,10 +32,10 @@ public class AtmosphereExtractorMenu extends AbstractContainerMenu {
         addPlayerHotbar(inv);
 
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {
-            this.addSlot(new SlotItemHandler(iItemHandler, 0, 80, 11));
+            this.addSlot(new SlotItemHandler(iItemHandler, 0, 134, 59));
             this.addSlot(new SlotItemHandler(iItemHandler, 1, 26, 59));
-            this.addSlot(new SlotItemHandler(iItemHandler, 2, 80, 59));
-            this.addSlot(new SlotItemHandler(iItemHandler, 3, 134, 59));
+            //this.addSlot(new SlotItemHandler(iItemHandler, 2, 80, 59));
+            //this.addSlot(new SlotItemHandler(iItemHandler, 3, 134, 59));
         });
 
         addDataSlots(data);
@@ -45,12 +45,11 @@ public class AtmosphereExtractorMenu extends AbstractContainerMenu {
         return data.get(0) > 0;
     }
 
-    public int getScaledProgress() {
+    public float getScaledProgress() {
         int progress = this.data.get(0);
         int maxProgress = this.data.get(1);  // Max Progress
-        int progressArrowSize = 26; // This is the height in pixels of your arrow
 
-        return maxProgress != 0 && progress != 0 ? progress * progressArrowSize / maxProgress : 0;
+        return maxProgress != 0 && progress != 0 ? ((float) progress / (float) (maxProgress + 1)) : 0;
     }
 
 

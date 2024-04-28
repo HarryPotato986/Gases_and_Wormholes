@@ -1,15 +1,14 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block;
 
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
+import com.simibubi.create.foundation.block.IBE;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -20,10 +19,20 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
-public class HorizontalDirectionalBaseEntityBlock extends HorizontalKineticBlock implements EntityBlock {
+public class HorizontalDirectionalBaseEntityBlock extends HorizontalKineticBlock implements IBE<AtmosphereExtractorEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     protected HorizontalDirectionalBaseEntityBlock(Properties pProperties) {
         super(pProperties);
+    }
+
+    @Override
+    public Class<AtmosphereExtractorEntity> getBlockEntityClass() {
+        return AtmosphereExtractorEntity.class;
+    }
+
+    @Override
+    public BlockEntityType<? extends AtmosphereExtractorEntity> getBlockEntityType() {
+        return null;
     }
 
     @Nullable

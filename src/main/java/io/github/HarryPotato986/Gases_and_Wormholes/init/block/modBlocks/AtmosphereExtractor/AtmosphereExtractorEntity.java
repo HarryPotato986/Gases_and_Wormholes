@@ -1,10 +1,7 @@
-package io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity;
+package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.AtmosphereExtractor;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidTypesInit;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ItemInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.recipe.AtmosphereExtractorRecipe;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.AtmosphereExtractorMenu;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.*;
@@ -21,12 +18,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
@@ -41,11 +38,10 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class AtmosphereExtractorEntity extends KineticBlockEntity implements MenuProvider {
-    private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
+    private final ItemStackHandler itemHandler = new ItemStackHandler(2) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
@@ -57,42 +53,54 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return switch (slot) {
-                case INPUT_SLOT -> true;
-                case FLUID_INPUT_SLOT -> stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
-                case OUTPUT_SLOT -> false;
-                case ENERGY_ITEM_SLOT -> stack.getItem() == ItemInit.BEDROCK_DUST.get();
+                case OXYGEN_SLOT, NITROGEN_SLOT -> stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+                //case OUTPUT_SLOT -> false;
+                //case ENERGY_ITEM_SLOT -> stack.getItem() == ItemInit.BEDROCK_DUST.get();
                 default -> super.isItemValid(slot, stack);
             };
         }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 1;
+        }
     };
 
-    private static final int INPUT_SLOT = 0;
-    private static final int FLUID_INPUT_SLOT = 1;
-    private static final int OUTPUT_SLOT = 2;
-    private static final int ENERGY_ITEM_SLOT = 3;
-    private static final int NITROGEN_INPUT_SLOT = 4;
-    private static final int NITROGEN_OUTPUT_SLOT = 5;
+
+
+
+
+    private static final int OXYGEN_SLOT = 0;
+    private static final int NITROGEN_SLOT = 1;
+    //private static final int OUTPUT_SLOT = 2;
+    //private static final int ENERGY_ITEM_SLOT = 3;
+
+    private boolean[] ACQUIRED_FLUID = new boolean[]{false,false};
+    private boolean[] DISTRIBUTED_FLUID = new boolean[]{false,false};
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
-    private LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
+    private LazyOptional<IFluidHandler> lazyNitrogenHandler = LazyOptional.empty();
+    private LazyOptional<IFluidHandler> lazyOxygenHandler = LazyOptional.empty();
 
-    private final Map<Direction, LazyOptional<WrappedHandler>> directionWrappedHandlerMap =
+    private final Map<Direction, LazyOptional<DirectionWrappedHandler>> directionWrappedHandlerMap =
             new InventoryDirectionWrapper(itemHandler,
-                    new InventoryDirectionEntry(Direction.DOWN, OUTPUT_SLOT, false),
-                    new InventoryDirectionEntry(Direction.NORTH, INPUT_SLOT, true),
-                    new InventoryDirectionEntry(Direction.SOUTH, OUTPUT_SLOT, false),
-                    new InventoryDirectionEntry(Direction.EAST, OUTPUT_SLOT, false),
-                    new InventoryDirectionEntry(Direction.WEST, INPUT_SLOT, true),
-                    new InventoryDirectionEntry(Direction.UP, INPUT_SLOT, true)).directionsMap;
+                    new InventoryDirectionEntry(Direction.DOWN, OXYGEN_SLOT, false),
+                    new InventoryDirectionEntry(Direction.NORTH, NITROGEN_SLOT, false),
+                    new InventoryDirectionEntry(Direction.SOUTH, OXYGEN_SLOT, false),
+                    new InventoryDirectionEntry(Direction.EAST, NITROGEN_SLOT, true),
+                    new InventoryDirectionEntry(Direction.WEST, OXYGEN_SLOT, true),
+                    new InventoryDirectionEntry(Direction.UP, OXYGEN_SLOT, false)).directionsMap;
 
     private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
 
     protected final ContainerData data;
     private int progress = 0;
-    private int maxProgress = 78;
+    private int maxProgress = 100;
 
     private final ModEnergyStorage ENERGY_STORAGE = createEnergyStorage();
-    private final FluidTank FLUID_TANK = createFluidTank(2000);
+    private final FluidTank NITROGEN_TANK = createFluidTank(2000);
+    private final FluidTank OXYGEN_TANK = createFluidTank(2000);
+
 
     private FluidTank createFluidTank(int capacity) {
         return new FluidTank(capacity) {
@@ -154,14 +162,31 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         return this.ENERGY_STORAGE;
     }
 
-    public FluidStack getFluid() {
-        return FLUID_TANK.getFluid();
+    public FluidStack getFluid(int index) {
+        return switch (index) {
+            case 0 -> NITROGEN_TANK.getFluid();
+            case 1 -> OXYGEN_TANK.getFluid();
+            default -> throw new IllegalStateException("Unexpected value: " + index);
+        };
     }
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            return lazyFluidHandler.cast();
+            Direction localDir = this.getBlockState().getValue(AtmosphereExtractor.FACING);
+            LazyOptional<T> handler = switch (localDir) {
+                case NORTH -> returnCorrectTank(side.getOpposite());
+                case EAST -> returnCorrectTank(side.getClockWise());
+                case SOUTH -> returnCorrectTank(side);
+                case WEST -> returnCorrectTank(side.getCounterClockWise());
+                default -> null;
+            };
+
+            if(handler != null) {
+                return handler;
+            }
+
+
         }
 
         if(cap == ForgeCapabilities.ENERGY) {
@@ -193,12 +218,21 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         return super.getCapability(cap, side);
     }
 
+    private <T> @Nullable LazyOptional<T> returnCorrectTank(@NotNull Direction side) {
+        return switch (side) {
+            case WEST -> lazyNitrogenHandler.cast();
+            case EAST -> lazyOxygenHandler.cast();
+            default -> null;
+        };
+    }
+
     @Override
     public void onLoad() {
         super.onLoad();
         lazyItemHandler = LazyOptional.of(() -> itemHandler);
         lazyEnergyHandler = LazyOptional.of(() -> ENERGY_STORAGE);
-        lazyFluidHandler = LazyOptional.of(() -> FLUID_TANK);
+        lazyNitrogenHandler = LazyOptional.of(() -> NITROGEN_TANK);
+        lazyOxygenHandler = LazyOptional.of(() -> OXYGEN_TANK);
     }
 
     @Override
@@ -206,7 +240,8 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         super.invalidateCaps();
         lazyItemHandler.invalidate();
         lazyEnergyHandler.invalidate();
-        lazyFluidHandler.invalidate();
+        lazyNitrogenHandler.invalidate();
+        lazyOxygenHandler.invalidate();
     }
 
     public void drops() {
@@ -234,7 +269,10 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         pTag.put("inventory", itemHandler.serializeNBT());
         pTag.putInt("atmosphere_extractor.progress", progress);
         pTag.putInt("energy", ENERGY_STORAGE.getEnergyStored());
-        pTag = FLUID_TANK.writeToNBT(pTag);
+        pTag.put("NitrogenTank", NITROGEN_TANK.writeToNBT(new CompoundTag()));
+        pTag.put("OxygenTank", OXYGEN_TANK.writeToNBT(new CompoundTag()));
+        //pTag = NITROGEN_TANK.writeToNBT(pTag);
+        //pTag = OXYGEN_TANK.writeToNBT(pTag);
 
         super.write(pTag, clientPacket);
     }
@@ -245,10 +283,28 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         itemHandler.deserializeNBT(pTag.getCompound("inventory"));
         progress = pTag.getInt("atmosphere_extractor.progress");
         ENERGY_STORAGE.setEnergy(pTag.getInt("energy"));
-        FLUID_TANK.readFromNBT(pTag);
+        NITROGEN_TANK.readFromNBT(pTag.getCompound("NitrogenTank"));
+        OXYGEN_TANK.readFromNBT(pTag.getCompound("OxygenTank"));
     }
 
     public void tick(Level level, BlockPos pPos, BlockState pState) {
+        super.tick();
+        fillUpOnFluid();
+
+        updateMaxProgress();
+
+        if(checkIfTankHadSpace(NITROGEN_TANK,78) && checkIfTankHadSpace(OXYGEN_TANK,21)) {
+            progress++;
+            setChanged(level, pPos, pState);
+
+            if(progress >= maxProgress) {
+                generateFluid(NITROGEN_TANK, FluidInit.SOURCE_LIQUID_NITROGEN.get(),78);
+                generateFluid(OXYGEN_TANK, Fluids.WATER,21);
+                progress = 0;
+            }
+        }
+
+        /*
         fillUpOnEnergy();
         fillUpOnFluid();
 
@@ -265,41 +321,89 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         }else{
             resetProgress();
         }
+        */
     }
 
-    private void extractFluid() {
-        this.FLUID_TANK.drain(500, IFluidHandler.FluidAction.EXECUTE);
+    private void generateFluid(FluidTank tank, Fluid fluid, int quantity) {
+        tank.fill(new FluidStack(fluid, quantity), IFluidHandler.FluidAction.EXECUTE);
     }
+
+    private boolean checkIfTankHadSpace(FluidTank tank, int inputQuantity) {
+        return tank.getFluidAmount() + inputQuantity <= tank.getCapacity();
+    }
+
+    private void updateMaxProgress() {
+        float newProductionSpeed = Math.max(((3 * 128) / Math.abs(getSpeed())), 1.0f);
+        maxProgress = Math.round(newProductionSpeed * 20.0f);
+    }
+
 
     private void fillUpOnFluid() {
-        if(hasFluidSourceInSlot(FLUID_INPUT_SLOT)) {
-            transferItemFluidToTank(FLUID_INPUT_SLOT);
+        if(this.itemHandler.getStackInSlot(OXYGEN_SLOT).isEmpty()) {
+            ACQUIRED_FLUID[OXYGEN_SLOT] = false;
+            DISTRIBUTED_FLUID[OXYGEN_SLOT] = false;
+        }else if(hasFluidSourceInSlot(OXYGEN_SLOT)) {
+            transferItemFluidToTank(OXYGEN_SLOT, this.OXYGEN_TANK);
+        }
+
+        if(this.itemHandler.getStackInSlot(NITROGEN_SLOT).isEmpty()) {
+            ACQUIRED_FLUID[NITROGEN_SLOT] = false;
+            DISTRIBUTED_FLUID[NITROGEN_SLOT] = false;
+        }else if(hasFluidSourceInSlot(NITROGEN_SLOT)) {
+            transferItemFluidToTank(NITROGEN_SLOT, this.NITROGEN_TANK);
         }
     }
 
-    private void transferItemFluidToTank(int fluidInputSlot) {
+    private void transferItemFluidToTank(int fluidInputSlot, FluidTank fluidTank) {
         this.itemHandler.getStackInSlot(fluidInputSlot).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(iFluidHandlerItem -> {
-            int drainAmount = Math.min(this.FLUID_TANK.getSpace(), 1000);
+            if(!ACQUIRED_FLUID[fluidInputSlot] && this.itemHandler.getStackInSlot(fluidInputSlot).getItem() == Items.BUCKET){
+                //int fillAmount = Math.min(fluidTank.getFluidAmount(), 1000);
 
-            FluidStack stack = iFluidHandlerItem.drain(drainAmount, IFluidHandler.FluidAction.SIMULATE);
-            if(this.FLUID_TANK.isEmpty() || stack.getFluid() == this.FLUID_TANK.getFluid().getFluid()) {
-                stack = iFluidHandlerItem.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
-                fillTankWithFluid(stack, iFluidHandlerItem.getContainer());
+                int fillAmount = iFluidHandlerItem.fill(fluidTank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
+                fluidTank.drain(fillAmount, IFluidHandler.FluidAction.EXECUTE);
+                this.itemHandler.extractItem(fluidInputSlot, 1, false);
+                this.itemHandler.insertItem(fluidInputSlot, iFluidHandlerItem.getContainer(), false);
+                DISTRIBUTED_FLUID[fluidInputSlot] = true;
+            } else if(!DISTRIBUTED_FLUID[fluidInputSlot]){
+                int drainAmount = Math.min(fluidTank.getSpace(), 1000);
+
+                FluidStack stack = iFluidHandlerItem.drain(drainAmount, IFluidHandler.FluidAction.SIMULATE);
+                if (fluidTank.isEmpty() || stack.getFluid() == fluidTank.getFluid().getFluid()) {
+                    stack = iFluidHandlerItem.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+                    fillTankWithFluid(stack, iFluidHandlerItem.getContainer(), fluidTank, fluidInputSlot);
+                    ACQUIRED_FLUID[fluidInputSlot] = true;
+                }
             }
-
         });
     }
 
-    private void fillTankWithFluid(FluidStack stack, ItemStack container) {
-        this.FLUID_TANK.fill(new FluidStack(stack.getFluid(), stack.getAmount()), IFluidHandler.FluidAction.EXECUTE);
+    private void fillTankWithFluid(FluidStack stack, ItemStack container, FluidTank fluidTank, int fluidInputSlot) {
+        fluidTank.fill(new FluidStack(stack.getFluid(), stack.getAmount()), IFluidHandler.FluidAction.EXECUTE);
 
-        this.itemHandler.extractItem(FLUID_INPUT_SLOT, 1, false);
-        this.itemHandler.insertItem(FLUID_INPUT_SLOT, container, false);
+        this.itemHandler.extractItem(fluidInputSlot, 1, false);
+        this.itemHandler.insertItem(fluidInputSlot, container, false);
     }
 
     private boolean hasFluidSourceInSlot(int fluidInputSlot) {
         return this.itemHandler.getStackInSlot(fluidInputSlot).getCount() > 0 &&
                 this.itemHandler.getStackInSlot(fluidInputSlot).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+    }
+
+
+
+    @Override
+    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
+        super.onDataPacket(connection, packet);
+    }
+
+
+
+
+
+
+    /*
+    private void extractFluid() {
+        this.NITROGEN_TANK.drain(500, IFluidHandler.FluidAction.EXECUTE);
     }
 
     private void extractEnergy() {
@@ -325,7 +429,7 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         Optional<AtmosphereExtractorRecipe> recipe = getCurrentRecipe();
         ItemStack resultItem = recipe.get().getResultItem(getLevel().registryAccess());
 
-        this.itemHandler.extractItem(INPUT_SLOT,1,false);
+        this.itemHandler.extractItem(OXYGEN_SLOT,1,false);
 
         this.itemHandler.setStackInSlot(OUTPUT_SLOT, new ItemStack(resultItem.getItem(),
                 this.itemHandler.getStackInSlot(OUTPUT_SLOT).getCount() + resultItem.getCount()));
@@ -353,7 +457,7 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
     }
 
     private boolean hasEnoughFluidToCraft() {
-        return this.FLUID_TANK.getFluidAmount() >= 500;
+        return this.NITROGEN_TANK.getFluidAmount() >= 500;
     }
 
     private boolean hasEnoughEnergyToCraft() {
@@ -369,6 +473,7 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         return this.level.getRecipeManager().getRecipeFor(AtmosphereExtractorRecipe.Type.INSTANCE, inventory, level);
     }
 
+
     private boolean canInsertItemIntoOutputSlot(Item item) {
         return this.itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() || this.itemHandler.getStackInSlot(OUTPUT_SLOT).is(item);
     }
@@ -382,11 +487,7 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
                 this.itemHandler.getStackInSlot(OUTPUT_SLOT).getCount() < this.itemHandler.getStackInSlot(OUTPUT_SLOT).getMaxStackSize();
     }
 
-
-    @Override
-    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
-        super.onDataPacket(connection, packet);
-    }
+     */
 }
 
 

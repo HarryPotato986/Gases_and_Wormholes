@@ -12,13 +12,13 @@ import java.util.function.Predicate;
  * under Apache License 2.0: https://github.com/ModdingX/LibX/blob/1.19/LICENSE
  *
  */
-public class WrappedHandler implements IItemHandlerModifiable {
+public class DirectionWrappedHandler implements IItemHandlerModifiable {
     private final IItemHandlerModifiable handler;
     private final Predicate<Integer> extract;
     private final BiPredicate<Integer, ItemStack> insert;
 
-    public WrappedHandler(IItemHandlerModifiable handler, Predicate<Integer> extract,
-                          BiPredicate<Integer, ItemStack> insert) {
+    public DirectionWrappedHandler(IItemHandlerModifiable handler, Predicate<Integer> extract,
+                                   BiPredicate<Integer, ItemStack> insert) {
         this.handler = handler;
         this.extract = extract;
         this.insert = insert;

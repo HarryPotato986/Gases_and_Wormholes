@@ -19,7 +19,8 @@ public class AtmosphereExtractorScreen extends AbstractContainerScreen<Atmospher
     private static final ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/atmosphere_extractor_gui.png");
 
     private EnergyDisplayTooltipArea energyInfoArea;
-    private FluidTankRenderer fluidRenderer;
+    private FluidTankRenderer nitrogenTankRenderer;
+    private FluidTankRenderer oxygenTankRenderer;
 
     public AtmosphereExtractorScreen(AtmosphereExtractorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -31,12 +32,13 @@ public class AtmosphereExtractorScreen extends AbstractContainerScreen<Atmospher
         this.inventoryLabelY = 10000;
         this.titleLabelY = 10000;
 
-        assignEnergyInfoArea();
-        assignFluidRenderer();
+        //assignEnergyInfoArea();
+        nitrogenTankRenderer = assignFluidRenderer();
+        oxygenTankRenderer = assignFluidRenderer();
     }
 
-    private void assignFluidRenderer() {
-        fluidRenderer = new FluidTankRenderer(2000, true, 16, 39);
+    private FluidTankRenderer assignFluidRenderer() {
+        return new FluidTankRenderer(2000, true, 16, 39);
     }
 
     @Override
@@ -44,8 +46,9 @@ public class AtmosphereExtractorScreen extends AbstractContainerScreen<Atmospher
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        renderEnergyAreaTooltip(pGuiGraphics, pMouseX, pMouseY, x, y);
-        renderFluidTooltipArea(pGuiGraphics, pMouseX, pMouseY, x, y, menu.blockEntity.getFluid(), 26, 11, fluidRenderer);
+        //renderEnergyAreaTooltip(pGuiGraphics, pMouseX, pMouseY, x, y);
+        renderFluidTooltipArea(pGuiGraphics, pMouseX, pMouseY, x, y, menu.blockEntity.getFluid(0), 26, 11, nitrogenTankRenderer);
+        renderFluidTooltipArea(pGuiGraphics, pMouseX, pMouseY, x, y, menu.blockEntity.getFluid(1), 134, 11, oxygenTankRenderer);
     }
 
     private void renderFluidTooltipArea(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, int x, int y,
@@ -80,13 +83,20 @@ public class AtmosphereExtractorScreen extends AbstractContainerScreen<Atmospher
 
         renderProgressArrow(guiGraphics, x, y);
 
-        energyInfoArea.render(guiGraphics);
-        fluidRenderer.render(guiGraphics, x + 26, y + 11, menu.blockEntity.getFluid());
+        //energyInfoArea.render(guiGraphics);
+        nitrogenTankRenderer.render(guiGraphics, x + 26, y + 11, menu.blockEntity.getFluid(0));
+        oxygenTankRenderer.render(guiGraphics, x + 134, y + 11, menu.blockEntity.getFluid(1));
     }
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
         if(menu.isCrafting()) {
-            guiGraphics.blit(TEXTURE, x + 85, y + 30, 176, 0, 8, menu.getScaledProgress());
+            if(menu.getScaledProgress() <= 0.5) {
+                guiGraphics.blit(TEXTURE, x + 84, y + 10, 1, 168, 8, (int) (menu.getScaledProgress() * 2 * 34));
+            } else if(menu.getScaledProgress() > 0.5) {
+                int width = (int) (((menu.getScaledProgress() - 0.5) * 2) * 90);
+                guiGraphics.blit(TEXTURE, x + 84, y + 10, 1, 168, 8, 34);
+                guiGraphics.blit(TEXTURE, (x + 88) - (width/2), y + 40, 55 - (width/2), 168, width, 8);
+            }
         }
     }
 

@@ -1,9 +1,11 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block;
 
+import com.simibubi.create.content.kinetics.BlockStressDefaults;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.CreativeTabInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractor;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -59,7 +61,7 @@ public class BlockInit {
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.GOLD))
             .transform(axeOrPickaxe())
-            //add .transform(BlockStressDefaults.setImpact(2.0)) find a balanced number
+            .transform(BlockStressDefaults.setImpact(16.0))
             .register();
 
 }
