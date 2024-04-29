@@ -29,4 +29,11 @@ public class ItemInit {
 
     public static final RegistryObject<Item> LIQUID_NITROGEN_BUCKET = ITEMS.register("liquid_nitrogen_bucket",
             () -> new BucketItem(FluidInit.SOURCE_LIQUID_NITROGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+
+    public static final RegistryObject<Item> NITROGEN_GAS_BUCKET = ITEMS.register("nitrogen_gas_bucket",
+            () -> new GasBucketItem(FluidInit.NITROGEN_GAS.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+
+    public static final RegistryObject<Item> OXYGEN_GAS_BUCKET = ITEMS.register("oxygen_gas_bucket",
+            () -> new GasBucketItem(FluidInit.OXYGEN_GAS.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+
 }

@@ -21,6 +21,8 @@ public class CreativeTabInit {
                         output.accept(ItemInit.BEDROCK_DUST.get());
                         output.accept(ItemInit.ATMOSPHERE_EXTRACTOR_ITEM.get());
                         output.accept(ItemInit.LIQUID_NITROGEN_BUCKET.get());
+                        output.accept(ItemInit.NITROGEN_GAS_BUCKET.get());
+                        output.accept(ItemInit.OXYGEN_GAS_BUCKET.get());
                     })
                     .build()
     );

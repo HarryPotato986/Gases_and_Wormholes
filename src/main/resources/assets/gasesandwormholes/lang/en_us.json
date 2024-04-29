@@ -1,6 +1,8 @@
 {
   "item.gasesandwormholes.bedrock_dust": "Bedrock Dust",
   "item.gasesandwormholes.liquid_nitrogen_bucket": "Liquid Nitrogen Bucket",
+  "item.gasesandwormholes.nitrogen_gas_bucket": "Nitrogen Bucket",
+  "item.gasesandwormholes.oxygen_gas_bucket": "Oxygen Bucket",
 
 
   "block.gasesandwormholes.temp_block": "Ain't No Way...",
@@ -12,6 +14,8 @@
   "itemGroup.gases_and_wormholes_tab": "Gases and Wormholes",
 
   "fluid_type.gasesandwormholes.liquid_nitrogen_fluid": "Liquid Nitrogen",
+  "fluid_type.gasesandwormholes.nitrogen_gas_fluid": "Nitrogen Gas",
+  "fluid_type.gasesandwormholes.oxygen_gas_fluid": "Oxygen Gas",
 
 
   "gasesandwormholes.tooltip.liquid.amount.with.capacity": "%s / %s mB",
