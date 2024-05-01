@@ -6,7 +6,9 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.CreativeTabInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractor;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlock;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.util.GnWSharedProperties;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -64,5 +66,11 @@ public class BlockInit {
             .transform(axeOrPickaxe())
             .transform(BlockStressDefaults.setImpact(16.0))
             .register();
+
+    public static final BlockEntry<LinkedBlock> LINKED_BLOCK = REGISTRATE.block("linked_block", LinkedBlock::new)
+            .initialProperties(GnWSharedProperties::bedrock)
+            .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
+            .register();
+
 
 }

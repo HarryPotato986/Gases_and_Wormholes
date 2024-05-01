@@ -1,13 +1,13 @@
-package io.github.HarryPotato986.Gases_and_Wormholes.init.block;
+package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorEntity;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,42 +19,65 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
-public class HorizontalDirectionalBaseEntityBlock extends HorizontalKineticBlock implements IBE<AtmosphereExtractorEntity> {
+public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlockEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    protected HorizontalDirectionalBaseEntityBlock(Properties pProperties) {
-        super(pProperties);
+
+    public LinkedBlock(Properties properties) {
+        super(properties);
     }
 
     @Override
-    public Class<AtmosphereExtractorEntity> getBlockEntityClass() {
-        return AtmosphereExtractorEntity.class;
+    public RenderShape getRenderShape(BlockState pState) {
+        return RenderShape.MODEL;
     }
 
     @Override
-    public BlockEntityType<? extends AtmosphereExtractorEntity> getBlockEntityType() {
-        return null;
+    public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onPlace(state, worldIn, pos, oldState, isMoving);
+
+    }
+
+    @Override
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return null;
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        if(pLevel.isClientSide()) {
+            return null;
+        }
+
+        return createTickerHelper(pBlockEntityType, TileEntitiesInit.LINKED_BLOCK_ENTITY.get(),
+                (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
     }
 
-    public RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.INVISIBLE;
+    @Override
+    public Direction.Axis getRotationAxis(BlockState state) {
+        return state.getValue(FACING).getAxis();
     }
 
+    @Override
+    public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
+        return face == state.getValue(FACING);
+    }
+
+    @Override
+    public Class<LinkedBlockEntity> getBlockEntityClass() {
+        return LinkedBlockEntity.class;
+    }
+
+    @Override
+    public BlockEntityType<? extends LinkedBlockEntity> getBlockEntityType() {
+        return TileEntitiesInit.LINKED_BLOCK_ENTITY.get();
+    }
+
+    @Override
     public boolean triggerEvent(BlockState pState, Level pLevel, BlockPos pPos, int pId, int pParam) {
         super.triggerEvent(pState, pLevel, pPos, pId, pParam);
         BlockEntity blockentity = pLevel.getBlockEntity(pPos);
         return blockentity == null ? false : blockentity.triggerEvent(pId, pParam);
-    }
-
-    @Nullable
-    public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
-        BlockEntity blockentity = pLevel.getBlockEntity(pPos);
-        return blockentity instanceof MenuProvider ? (MenuProvider)blockentity : null;
     }
 
     @Nullable
@@ -71,11 +94,5 @@ public class HorizontalDirectionalBaseEntityBlock extends HorizontalKineticBlock
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(FACING);
-    }
-
-
-    @Override
-    public Direction.Axis getRotationAxis(BlockState state) {
-        return null;
     }
 }

@@ -32,6 +32,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -53,7 +54,7 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return switch (slot) {
-                case OXYGEN_SLOT, NITROGEN_SLOT -> stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+                case NITROGEN_SLOT, OXYGEN_SLOT -> stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
                 //case OUTPUT_SLOT -> false;
                 //case ENERGY_ITEM_SLOT -> stack.getItem() == ItemInit.BEDROCK_DUST.get();
                 default -> super.isItemValid(slot, stack);
@@ -65,8 +66,6 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
             return 1;
         }
     };
-
-
 
 
 
@@ -298,8 +297,8 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
             setChanged(level, pPos, pState);
 
             if(progress >= maxProgress) {
-                generateFluid(NITROGEN_TANK, FluidInit.SOURCE_LIQUID_NITROGEN.get(),78);
-                generateFluid(OXYGEN_TANK, Fluids.WATER,21);
+                generateFluid(NITROGEN_TANK, FluidInit.NITROGEN_GAS.get(),78);
+                generateFluid(OXYGEN_TANK, FluidInit.OXYGEN_GAS.get(),21);
                 progress = 0;
             }
         }
@@ -343,18 +342,18 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
             ACQUIRED_FLUID[OXYGEN_SLOT] = false;
             DISTRIBUTED_FLUID[OXYGEN_SLOT] = false;
         }else if(hasFluidSourceInSlot(OXYGEN_SLOT)) {
-            transferItemFluidToTank(OXYGEN_SLOT, this.OXYGEN_TANK);
+            transferItemFluidToTank(OXYGEN_SLOT, this.OXYGEN_TANK, FluidInit.OXYGEN_GAS.get());
         }
 
         if(this.itemHandler.getStackInSlot(NITROGEN_SLOT).isEmpty()) {
             ACQUIRED_FLUID[NITROGEN_SLOT] = false;
             DISTRIBUTED_FLUID[NITROGEN_SLOT] = false;
         }else if(hasFluidSourceInSlot(NITROGEN_SLOT)) {
-            transferItemFluidToTank(NITROGEN_SLOT, this.NITROGEN_TANK);
+            transferItemFluidToTank(NITROGEN_SLOT, this.NITROGEN_TANK, FluidInit.NITROGEN_GAS.get());
         }
     }
 
-    private void transferItemFluidToTank(int fluidInputSlot, FluidTank fluidTank) {
+    private void transferItemFluidToTank(int fluidInputSlot, FluidTank fluidTank, Fluid fluid) {
         this.itemHandler.getStackInSlot(fluidInputSlot).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(iFluidHandlerItem -> {
             if(!ACQUIRED_FLUID[fluidInputSlot] && this.itemHandler.getStackInSlot(fluidInputSlot).getItem() == Items.BUCKET){
                 //int fillAmount = Math.min(fluidTank.getFluidAmount(), 1000);
@@ -368,7 +367,7 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
                 int drainAmount = Math.min(fluidTank.getSpace(), 1000);
 
                 FluidStack stack = iFluidHandlerItem.drain(drainAmount, IFluidHandler.FluidAction.SIMULATE);
-                if (fluidTank.isEmpty() || stack.getFluid() == fluidTank.getFluid().getFluid()) {
+                if (stack.getFluid() == fluid) {
                     stack = iFluidHandlerItem.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
                     fillTankWithFluid(stack, iFluidHandlerItem.getContainer(), fluidTank, fluidInputSlot);
                     ACQUIRED_FLUID[fluidInputSlot] = true;
