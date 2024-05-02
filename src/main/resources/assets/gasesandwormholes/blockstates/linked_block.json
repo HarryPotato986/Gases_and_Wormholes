@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gasesandwormholes:block/linked_block",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gasesandwormholes:block/linked_block",
+      "y": 0
+    },
+    "facing=south": {
+      "model": "gasesandwormholes:block/linked_block",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gasesandwormholes:block/linked_block",
+      "y": 270
+    }
+  }
+}

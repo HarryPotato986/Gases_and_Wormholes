@@ -7,6 +7,8 @@ import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.Atmosph
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorInstance;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorRenderer;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlockEntity;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlockInstance;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlockRenderer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -32,8 +34,8 @@ public class TileEntitiesInit {
 
     public static final BlockEntityEntry<LinkedBlockEntity> LINKED_BLOCK_ENTITY = REGISTRATE
             .blockEntity("linked_block_entity", LinkedBlockEntity::new)
-            //.instance()
+            .instance(() -> LinkedBlockInstance::new)
             .validBlocks(BlockInit.LINKED_BLOCK)
-            //.renderer()
+            .renderer(() -> LinkedBlockRenderer::new)
             .register();
 }

@@ -1,11 +1,13 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.block.IBE;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -17,10 +19,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlockEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final VoxelShape SHAPE = Block.box(0, 0, 6, 16, 16, 16);
 
     public LinkedBlock(Properties properties) {
         super(properties);
@@ -29,6 +34,11 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
     @Override
     public RenderShape getRenderShape(BlockState pState) {
         return RenderShape.MODEL;
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        return SHAPE;
     }
 
     @Override
@@ -60,6 +70,13 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
+        /*
+        if(world.getBlockEntity(pos.relative(state.getValue(FACING))) instanceof KineticBlockEntity) {
+            return face == state.getValue(FACING);
+        } else {
+            return false;
+        }
+         */
         return face == state.getValue(FACING);
     }
 
