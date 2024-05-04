@@ -21,11 +21,15 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlockEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    public static final VoxelShape SHAPE = Block.box(0, 0, 6, 16, 16, 16);
+    public static final VoxelShape SHAPE_N = Block.box(0, 0, 6, 16, 16, 16);
+    public static final VoxelShape SHAPE_S = Block.box(0, 0, 0, 16, 16, 10);
+    public static final VoxelShape SHAPE_E = Block.box(0, 0, 0, 10, 16, 16);
+    public static final VoxelShape SHAPE_W = Block.box(6, 0, 0, 10, 16, 16);
 
     public LinkedBlock(Properties properties) {
         super(properties);
@@ -37,8 +41,14 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return SHAPE;
+    public @NotNull VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        Direction facing = pState.getValue(FACING);
+        return switch (facing) {
+            case SOUTH -> SHAPE_S;
+            case EAST -> SHAPE_E;
+            case WEST -> SHAPE_W;
+            default -> SHAPE_N;
+        };
     }
 
     @Override

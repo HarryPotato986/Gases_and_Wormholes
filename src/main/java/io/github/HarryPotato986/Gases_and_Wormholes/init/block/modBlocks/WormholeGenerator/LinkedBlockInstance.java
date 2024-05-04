@@ -45,7 +45,7 @@ public class LinkedBlockInstance extends KineticBlockEntityInstance<LinkedBlockE
         }
          */
 
-        setup(shaft);
+        //setup(shaft);
     }
 
     /*
@@ -88,3 +88,5 @@ public class LinkedBlockInstance extends KineticBlockEntityInstance<LinkedBlockE
 
     }
 }
+
+

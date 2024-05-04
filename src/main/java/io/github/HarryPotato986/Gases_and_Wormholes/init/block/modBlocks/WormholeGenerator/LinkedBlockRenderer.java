@@ -25,7 +25,7 @@ public class LinkedBlockRenderer extends KineticBlockEntityRenderer<LinkedBlockE
 
     @Override
     protected void renderSafe(LinkedBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
-        if (Backend.canUseInstancing(be.getLevel())) return;
+        //if (Backend.canUseInstancing(be.getLevel())) return;
 
         Direction direction = be.getBlockState().getValue(FACING);
         BlockPos pos = be.getBlockPos();

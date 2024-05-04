@@ -34,7 +34,7 @@ public class TileEntitiesInit {
 
     public static final BlockEntityEntry<LinkedBlockEntity> LINKED_BLOCK_ENTITY = REGISTRATE
             .blockEntity("linked_block_entity", LinkedBlockEntity::new)
-            .instance(() -> LinkedBlockInstance::new)
+            //.instance(() -> LinkedBlockInstance::new)
             .validBlocks(BlockInit.LINKED_BLOCK)
             .renderer(() -> LinkedBlockRenderer::new)
             .register();
