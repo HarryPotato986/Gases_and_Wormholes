@@ -25,6 +25,9 @@ public class ItemInit {
     public static final RegistryObject<BlockItem> ATMOSPHERE_EXTRACTOR_ITEM = ITEMS.register("atmosphere_extractor_item",
             () -> new BlockItem(BlockInit.ATMOSPHERE_EXTRACTOR.get(), new Item.Properties()));
 
+    public static final RegistryObject<BlockItem> WORMHOLE_GENERATOR_ITEM = ITEMS.register("wormhole_generator_item",
+            () -> new  WormholeGeneratorBlockItem(BlockInit.WORMHOLE_GENERATOR.get(), new Item.Properties()));
+
 
 
     public static final RegistryObject<Item> LIQUID_NITROGEN_BUCKET = ITEMS.register("liquid_nitrogen_bucket",

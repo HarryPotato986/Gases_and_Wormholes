@@ -3,6 +3,7 @@ package io.github.HarryPotato986.Gases_and_Wormholes;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.CreativeTabInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkManager;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidTypesInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ItemInit;
@@ -28,6 +29,8 @@ public class Gases_and_Wormholes {
     public static final String MODID = "gasesandwormholes";
 
     public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID);
+
+    public static final LinkManager LINK_MANAGER = new LinkManager();
 
     public Gases_and_Wormholes() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();

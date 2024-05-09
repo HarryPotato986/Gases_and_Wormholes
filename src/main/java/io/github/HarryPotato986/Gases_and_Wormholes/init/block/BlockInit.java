@@ -7,6 +7,7 @@ import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.CreativeTabInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractor;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlock;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGenerator;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.GnWSharedProperties;
 import net.minecraft.world.level.block.Block;
@@ -70,6 +71,12 @@ public class BlockInit {
     public static final BlockEntry<LinkedBlock> LINKED_BLOCK = REGISTRATE.block("linked_block", LinkedBlock::new)
             .initialProperties(GnWSharedProperties::bedrock)
             .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
+            .register();
+
+    public static final BlockEntry<WormholeGenerator> WORMHOLE_GENERATOR = REGISTRATE.block("wormhole_generator", WormholeGenerator::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
+            .transform(pickaxeOnly())
             .register();
 
 

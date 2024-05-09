@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlock.FACING;
+import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlock.IS_PRIMARY_BLOCK;
 
 public class LinkedBlockEntity extends KineticBlockEntity {
 
@@ -25,17 +26,19 @@ public class LinkedBlockEntity extends KineticBlockEntity {
     public boolean hasUpdatedSinceLastSync;
     public boolean firstSync = true;
     public boolean spawnPartner = false;
+    public boolean isPrimaryBlock;
 
     public LinkedBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
         if(state.getValue(FACING) == Direction.NORTH) {
             spawnPartner = true;
         }
+        isPrimaryBlock = state.getValue(IS_PRIMARY_BLOCK);
     }
 
     public void spawnPartner(Level level, BlockPos pos, BlockState state) {
         BlockPos partnerPos = pos.relative(state.getValue(FACING), 5);
-        BlockState BS = BlockInit.LINKED_BLOCK.getDefaultState().setValue(FACING, Direction.EAST);
+        BlockState BS = BlockInit.LINKED_BLOCK.getDefaultState().setValue(FACING, Direction.EAST).setValue(IS_PRIMARY_BLOCK, false);
         //BlockState newBS = BS.setValue(FACING, Direction.SOUTH);
         level.setBlock(partnerPos, BS, 3);
         LinkedBlockEntity LBE = (LinkedBlockEntity) level.getBlockEntity(partnerPos);
@@ -67,7 +70,7 @@ public class LinkedBlockEntity extends KineticBlockEntity {
 
         if(!firstSync) {
             if(!level.isClientSide() && pPos != null) {
-                syncWithLinkedPartner(level, pPos);
+                //syncWithLinkedPartner(level, pPos);
             }
         } else {
             firstSync = false;

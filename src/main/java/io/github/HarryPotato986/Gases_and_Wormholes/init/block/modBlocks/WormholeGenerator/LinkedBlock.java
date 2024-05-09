@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -26,6 +27,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlockEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final BooleanProperty IS_PRIMARY_BLOCK = BooleanProperty.create("is_primary_block");
+    //public static final BlockPos PARTNER_POS;
+
     public static final VoxelShape SHAPE_N = Block.box(0, 0, 6, 16, 16, 16);
     public static final VoxelShape SHAPE_S = Block.box(0, 0, 0, 16, 16, 10);
     public static final VoxelShape SHAPE_E = Block.box(0, 0, 0, 10, 16, 16);
@@ -121,5 +125,6 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(FACING);
+        pBuilder.add(IS_PRIMARY_BLOCK);
     }
 }
