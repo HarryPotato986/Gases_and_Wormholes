@@ -10,13 +10,15 @@ import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.Wormhol
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGenerator;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.GnWSharedProperties;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -76,8 +78,18 @@ public class BlockInit {
     public static final BlockEntry<WormholeGenerator> WORMHOLE_GENERATOR = REGISTRATE.block("wormhole_generator", WormholeGenerator::new)
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
+            .properties(p -> p.noOcclusion())
+            .properties(p -> p.isViewBlocking(BlockInit::never))
             .transform(pickaxeOnly())
             .register();
+
+
+
+
+
+    private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos blockPos) {
+        return (Boolean) false;
+    }
 
 
 }
