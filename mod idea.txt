@@ -1,0 +1,40 @@
+creat addon:
+gas refining
+	from air
+	from water splitting
+
+cryocooler:
+	turn gas into liquid
+
+bedrock scraper:
+	pulls bedrock powder from bedrock
+
+wormhole generator:
+	liquid helium to cool it
+	bedrock powder for fuel
+
+	trains can go through
+		can build off nether portal functionality
+	mirrors nbt data of block on other side of portal
+		for redstone, pipes, power(gears, shafts, wires)
+
+gas engine:
+	runs on hydrogen
+
+
+liquid nitrogen for recipes:
+
+
+
+TODO List:
+start work on wormhole generator's blockentity and renderer (try to grab code from end gateway renderer)
+
+try to fix linkedBlockEntity tick method
+
+
+
+
+
+Known bugs:
+look into why the AtmoExtr instantly gains fluid when network is connected to it
+

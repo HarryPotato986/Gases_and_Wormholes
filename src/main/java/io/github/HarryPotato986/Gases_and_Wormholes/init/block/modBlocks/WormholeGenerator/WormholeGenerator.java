@@ -1,7 +1,9 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
+import com.simibubi.create.foundation.block.IBE;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -9,8 +11,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -20,7 +25,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 import javax.annotation.Nullable;
 
-public class WormholeGenerator extends HorizontalKineticBlock /*implements IBE<WormholeGeneratorEntity>*/ {
+public class WormholeGenerator extends HorizontalKineticBlock implements IBE<WormholeGeneratorEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final EnumProperty<WormholeGeneratorBlockTypes> BLOCK_FUNCTION = EnumProperty.create("block_function", WormholeGeneratorBlockTypes.class);
     public static final BooleanProperty FIRST_PLACED = BooleanProperty.create("first_placed");
@@ -39,6 +44,14 @@ public class WormholeGenerator extends HorizontalKineticBlock /*implements IBE<W
             return RenderShape.INVISIBLE;
         }
         return RenderShape.MODEL;
+    }
+
+    @Override
+    public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
+        if(state.getValue(BLOCK_FUNCTION) == WormholeGeneratorBlockTypes.KINETIC_INPUT) {
+            return face == state.getValue(FACING);
+        }
+        return false;
     }
 
     @Override
@@ -197,7 +210,7 @@ public class WormholeGenerator extends HorizontalKineticBlock /*implements IBE<W
 
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-        //super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
         removeAll(pLevel, this.masterPos);
     }
 
@@ -221,16 +234,33 @@ public class WormholeGenerator extends HorizontalKineticBlock /*implements IBE<W
         return null;
     }
 
-    /*
+    @org.jetbrains.annotations.Nullable
+    @Override
+    public WormholeGeneratorEntity getBlockEntity(BlockGetter worldIn, BlockPos pos) {
+        return IBE.super.getBlockEntity(worldIn, this.masterPos);
+    }
+
+    @Override
+    @Nullable
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        WormholeGeneratorBlockTypes function = state.getValue(BLOCK_FUNCTION);
+        if(function == WormholeGeneratorBlockTypes.CORE) {
+            return IBE.super.newBlockEntity(pos, state);
+        } else {
+            return null;
+        }
+
+    }
+
     @Override
     public Class<WormholeGeneratorEntity> getBlockEntityClass() {
-        return null;
+        return WormholeGeneratorEntity.class;
     }
 
     @Override
     public BlockEntityType<? extends WormholeGeneratorEntity> getBlockEntityType() {
-        return null;
-    }*/
+        return TileEntitiesInit.WORMHOLE_GENERATOR_ENTITY.get();
+    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
