@@ -3,11 +3,16 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.Wormho
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorEntity;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -22,6 +27,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -210,6 +217,13 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
 
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        if (pState.getBlock() != pNewState.getBlock()) {
+            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+            if (blockEntity instanceof WormholeGeneratorEntity) {
+                ((WormholeGeneratorEntity) blockEntity).drops();
+            }
+        }
+
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
         removeAll(pLevel, this.masterPos);
     }
@@ -223,6 +237,20 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
                 }
             }
         }
+    }
+
+    @Override
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        if(!pLevel.isClientSide()) {
+            BlockEntity entity = pLevel.getBlockEntity(masterPos);
+            if(entity instanceof WormholeGeneratorEntity) {
+                NetworkHooks.openScreen((ServerPlayer) pPlayer, (WormholeGeneratorEntity) entity, masterPos);
+            } else {
+                throw new IllegalStateException("Our Container provider is missing");
+            }
+        }
+
+        return InteractionResult.sidedSuccess(pLevel.isClientSide());
     }
 
     private BlockState getMasterState(Level level) {

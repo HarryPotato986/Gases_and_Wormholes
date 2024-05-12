@@ -12,7 +12,11 @@ import net.minecraftforge.registries.RegistryObject;
 public class MenuTypesInit {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Gases_and_Wormholes.MODID);
 
-    public static final RegistryObject<MenuType<AtmosphereExtractorMenu>> ATMOSPHERE_EXTRACTOR_MENU = registerMenuType("atmosphere_extractor_menu", AtmosphereExtractorMenu::new);
+    public static final RegistryObject<MenuType<AtmosphereExtractorMenu>> ATMOSPHERE_EXTRACTOR_MENU =
+            registerMenuType("atmosphere_extractor_menu", AtmosphereExtractorMenu::new);
+
+    public static final RegistryObject<MenuType<WormholeGeneratorMenu>> WORMHOLE_GENERATOR_MENU =
+            registerMenuType("wormhole_generator_menu", WormholeGeneratorMenu::new);
 
 
     private static <T extends AbstractContainerMenu>RegistryObject<MenuType<T>> registerMenuType(String name, IContainerFactory<T> factory) {

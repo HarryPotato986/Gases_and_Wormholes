@@ -21,5 +21,9 @@
 
 
   "gasesandwormholes.tooltip.liquid.amount.with.capacity": "%s / %s mB",
-  "gasesandwormholes.tooltip.liquid.amount": "%s mB"
+  "gasesandwormholes.tooltip.liquid.amount": "%s mB",
+
+  "gasesandwormholes.editboxtext.x": "X",
+  "gasesandwormholes.editboxtext.y": "Y",
+  "gasesandwormholes.editboxtext.z": "Z"
 }

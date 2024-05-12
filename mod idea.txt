@@ -18,6 +18,8 @@ wormhole generator:
 	mirrors nbt data of block on other side of portal
 		for redstone, pipes, power(gears, shafts, wires)
 
+	speed limits how big the wormhole can be. the faster, the bigger, the more coolent and bedrock dust it takes
+
 gas engine:
 	runs on hydrogen
 
@@ -27,7 +29,7 @@ liquid nitrogen for recipes:
 
 
 TODO List:
-start work on wormhole generator's blockentity and renderer (try to grab code from end gateway renderer)
+save editbox data to the blockentity and keep working on the wormhole generator screen.
 
 try to fix linkedBlockEntity tick method
 

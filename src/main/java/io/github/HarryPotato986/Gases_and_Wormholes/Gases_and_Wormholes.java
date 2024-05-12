@@ -11,6 +11,7 @@ import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitie
 import io.github.HarryPotato986.Gases_and_Wormholes.init.recipe.ModRecipes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.AtmosphereExtractorScreen;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.MenuTypesInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.WormholeGeneratorScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -60,6 +61,7 @@ public class Gases_and_Wormholes {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             MenuScreens.register(MenuTypesInit.ATMOSPHERE_EXTRACTOR_MENU.get(), AtmosphereExtractorScreen::new);
+            MenuScreens.register(MenuTypesInit.WORMHOLE_GENERATOR_MENU.get(), WormholeGeneratorScreen::new);
 
             ItemBlockRenderTypes.setRenderLayer(FluidInit.SOURCE_LIQUID_NITROGEN.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.FLOWING_LIQUID_NITROGEN.get(), RenderType.translucent());
