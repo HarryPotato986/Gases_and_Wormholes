@@ -68,6 +68,8 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
 
     private final FluidTank LIQUID_NITROGEN_TANK = createFluidTank(10000);
 
+    public CompoundTag wormholePOSs = new CompoundTag();
+
 
     private final Map<Direction, LazyOptional<DirectionWrappedHandler>> directionWrappedHandlerMap =
             new InventoryDirectionWrapper(itemHandler,
@@ -231,6 +233,7 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
         pTag.put("inventory", itemHandler.serializeNBT());
         pTag.putInt("wormhole_generator.progress", progress);
         pTag.put("OxygenTank", LIQUID_NITROGEN_TANK.writeToNBT(new CompoundTag()));
+        pTag.put("screen_data", wormholePOSs);
 
         super.write(pTag, clientPacket);
     }
@@ -241,10 +244,26 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
         itemHandler.deserializeNBT(pTag.getCompound("inventory"));
         progress = pTag.getInt("atmosphere_extractor.progress");
         LIQUID_NITROGEN_TANK.readFromNBT(pTag.getCompound("OxygenTank"));
+        wormholePOSs = pTag.getCompound("screen_data");
     }
 
     @Override
     public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
         super.onDataPacket(connection, packet);
+    }
+
+    public void updateScreenData(String x1, String y1, String z1, String x2, String y2, String z2) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString("X1", x1);
+        tag.putString("Y1", y1);
+        tag.putString("Z1", z1);
+        tag.putString("X2", x2);
+        tag.putString("Y2", y2);
+        tag.putString("Z2", z2);
+        this.wormholePOSs = tag;
+    }
+
+    public CompoundTag getScreenData() {
+        return this.wormholePOSs;
     }
 }

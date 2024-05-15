@@ -4,16 +4,19 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.renderer.FluidTankRenderer;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.MouseUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -35,6 +38,11 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     @Override
     protected void init() {
         super.init();
+
+        //I should NOT have to do this.
+        //For a reason unknown to me, minecraft keeps returning null unless I set it manually.
+        this.minecraft = Minecraft.getInstance();
+
         this.inventoryLabelY = 10000;
         this.titleLabelY = 10000;
 
@@ -56,7 +64,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         this.addWidget(this.Y2);
         this.addWidget(this.Z2);
 
-
+        System.out.println("It do be running");
     }
 
     private EditBox createNewEditBox(int x, int y, int width, int height, Component baseText) {
@@ -99,7 +107,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, delta);
         this.X1.render(guiGraphics, mouseX, mouseY, delta);
@@ -109,6 +117,44 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         this.Y2.render(guiGraphics, mouseX, mouseY, delta);
         this.Z2.render(guiGraphics, mouseX, mouseY, delta);
         renderTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics pGuiGraphics) {
+        if (Minecraft.getInstance().level != null) {
+            pGuiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
+            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.ScreenEvent.BackgroundRendered(this, pGuiGraphics));
+        } else {
+            this.renderDirtBackground(pGuiGraphics);
+        }
+    }
+
+    @Override
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+        if (super.keyPressed(pKeyCode, pScanCode, pModifiers)) {
+            return true;
+        } else if (pKeyCode != 257 && pKeyCode != 335) {
+            return false;
+        } else {
+            this.onDone();
+            return true;
+        }
+    }
+
+    @Override
+    public void added() {
+        super.added();
+        CompoundTag tag = menu.blockEntity.getScreenData();
+        X1.setValue(tag.getString("X1"));
+        Y1.setValue(tag.getString("Y1"));
+        Z1.setValue(tag.getString("Z1"));
+        X2.setValue(tag.getString("X2"));
+        Y2.setValue(tag.getString("Y2"));
+        Z2.setValue(tag.getString("Z2"));
+    }
+
+    public void onDone() {
+        menu.blockEntity.updateScreenData(X1.getValue(), Y1.getValue(), Z1.getValue(), X2.getValue(), Y2.getValue(), Z2.getValue());
     }
 
     private boolean isMouseAboveArea(int pMouseX, int pMouseY, int x, int y, int offsetX, int offsetY, FluidTankRenderer renderer) {
