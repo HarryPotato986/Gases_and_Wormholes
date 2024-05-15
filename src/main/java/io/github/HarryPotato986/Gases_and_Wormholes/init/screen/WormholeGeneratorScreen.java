@@ -37,7 +37,6 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
     @Override
     protected void init() {
-        super.init();
 
         //I should NOT have to do this.
         //For a reason unknown to me, minecraft keeps returning null unless I set it manually.
@@ -64,7 +63,11 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         this.addWidget(this.Y2);
         this.addWidget(this.Z2);
 
-        System.out.println("It do be running");
+        super.init();
+
+        for (int i = 0; i <= 50; i++) {
+            System.out.println("It do be running");
+        }
     }
 
     private EditBox createNewEditBox(int x, int y, int width, int height, Component baseText) {
@@ -74,7 +77,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     }
 
     private FluidTankRenderer assignFluidRenderer() {
-        return new FluidTankRenderer(10000, true, 16, 39);
+        return new FluidTankRenderer(10000L, true, 16, 39);
     }
 
     @Override

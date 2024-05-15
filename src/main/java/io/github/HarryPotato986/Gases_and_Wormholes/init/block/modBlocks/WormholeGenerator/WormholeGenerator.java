@@ -3,7 +3,6 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.Wormho
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorEntity;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,7 +36,6 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
     public static final EnumProperty<WormholeGeneratorBlockTypes> BLOCK_FUNCTION = EnumProperty.create("block_function", WormholeGeneratorBlockTypes.class);
     public static final BooleanProperty FIRST_PLACED = BooleanProperty.create("first_placed");
 
-    public BlockPos masterPos;
 
     public WormholeGenerator(Properties properties) {
         super(properties);
@@ -112,13 +110,11 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
         if(isFirstPlaced && !level.getBlockTicks().hasScheduledTick(pos, this))
             level.scheduleTick(pos, this, 1);
         if(!isFirstPlaced && state.getValue(BLOCK_FUNCTION) != WormholeGeneratorBlockTypes.CORE) {
-            findAndSetMasterPos(level, pos);
-        } else if(!isFirstPlaced && state.getValue(BLOCK_FUNCTION) == WormholeGeneratorBlockTypes.CORE) {
-            this.masterPos = pos;
+            findMasterPos(level, pos);
         }
     }
 
-    private void findAndSetMasterPos(Level level, BlockPos pos) {
+    private BlockPos findMasterPos(Level level, BlockPos pos) {
         for(int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 for (int z = -1; z <= 1; z++) {
@@ -127,13 +123,13 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
                     Block foundBlock = foundState.getBlock();
                     if(foundBlock instanceof WormholeGenerator) {
                         if(foundState.getValue(BLOCK_FUNCTION) == WormholeGeneratorBlockTypes.CORE) {
-                            this.masterPos = pos.offset(offset);
-                            return;
+                            return pos.offset(offset);
                         }
                     }
                 }
             }
         }
+        return null;
     }
 
     @Override
@@ -212,7 +208,6 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
                 }
             }
         }
-        this.masterPos = pPos.offset(coreOffset);
     }
 
     @Override
@@ -224,8 +219,8 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
             }
         }
 
+        removeAll(pLevel, findMasterPos(pLevel, pPos));
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
-        removeAll(pLevel, this.masterPos);
     }
 
     public void removeAll(Level level, BlockPos pos) {
@@ -242,9 +237,9 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if(!pLevel.isClientSide()) {
-            BlockEntity entity = pLevel.getBlockEntity(masterPos);
+            BlockEntity entity = pLevel.getBlockEntity(findMasterPos(pLevel, pPos));
             if(entity instanceof WormholeGeneratorEntity) {
-                NetworkHooks.openScreen((ServerPlayer) pPlayer, (WormholeGeneratorEntity) entity, masterPos);
+                NetworkHooks.openScreen((ServerPlayer) pPlayer, (WormholeGeneratorEntity) entity, findMasterPos(pLevel, pPos));
             } else {
                 throw new IllegalStateException("Our Container provider is missing");
             }
@@ -253,8 +248,8 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
         return InteractionResult.sidedSuccess(pLevel.isClientSide());
     }
 
-    private BlockState getMasterState(Level level) {
-        return level.getBlockState(this.masterPos);
+    private BlockState getMasterState(Level level, BlockPos pos) {
+        return level.getBlockState(findMasterPos(level, pos));
     }
 
     @Override
@@ -265,7 +260,7 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
     @org.jetbrains.annotations.Nullable
     @Override
     public WormholeGeneratorEntity getBlockEntity(BlockGetter worldIn, BlockPos pos) {
-        return IBE.super.getBlockEntity(worldIn, this.masterPos);
+        return IBE.super.getBlockEntity(worldIn, findMasterPos(worldIn.getBlockEntity(pos).getLevel(), pos));
     }
 
     @Override
