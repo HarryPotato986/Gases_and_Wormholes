@@ -29,6 +29,7 @@ liquid nitrogen for recipes:
 
 
 TODO List:
+update how masterpos it found in wormhole generator block. it can't just save it.
 save editbox data to the blockentity and keep working on the wormhole generator screen.
 
 try to fix linkedBlockEntity tick method
