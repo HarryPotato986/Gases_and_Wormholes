@@ -18,7 +18,7 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
     private final Level level;
     private final ContainerData data;
 
-    protected WormholeGeneratorMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
+    public WormholeGeneratorMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
     }
 

@@ -19,7 +19,7 @@ public class MenuTypesInit {
             registerMenuType("wormhole_generator_menu", WormholeGeneratorMenu::new);
 
 
-    private static <T extends AbstractContainerMenu>RegistryObject<MenuType<T>> registerMenuType(String name, IContainerFactory<T> factory) {
+    private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(String name, IContainerFactory<T> factory) {
         return MENUS.register(name, () -> IForgeMenuType.create(factory));
     }
 }

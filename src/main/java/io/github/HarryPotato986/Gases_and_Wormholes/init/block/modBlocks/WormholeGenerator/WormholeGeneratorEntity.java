@@ -2,6 +2,7 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.Wormho
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractor;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ItemInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.WormholeGeneratorMenu;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.DirectionWrappedHandler;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -66,9 +68,21 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
     private static final int LIQUID_NITROGEN_SLOT = 0;
     private static final int BEDROCK_DUST_INPUT = 1;
 
+    private boolean ACQUIRED_FLUID = false;
+    private boolean DISTRIBUTED_FLUID = false;
+
     private final FluidTank LIQUID_NITROGEN_TANK = createFluidTank(10000);
 
-    public CompoundTag wormholePOSs = new CompoundTag();
+
+    public String X1 = "";
+    public String Y1 = "";
+    public String Z1 = "";
+    public String X2 = "";
+    public String Y2 = "";
+    public String Z2 = "";
+
+
+
 
 
     private final Map<Direction, LazyOptional<DirectionWrappedHandler>> directionWrappedHandlerMap =
@@ -140,6 +154,56 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
                 return 2;
             }
         };
+    }
+
+
+    public void tick(Level level, BlockPos pPos, BlockState pState) {
+        super.tick();
+        fillUpOnFluid();
+    }
+
+    private void fillUpOnFluid() {
+        if(this.itemHandler.getStackInSlot(LIQUID_NITROGEN_SLOT).isEmpty()) {
+            ACQUIRED_FLUID = false;
+            DISTRIBUTED_FLUID = false;
+        }else if(hasFluidSourceInSlot(LIQUID_NITROGEN_SLOT)) {
+            transferItemFluidToTank(LIQUID_NITROGEN_SLOT, this.LIQUID_NITROGEN_TANK, FluidInit.SOURCE_LIQUID_NITROGEN.get());
+        }
+    }
+
+    private void transferItemFluidToTank(int fluidInputSlot, FluidTank fluidTank, Fluid fluid) {
+        this.itemHandler.getStackInSlot(fluidInputSlot).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(iFluidHandlerItem -> {
+            if(!ACQUIRED_FLUID && this.itemHandler.getStackInSlot(fluidInputSlot).getItem() == Items.BUCKET){
+                //int fillAmount = Math.min(fluidTank.getFluidAmount(), 1000);
+
+                int fillAmount = iFluidHandlerItem.fill(fluidTank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
+                fluidTank.drain(fillAmount, IFluidHandler.FluidAction.EXECUTE);
+                this.itemHandler.extractItem(fluidInputSlot, 1, false);
+                this.itemHandler.insertItem(fluidInputSlot, iFluidHandlerItem.getContainer(), false);
+                DISTRIBUTED_FLUID = true;
+            } else if(!DISTRIBUTED_FLUID){
+                int drainAmount = Math.min(fluidTank.getSpace(), 1000);
+
+                FluidStack stack = iFluidHandlerItem.drain(drainAmount, IFluidHandler.FluidAction.SIMULATE);
+                if (stack.getFluid() == fluid) {
+                    stack = iFluidHandlerItem.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+                    fillTankWithFluid(stack, iFluidHandlerItem.getContainer(), fluidTank, fluidInputSlot);
+                    ACQUIRED_FLUID = true;
+                }
+            }
+        });
+    }
+
+    private void fillTankWithFluid(FluidStack stack, ItemStack container, FluidTank fluidTank, int fluidInputSlot) {
+        fluidTank.fill(new FluidStack(stack.getFluid(), stack.getAmount()), IFluidHandler.FluidAction.EXECUTE);
+
+        this.itemHandler.extractItem(fluidInputSlot, 1, false);
+        this.itemHandler.insertItem(fluidInputSlot, container, false);
+    }
+
+    private boolean hasFluidSourceInSlot(int fluidInputSlot) {
+        return this.itemHandler.getStackInSlot(fluidInputSlot).getCount() > 0 &&
+                this.itemHandler.getStackInSlot(fluidInputSlot).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
     }
 
     public FluidStack getFluid() {
@@ -233,7 +297,13 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
         pTag.put("inventory", itemHandler.serializeNBT());
         pTag.putInt("wormhole_generator.progress", progress);
         pTag.put("OxygenTank", LIQUID_NITROGEN_TANK.writeToNBT(new CompoundTag()));
-        pTag.put("screen_data", wormholePOSs);
+
+        pTag.putString("x1", X1);
+        pTag.putString("y1", Y1);
+        pTag.putString("z1", Z1);
+        pTag.putString("x2", X2);
+        pTag.putString("y2", Y2);
+        pTag.putString("z2", Z2);
 
         super.write(pTag, clientPacket);
     }
@@ -244,7 +314,13 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
         itemHandler.deserializeNBT(pTag.getCompound("inventory"));
         progress = pTag.getInt("atmosphere_extractor.progress");
         LIQUID_NITROGEN_TANK.readFromNBT(pTag.getCompound("OxygenTank"));
-        wormholePOSs = pTag.getCompound("screen_data");
+
+        X1 = pTag.getString("x1");
+        Y1 = pTag.getString("y1");
+        Z1 = pTag.getString("z1");
+        X2 = pTag.getString("x2");
+        Y2 = pTag.getString("y2");
+        Z2 = pTag.getString("z2");
     }
 
     @Override
@@ -253,17 +329,18 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
     }
 
     public void updateScreenData(String x1, String y1, String z1, String x2, String y2, String z2) {
-        CompoundTag tag = new CompoundTag();
-        tag.putString("X1", x1);
-        tag.putString("Y1", y1);
-        tag.putString("Z1", z1);
-        tag.putString("X2", x2);
-        tag.putString("Y2", y2);
-        tag.putString("Z2", z2);
-        this.wormholePOSs = tag;
+        System.out.println("yerp");
+        System.out.println(x1);
+        X1 = x1;
+        Y1 = y1;
+        Z1 = z1;
+        X2 = x2;
+        Y2 = y2;
+        Z2 = z2;
     }
 
-    public CompoundTag getScreenData() {
-        return this.wormholePOSs;
+    public String[] getScreenData() {
+        return new String[]{X1,Y1,Z1,X2,Y2,Z2};
     }
+
 }

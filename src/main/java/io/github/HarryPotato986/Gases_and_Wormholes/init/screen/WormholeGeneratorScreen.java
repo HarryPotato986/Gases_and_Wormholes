@@ -18,6 +18,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGeneratorMenu> {
@@ -36,11 +37,8 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     }
 
     @Override
-    protected void init() {
-
-        //I should NOT have to do this.
-        //For a reason unknown to me, minecraft keeps returning null unless I set it manually.
-        this.minecraft = Minecraft.getInstance();
+    public void init() {
+        super.init();
 
         this.inventoryLabelY = 10000;
         this.titleLabelY = 10000;
@@ -50,12 +48,27 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
+        String[] values = menu.blockEntity.getScreenData();
+
         this.X1 = createNewEditBox(x + 16, y + 32, 40, 20, Component.translatable("gasesandwormholes.editboxtext.x"));
         this.Y1 = createNewEditBox(x + 68, y + 32, 40, 20, Component.translatable("gasesandwormholes.editboxtext.y"));
         this.Z1 = createNewEditBox(x + 120, y + 32, 40, 20, Component.translatable("gasesandwormholes.editboxtext.z"));
         this.X2 = createNewEditBox(x + 16, y + 68, 40, 20, Component.translatable("gasesandwormholes.editboxtext.x"));
         this.Y2 = createNewEditBox(x + 68, y + 68, 40, 20, Component.translatable("gasesandwormholes.editboxtext.y"));
         this.Z2 = createNewEditBox(x + 120, y + 68, 40, 20, Component.translatable("gasesandwormholes.editboxtext.z"));
+        X1.setValue(values[0]);
+        Y1.setValue(values[1]);
+        Z1.setValue(values[2]);
+        X2.setValue(values[3]);
+        Y2.setValue(values[4]);
+        Z2.setValue(values[5]);
+        X1.setHint(Component.literal("X"));
+        Y1.setHint(Component.literal("Y"));
+        Z1.setHint(Component.literal("Z"));
+        X2.setHint(Component.literal("X"));
+        Y2.setHint(Component.literal("Y"));
+        Z2.setHint(Component.literal("Z"));
+
         this.addWidget(this.X1);
         this.addWidget(this.Y1);
         this.addWidget(this.Z1);
@@ -63,16 +76,35 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         this.addWidget(this.Y2);
         this.addWidget(this.Z2);
 
-        super.init();
 
-        for (int i = 0; i <= 50; i++) {
-            System.out.println("It do be running");
-        }
+
+
     }
 
     private EditBox createNewEditBox(int x, int y, int width, int height, Component baseText) {
+        char[] validChars = new char[]{'0','1','2','3','4','5','6','7','8','9'};
         EditBox box = new EditBox(this.font, x, y, width, height, baseText);
         box.setMaxLength(32500);
+        box.setFilter(s -> {
+            if(s.isEmpty()) {
+                return true;
+            }
+
+            char[] chars = s.toCharArray();
+            for(char c : chars) {
+                boolean isValid = false;
+                for(char validChar : validChars) {
+                    if(c == validChar) {
+                        isValid = true;
+                        break;
+                    }
+                }
+                if(!isValid) {
+                    return false;
+                }
+            }
+            return true;
+        });
         return box;
     }
 
@@ -113,12 +145,14 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, delta);
+
         this.X1.render(guiGraphics, mouseX, mouseY, delta);
         this.Y1.render(guiGraphics, mouseX, mouseY, delta);
         this.Z1.render(guiGraphics, mouseX, mouseY, delta);
         this.X2.render(guiGraphics, mouseX, mouseY, delta);
         this.Y2.render(guiGraphics, mouseX, mouseY, delta);
         this.Z2.render(guiGraphics, mouseX, mouseY, delta);
+
         renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
@@ -134,30 +168,62 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+        if(hasFocus()) {
+            if (pKeyCode == 256 || pKeyCode == 257 || pKeyCode == 335) {
+                dropFocus();
+                return false;
+            }
+            return getFocus().keyPressed(pKeyCode, pScanCode, pModifiers);
+        }
+
         if (super.keyPressed(pKeyCode, pScanCode, pModifiers)) {
             return true;
         } else if (pKeyCode != 257 && pKeyCode != 335) {
             return false;
         } else {
-            this.onDone();
             return true;
         }
     }
 
+    private boolean hasFocus() {
+        return X1.isFocused() || Y1.isFocused() || Z1.isFocused() || X2.isFocused() || Y2.isFocused() || Z2.isFocused();
+    }
+
+    private EditBox getFocus() {
+        if(X1.isFocused()) {
+            return X1;
+        } else if(Y1.isFocused()) {
+            return Y1;
+        } else if(Z1.isFocused()) {
+            return Z1;
+        } else if(X2.isFocused()) {
+            return X2;
+        } else if(Y2.isFocused()) {
+            return Y2;
+        } else if(Z2.isFocused()) {
+            return Z2;
+        }
+        return null;
+    }
+
+    private void dropFocus() {
+        X1.setFocused(false);
+        Y1.setFocused(false);
+        Z1.setFocused(false);
+        X2.setFocused(false);
+        Y2.setFocused(false);
+        Z2.setFocused(false);
+    }
+
+
     @Override
-    public void added() {
-        super.added();
-        CompoundTag tag = menu.blockEntity.getScreenData();
-        X1.setValue(tag.getString("X1"));
-        Y1.setValue(tag.getString("Y1"));
-        Z1.setValue(tag.getString("Z1"));
-        X2.setValue(tag.getString("X2"));
-        Y2.setValue(tag.getString("Y2"));
-        Z2.setValue(tag.getString("Z2"));
+    public void removed() {
+        super.removed();
+        menu.blockEntity.updateScreenData(X1.getValue(), Y1.getValue(), Z1.getValue(), X2.getValue(), Y2.getValue(), Z2.getValue());
     }
 
     public void onDone() {
-        menu.blockEntity.updateScreenData(X1.getValue(), Y1.getValue(), Z1.getValue(), X2.getValue(), Y2.getValue(), Z2.getValue());
+
     }
 
     private boolean isMouseAboveArea(int pMouseX, int pMouseY, int x, int y, int offsetX, int offsetY, FluidTankRenderer renderer) {
