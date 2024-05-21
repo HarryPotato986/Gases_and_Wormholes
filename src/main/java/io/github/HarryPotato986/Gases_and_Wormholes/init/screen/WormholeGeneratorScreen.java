@@ -7,6 +7,7 @@ import io.github.HarryPotato986.Gases_and_Wormholes.util.MouseUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -31,6 +32,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     private EditBox X2;
     private EditBox Y2;
     private EditBox Z2;
+    private Button startButton;
 
     public WormholeGeneratorScreen(WormholeGeneratorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -77,7 +79,9 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         this.addWidget(this.Z2);
 
 
-
+        startButton = this.addRenderableWidget(Button.builder(Component.literal("Start"), (B) -> {
+            this.onStart();
+        }).bounds(x, y, 60, 20).build());
 
     }
 
@@ -228,5 +232,12 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
     private boolean isMouseAboveArea(int pMouseX, int pMouseY, int x, int y, int offsetX, int offsetY, FluidTankRenderer renderer) {
         return MouseUtil.isMouseOver(pMouseX, pMouseY, x + offsetX, y + offsetY, renderer.getWidth(), renderer.getHeight());
+    }
+
+
+
+
+    public void onStart() {
+        System.out.println("Button is much work");
     }
 }
