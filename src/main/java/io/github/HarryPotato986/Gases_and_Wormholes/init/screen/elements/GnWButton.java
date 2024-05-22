@@ -1,31 +1,66 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.screen.elements;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
-public class GnWButton extends Button {
+@OnlyIn(Dist.CLIENT)
+public class GnWButton extends AbstractButton {
+    public static final int SMALL_WIDTH = 120;
+    public static final int DEFAULT_WIDTH = 150;
+    public static final int DEFAULT_HEIGHT = 20;
+    protected static final CreateNarration DEFAULT_NARRATION = Supplier::get;
+    protected final OnPress onPress;
+    protected final CreateNarration createNarration;
+
     public ResourceLocation TEXTURE;
-    private int TEXTURE_X = 0;
-    private int TEXTURE_Y = 0;
+    protected int TEXTURE_X = 0;
+    protected int TEXTURE_Y = 0;
+
+    public static GnWBuilder builder(Component pMessage, OnPress pOnPress) {
+        return new GnWBuilder(pMessage, pOnPress);
+    }
 
     protected GnWButton(int pX, int pY, int pWidth, int pHeight, Component pMessage, OnPress pOnPress,
                         CreateNarration pCreateNarration, ResourceLocation texture, int textureX, int textureY) {
-        super(pX, pY, pWidth, pHeight, pMessage, pOnPress, pCreateNarration);
+        super(pX, pY, pWidth, pHeight, pMessage);
+        this.onPress = pOnPress;
+        this.createNarration = pCreateNarration;
         this.TEXTURE = texture;
         this.TEXTURE_X = textureX;
         this.TEXTURE_Y = textureY;
     }
 
-    protected GnWButton(Builder builder) {
-        this()
+    protected GnWButton(GnWBuilder builder) {
+        this(builder.x, builder.y, builder.width, builder.height, builder.message, builder.onPress,
+                builder.createNarration, builder.TEXTURE, builder.TEXTURE_X, builder.TEXTURE_Y);
+    }
+
+    public void onPress() {
+        this.onPress.onPress(this);
+    }
+
+    protected @NotNull MutableComponent createNarrationMessage() {
+        return this.createNarration.createNarrationMessage(super::createNarrationMessage);
+    }
+
+    public void updateWidgetNarration(@NotNull NarrationElementOutput pNarrationElementOutput) {
+        this.defaultButtonNarrationText(pNarrationElementOutput);
     }
 
 
@@ -35,90 +70,114 @@ public class GnWButton extends Button {
         pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        pGuiGraphics.blitNineSliced(WIDGETS_LOCATION, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.getTextureY());
+        pGuiGraphics.blitNineSliced(TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 1, 1, 1,1, 194, 18, TEXTURE_X, this.getTextureY());
         pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = getFGColor();
         this.renderString(pGuiGraphics, minecraft.font, i | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 
-    public static class Builder extends Button.Builder {
+    protected int getTextureY() {
+        int i = TEXTURE_Y;
+        if (!this.active) {
+            i = 2;
+        } else if (this.isHovered()) {
+            i = 1;
+        }
+
+        return i * 18;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static class GnWBuilder {
         private final Component message;
-        private final Button.OnPress onPress;
+        private final OnPress onPress;
         @Nullable
         private Tooltip tooltip;
         private int x;
         private int y;
         private int width = 150;
         private int height = 20;
-        private Button.CreateNarration createNarration = Button.DEFAULT_NARRATION;
+        private CreateNarration createNarration = GnWButton.DEFAULT_NARRATION;
 
-        private ResourceLocation TEXTURE = WIDGETS_LOCATION;
+        private ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/gnw_button.png");
         private int TEXTURE_X = 0;
         private int TEXTURE_Y = 0;
 
-        public Builder(Component pMessage, OnPress pOnPress) {
-            super(pMessage, pOnPress);
+        public GnWBuilder(Component pMessage, OnPress pOnPress) {
+            this.message = pMessage;
+            this.onPress = pOnPress;
         }
 
-        public Button.Builder pos(int pX, int pY) {
+        public GnWBuilder pos(int pX, int pY) {
             this.x = pX;
             this.y = pY;
             return this;
         }
 
-        public Button.Builder width(int pWidth) {
+        public GnWBuilder width(int pWidth) {
             this.width = pWidth;
             return this;
         }
 
-        public Button.Builder size(int pWidth, int pHeight) {
+        public GnWBuilder size(int pWidth, int pHeight) {
             this.width = pWidth;
             this.height = pHeight;
             return this;
         }
 
-        public Button.Builder bounds(int pX, int pY, int pWidth, int pHeight) {
+        public GnWBuilder bounds(int pX, int pY, int pWidth, int pHeight) {
             return this.pos(pX, pY).size(pWidth, pHeight);
         }
 
-        public Button.Builder tooltip(@Nullable Tooltip pTooltip) {
+        public GnWBuilder tooltip(@Nullable Tooltip pTooltip) {
             this.tooltip = pTooltip;
             return this;
         }
 
-        public Button.Builder createNarration(Button.CreateNarration pCreateNarration) {
+        public GnWBuilder createNarration(CreateNarration pCreateNarration) {
             this.createNarration = pCreateNarration;
             return this;
         }
 
 
-        public Builder texture(ResourceLocation texture) {
+        public GnWBuilder texture(ResourceLocation texture) {
             this.TEXTURE = texture;
             return this;
         }
 
-        public Builder textureX(int x) {
+        public GnWBuilder textureX(int x) {
             this.TEXTURE_X = x;
             return this;
         }
 
-        public Builder textureY(int y) {
+        public GnWBuilder textureY(int y) {
             this.TEXTURE_Y = y;
             return this;
         }
 
-        public Builder texturePos(int x, int y) {
+        public GnWBuilder texturePos(int x, int y) {
             this.TEXTURE_X = x;
             this.TEXTURE_Y = y;
             return this;
         }
 
-        public Button build() {
+        public GnWButton build() {
             return build(GnWButton::new);
         }
 
-        public Button build(java.util.function.Function<Button.Builder, Button> builder) {
+        public GnWButton build(java.util.function.Function<GnWBuilder, GnWButton> builder) {
             return builder.apply(this);
         }
     }
+
+    @OnlyIn(Dist.CLIENT)
+    public interface CreateNarration {
+        MutableComponent createNarrationMessage(Supplier<MutableComponent> pMessageSupplier);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public interface OnPress {
+        void onPress(GnWButton pButton);
+    }
 }
+

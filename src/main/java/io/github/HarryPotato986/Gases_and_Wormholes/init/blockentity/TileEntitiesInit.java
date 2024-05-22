@@ -22,7 +22,7 @@ public class TileEntitiesInit {
     /*
     public static final RegistryObject<BlockEntityType<AtmosphereExtractorEntity>> ATMOSPHERE_EXTRACTOR_ENTITY =
             BLOCK_ENTITIES.register("atmosphere_extractor_entity", () ->
-                BlockEntityType.Builder.of(AtmosphereExtractorEntity::new,
+                BlockEntityType.GnWBuilder.of(AtmosphereExtractorEntity::new,
                         BlockInit.ATMOSPHERE_EXTRACTOR.get()).build(null));
      */
 

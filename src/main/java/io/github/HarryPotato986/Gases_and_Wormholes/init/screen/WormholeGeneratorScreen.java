@@ -2,6 +2,7 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.elements.GnWButton;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.renderer.FluidTankRenderer;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.MouseUtil;
 import net.minecraft.client.Minecraft;
@@ -32,7 +33,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     private EditBox X2;
     private EditBox Y2;
     private EditBox Z2;
-    private Button startButton;
+    private GnWButton startButton;
 
     public WormholeGeneratorScreen(WormholeGeneratorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -79,8 +80,9 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         this.addWidget(this.Z2);
 
 
-        startButton = this.addRenderableWidget(Button.builder(Component.literal("Start"), (B) -> {
+        startButton = this.addRenderableWidget(new GnWButton.GnWBuilder(Component.literal("Start"), (B) -> {
             this.onStart();
+            startButton.setFocused(false);
         }).bounds(x, y, 60, 20).build());
 
     }
