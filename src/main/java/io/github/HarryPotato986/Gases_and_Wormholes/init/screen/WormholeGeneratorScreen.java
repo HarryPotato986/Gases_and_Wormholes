@@ -80,7 +80,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         this.addWidget(this.Z2);
 
 
-        startButton = this.addRenderableWidget(new GnWButton.GnWBuilder(Component.literal("Start"), (B) -> {
+        startButton = this.addRenderableWidget(GnWButton.GnWBuilder(Component.literal("Start"), (B) -> {
             this.onStart();
             startButton.setFocused(false);
         }).bounds(x, y, 60, 20).build());

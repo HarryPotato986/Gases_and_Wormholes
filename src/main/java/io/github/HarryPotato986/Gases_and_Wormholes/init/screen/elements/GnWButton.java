@@ -5,7 +5,6 @@ import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -32,7 +31,7 @@ public class GnWButton extends AbstractButton {
     protected int TEXTURE_X = 0;
     protected int TEXTURE_Y = 0;
 
-    public static GnWBuilder builder(Component pMessage, OnPress pOnPress) {
+    public static GnWBuilder GnWBuilder(Component pMessage, OnPress pOnPress) {
         return new GnWBuilder(pMessage, pOnPress);
     }
 
@@ -89,19 +88,19 @@ public class GnWButton extends AbstractButton {
 
     @OnlyIn(Dist.CLIENT)
     public static class GnWBuilder {
-        private final Component message;
-        private final OnPress onPress;
+        protected final Component message;
+        protected final OnPress onPress;
         @Nullable
-        private Tooltip tooltip;
-        private int x;
-        private int y;
-        private int width = 150;
-        private int height = 20;
-        private CreateNarration createNarration = GnWButton.DEFAULT_NARRATION;
+        protected Tooltip tooltip;
+        protected int x;
+        protected int y;
+        protected int width = 150;
+        protected int height = 20;
+        protected CreateNarration createNarration = GnWButton.DEFAULT_NARRATION;
 
-        private ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/gnw_button.png");
-        private int TEXTURE_X = 0;
-        private int TEXTURE_Y = 0;
+        protected ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/gnw_button.png");
+        protected int TEXTURE_X = 0;
+        protected int TEXTURE_Y = 0;
 
         public GnWBuilder(Component pMessage, OnPress pOnPress) {
             this.message = pMessage;
