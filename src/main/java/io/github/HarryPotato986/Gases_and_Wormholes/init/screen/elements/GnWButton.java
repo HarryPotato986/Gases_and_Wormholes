@@ -3,6 +3,7 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.screen.elements;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -86,6 +87,13 @@ public class GnWButton extends AbstractButton {
 
         return i * 18;
     }
+
+    public void renderHint(GuiGraphics pGuiGraphics, Font font, int pMouseX, int pMouseY, String hint) {
+        if(isHovered()) {
+            pGuiGraphics.renderTooltip(font, Component.literal(hint), pMouseX, pMouseY);
+        }
+    }
+
 
     @OnlyIn(Dist.CLIENT)
     public static class GnWBuilder {

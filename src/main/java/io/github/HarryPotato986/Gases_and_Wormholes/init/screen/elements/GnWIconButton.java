@@ -63,7 +63,7 @@ public class GnWIconButton extends GnWButton{
 
     }
 
-    private int findCenter(int x, int button, int icon) {
+    protected int findCenter(int x, int button, int icon) {
         return x + (button / 2) - (icon / 2);
     }
 

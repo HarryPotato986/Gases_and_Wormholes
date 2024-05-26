@@ -1,7 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractor;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ItemInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.WormholeGeneratorMenu;
@@ -80,6 +79,9 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
     public String X2 = "";
     public String Y2 = "";
     public String Z2 = "";
+    public int Wormhole1Facing = 0;
+    public int Wormhole2Facing = 0;
+    public int WormholeSize = 0;
 
 
 
@@ -305,6 +307,10 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
         pTag.putString("y2", Y2);
         pTag.putString("z2", Z2);
 
+        pTag.putInt("wormhole_facing_1", Wormhole1Facing);
+        pTag.putInt("wormhole_facing_2", Wormhole2Facing);
+        pTag.putInt("wormhole_size", WormholeSize);
+
         super.write(pTag, clientPacket);
     }
 
@@ -321,6 +327,10 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
         X2 = pTag.getString("x2");
         Y2 = pTag.getString("y2");
         Z2 = pTag.getString("z2");
+
+        Wormhole1Facing = pTag.getInt("wormhole_facing_1");
+        Wormhole2Facing = pTag.getInt("wormhole_facing_2");
+        WormholeSize = pTag.getInt("wormhole_size");
     }
 
     @Override
@@ -328,7 +338,7 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
         super.onDataPacket(connection, packet);
     }
 
-    public void updateScreenData(String x1, String y1, String z1, String x2, String y2, String z2) {
+    public void updateScreenData(String x1, String y1, String z1, String x2, String y2, String z2, int facing1Index, int facing2Index, int sizeIndex) {
         System.out.println("yerp");
         System.out.println(x1);
         X1 = x1;
@@ -337,10 +347,17 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
         X2 = x2;
         Y2 = y2;
         Z2 = z2;
+        Wormhole1Facing = facing1Index;
+        Wormhole2Facing = facing2Index;
+        WormholeSize = sizeIndex;
     }
 
-    public String[] getScreenData() {
+    public String[] getEditBoxData() {
         return new String[]{X1,Y1,Z1,X2,Y2,Z2};
+    }
+
+    public int[] getButtonData() {
+        return new int[]{Wormhole1Facing, Wormhole2Facing, WormholeSize};
     }
 
 }

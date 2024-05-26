@@ -2,18 +2,14 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.elements.GnWButton;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.elements.GnWIconButton;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.elements.*;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.renderer.FluidTankRenderer;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.MouseUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,7 +17,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGeneratorMenu> {
@@ -35,7 +30,9 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     private EditBox Y2;
     private EditBox Z2;
     private GnWButton startButton;
-    private GnWIconButton portalSizeButton;
+    private GnWMultiStateIconButton<WormholeSizeButtonStates> wormholeSizeButton;
+    private GnWMultiStateButton<HorizontalFacingButtonStates> wormhole1FacingButton;
+    private GnWMultiStateButton<HorizontalFacingButtonStates> wormhole2FacingButton;
 
     public WormholeGeneratorScreen(WormholeGeneratorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -43,6 +40,8 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
     @Override
     public void init() {
+        this.imageWidth = 240;
+        this.imageHeight = 176;
         super.init();
 
         this.inventoryLabelY = 10000;
@@ -53,14 +52,14 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        String[] values = menu.blockEntity.getScreenData();
+        String[] values = menu.blockEntity.getEditBoxData();
 
-        this.X1 = createNewEditBox(x + 16, y + 32, 40, 19, Component.translatable("gasesandwormholes.editboxtext.x"));
-        this.Y1 = createNewEditBox(x + 68, y + 32, 40, 19, Component.translatable("gasesandwormholes.editboxtext.y"));
-        this.Z1 = createNewEditBox(x + 120, y + 32, 40, 19, Component.translatable("gasesandwormholes.editboxtext.z"));
-        this.X2 = createNewEditBox(x + 16, y + 68, 40, 19, Component.translatable("gasesandwormholes.editboxtext.x"));
-        this.Y2 = createNewEditBox(x + 68, y + 68, 40, 19, Component.translatable("gasesandwormholes.editboxtext.y"));
-        this.Z2 = createNewEditBox(x + 120, y + 68, 40, 19, Component.translatable("gasesandwormholes.editboxtext.z"));
+        this.X1 = createNewEditBox(x + 62, y + 18, 40, 19, Component.translatable("gasesandwormholes.editboxtext.x"));
+        this.Y1 = createNewEditBox(x + 109, y + 18, 40, 19, Component.translatable("gasesandwormholes.editboxtext.y"));
+        this.Z1 = createNewEditBox(x + 156, y + 18, 40, 19, Component.translatable("gasesandwormholes.editboxtext.z"));
+        this.X2 = createNewEditBox(x + 62, y + 54, 40, 19, Component.translatable("gasesandwormholes.editboxtext.x"));
+        this.Y2 = createNewEditBox(x + 109, y + 54, 40, 19, Component.translatable("gasesandwormholes.editboxtext.y"));
+        this.Z2 = createNewEditBox(x + 156, y + 54, 40, 19, Component.translatable("gasesandwormholes.editboxtext.z"));
         X1.setValue(values[0]);
         Y1.setValue(values[1]);
         Z1.setValue(values[2]);
@@ -82,14 +81,26 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         this.addWidget(this.Z2);
 
 
+        int[] buttonValues = menu.blockEntity.getButtonData();
+        HorizontalFacingButtonStates facing1 = HorizontalFacingButtonStates.NORTH.getEnum(buttonValues[0]);
+        HorizontalFacingButtonStates facing2 = HorizontalFacingButtonStates.NORTH.getEnum(buttonValues[1]);
+        WormholeSizeButtonStates size = WormholeSizeButtonStates.ONE.getEnum(buttonValues[2]);
+
         startButton = this.addRenderableWidget(GnWButton.GnWBuilder(Component.literal("Start"), (B) -> {
             this.onStart();
-            startButton.setFocused(false);
-        }).bounds(x, y, 60, 19).build());
+        }).bounds(x + 62, y + 82, 134, 19).build());
 
-        portalSizeButton = this.addRenderableWidget(GnWIconButton.GnWIconBuilder((B) -> {
+        wormholeSizeButton = this.addRenderableWidget(GnWMultiStateIconButton.GnWMultiStateBuilder(size, (B) -> {
 
-        }).pos(x + 153, y + 82).iconDimensions(194, 0, 15, 15).build());
+        }).pos(x + 203, y + 82).iconDimensions(194, 15, 15).build());
+
+        wormhole1FacingButton = this.addRenderableWidget(GnWMultiStateButton.GnWMultiStateBuilder(facing1, (B) -> {
+
+        }).bounds(x + 203, y + 18, 19, 19).build());
+
+        wormhole2FacingButton = this.addRenderableWidget(GnWMultiStateButton.GnWMultiStateBuilder(facing2, (B) -> {
+
+        }).bounds(x + 203, y + 54, 19, 19).build());
 
     }
 
@@ -129,7 +140,9 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        renderFluidTooltipArea(pGuiGraphics, pMouseX, pMouseY, x, y, menu.blockEntity.getFluid(), 26, 11, fluidRenderer);
+        renderFluidTooltipArea(pGuiGraphics, pMouseX, pMouseY, x, y, menu.blockEntity.getFluid(), 11, 26, fluidRenderer);
+        this.wormholeSizeButton.renderInfo(pGuiGraphics, this.font, pMouseX - x, pMouseY - y, "Size: ");
+        this.wormhole1FacingButton.renderHint(pGuiGraphics, this.font, pMouseX - x, pMouseY - y, "Facing");
     }
 
     private void renderFluidTooltipArea(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, int x, int y,
@@ -150,7 +163,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
         guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 
-        fluidRenderer.render(guiGraphics, x + 134, y + 11, menu.blockEntity.getFluid());
+        fluidRenderer.render(guiGraphics, x + 10, y + 25, menu.blockEntity.getFluid());
     }
 
     @Override
@@ -231,7 +244,11 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     @Override
     public void removed() {
         super.removed();
-        menu.blockEntity.updateScreenData(X1.getValue(), Y1.getValue(), Z1.getValue(), X2.getValue(), Y2.getValue(), Z2.getValue());
+        HorizontalFacingButtonStates facing1 = wormhole1FacingButton.getState();
+        HorizontalFacingButtonStates facing2 = wormhole2FacingButton.getState();
+        WormholeSizeButtonStates size = wormholeSizeButton.getState();
+        menu.blockEntity.updateScreenData(X1.getValue(), Y1.getValue(), Z1.getValue(), X2.getValue(), Y2.getValue(), Z2.getValue(),
+                facing1.getIndex(facing1), facing2.getIndex(facing2), size.getIndex(size));
     }
 
     public void onDone() {

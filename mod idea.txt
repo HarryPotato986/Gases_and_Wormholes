@@ -29,7 +29,7 @@ liquid nitrogen for recipes:
 
 
 TODO List:
-Make multistate button and multistate icon button.
+render bar for bedrock dust usage
 keep working on wormhole generator screen
 
 try to fix linkedBlockEntity tick method
