@@ -3,6 +3,7 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.elements.GnWButton;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.elements.GnWIconButton;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.renderer.FluidTankRenderer;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.MouseUtil;
 import net.minecraft.client.Minecraft;
@@ -34,6 +35,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     private EditBox Y2;
     private EditBox Z2;
     private GnWButton startButton;
+    private GnWIconButton portalSizeButton;
 
     public WormholeGeneratorScreen(WormholeGeneratorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -53,12 +55,12 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
         String[] values = menu.blockEntity.getScreenData();
 
-        this.X1 = createNewEditBox(x + 16, y + 32, 40, 20, Component.translatable("gasesandwormholes.editboxtext.x"));
-        this.Y1 = createNewEditBox(x + 68, y + 32, 40, 20, Component.translatable("gasesandwormholes.editboxtext.y"));
-        this.Z1 = createNewEditBox(x + 120, y + 32, 40, 20, Component.translatable("gasesandwormholes.editboxtext.z"));
-        this.X2 = createNewEditBox(x + 16, y + 68, 40, 20, Component.translatable("gasesandwormholes.editboxtext.x"));
-        this.Y2 = createNewEditBox(x + 68, y + 68, 40, 20, Component.translatable("gasesandwormholes.editboxtext.y"));
-        this.Z2 = createNewEditBox(x + 120, y + 68, 40, 20, Component.translatable("gasesandwormholes.editboxtext.z"));
+        this.X1 = createNewEditBox(x + 16, y + 32, 40, 19, Component.translatable("gasesandwormholes.editboxtext.x"));
+        this.Y1 = createNewEditBox(x + 68, y + 32, 40, 19, Component.translatable("gasesandwormholes.editboxtext.y"));
+        this.Z1 = createNewEditBox(x + 120, y + 32, 40, 19, Component.translatable("gasesandwormholes.editboxtext.z"));
+        this.X2 = createNewEditBox(x + 16, y + 68, 40, 19, Component.translatable("gasesandwormholes.editboxtext.x"));
+        this.Y2 = createNewEditBox(x + 68, y + 68, 40, 19, Component.translatable("gasesandwormholes.editboxtext.y"));
+        this.Z2 = createNewEditBox(x + 120, y + 68, 40, 19, Component.translatable("gasesandwormholes.editboxtext.z"));
         X1.setValue(values[0]);
         Y1.setValue(values[1]);
         Z1.setValue(values[2]);
@@ -83,7 +85,11 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         startButton = this.addRenderableWidget(GnWButton.GnWBuilder(Component.literal("Start"), (B) -> {
             this.onStart();
             startButton.setFocused(false);
-        }).bounds(x, y, 60, 20).build());
+        }).bounds(x, y, 60, 19).build());
+
+        portalSizeButton = this.addRenderableWidget(GnWIconButton.GnWIconBuilder((B) -> {
+
+        }).pos(x + 153, y + 82).iconDimensions(194, 0, 15, 15).build());
 
     }
 

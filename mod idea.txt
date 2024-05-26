@@ -29,7 +29,7 @@ liquid nitrogen for recipes:
 
 
 TODO List:
-keep working on icon button. Make multistate button and multistate icon button.
+Make multistate button and multistate icon button.
 keep working on wormhole generator screen
 
 try to fix linkedBlockEntity tick method

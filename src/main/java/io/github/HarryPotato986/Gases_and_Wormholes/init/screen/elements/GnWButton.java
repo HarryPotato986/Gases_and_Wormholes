@@ -16,6 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
@@ -164,7 +165,7 @@ public class GnWButton extends AbstractButton {
             return build(GnWButton::new);
         }
 
-        public GnWButton build(java.util.function.Function<GnWBuilder, GnWButton> builder) {
+        public GnWButton build(Function<GnWBuilder, GnWButton> builder) {
             return builder.apply(this);
         }
     }
