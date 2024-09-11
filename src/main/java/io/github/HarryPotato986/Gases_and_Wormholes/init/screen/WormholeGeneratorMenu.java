@@ -110,4 +110,11 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
             }
         }
     }
+
+    public float getScaledProgress() {
+        int progress = this.data.get(0);
+        int maxProgress = this.data.get(1);  // Max Progress
+
+        return maxProgress != 0 && progress != 0 ? ((float) progress / (float) (maxProgress + 1)) : 0;
+    }
 }

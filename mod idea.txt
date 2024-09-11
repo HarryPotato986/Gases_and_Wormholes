@@ -32,6 +32,11 @@ TODO List:
 wormhole generator:
     render bar for bedrock dust usage
     add fluid, item and power input
+        rewrite blocks so they each have block entities.
+        Make core block take lazyfluidhandler from fluidhandler block. Same for lazyitemhandler.
+        Look at FluidTankBlockEntity and IMultiBlockEntityContainer for inspiration.
+        make core take speed data from kineticHandler block.
+
     keep working on screen
 
 try to fix linkedBlockEntity tick method (maybe full rewrite 😭)
