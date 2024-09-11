@@ -163,7 +163,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
         guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 
-        fluidRenderer.render(guiGraphics, x + 10, y + 25, menu.blockEntity.getFluid());
+        fluidRenderer.render(guiGraphics, x + 11, y + 26, menu.blockEntity.getFluid());
     }
 
     @Override

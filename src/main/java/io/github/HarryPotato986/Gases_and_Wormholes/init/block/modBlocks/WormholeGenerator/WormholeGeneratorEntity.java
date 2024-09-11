@@ -162,6 +162,16 @@ public class WormholeGeneratorEntity extends KineticBlockEntity implements MenuP
     public void tick(Level level, BlockPos pPos, BlockState pState) {
         super.tick();
         fillUpOnFluid();
+        fillUpOnDust();
+    }
+
+    private void fillUpOnDust() {
+        if(this.progress < 1) {
+            if(!this.itemHandler.getStackInSlot(BEDROCK_DUST_INPUT).isEmpty()) {
+                this.itemHandler.extractItem(BEDROCK_DUST_INPUT, 1, false);
+                this.progress = this.maxProgress;
+            }
+        }
     }
 
     private void fillUpOnFluid() {

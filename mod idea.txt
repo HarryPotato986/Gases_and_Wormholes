@@ -29,10 +29,12 @@ liquid nitrogen for recipes:
 
 
 TODO List:
-render bar for bedrock dust usage
-keep working on wormhole generator screen
+wormhole generator:
+    render bar for bedrock dust usage
+    add fluid, item and power input
+    keep working on screen
 
-try to fix linkedBlockEntity tick method
+try to fix linkedBlockEntity tick method (maybe full rewrite 😭)
 
 
 DO LATER List:
