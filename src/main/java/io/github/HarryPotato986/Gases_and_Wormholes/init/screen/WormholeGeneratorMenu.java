@@ -1,7 +1,7 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.screen;
 
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorEntity;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorCoreEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -11,10 +11,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
-import org.jetbrains.annotations.Nullable;
 
 public class WormholeGeneratorMenu extends AbstractContainerMenu {
-    public final WormholeGeneratorEntity blockEntity;
+    public final WormholeGeneratorCoreEntity blockEntity;
     private final Level level;
     private final ContainerData data;
 
@@ -25,7 +24,7 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
     public WormholeGeneratorMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
         super(MenuTypesInit.WORMHOLE_GENERATOR_MENU.get(), pContainerId);
         checkContainerSize(inv, 2);
-        blockEntity = ((WormholeGeneratorEntity) entity);
+        blockEntity = ((WormholeGeneratorCoreEntity) entity);
         this.level = inv.player.level();
         this.data = data;
 

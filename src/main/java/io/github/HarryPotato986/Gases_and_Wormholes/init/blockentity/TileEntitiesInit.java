@@ -6,10 +6,7 @@ import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorEntity;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorInstance;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorRenderer;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlockEntity;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlockInstance;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlockRenderer;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorEntity;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.*;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -40,8 +37,23 @@ public class TileEntitiesInit {
             .renderer(() -> LinkedBlockRenderer::new)
             .register();
 
-    public static final BlockEntityEntry<WormholeGeneratorEntity> WORMHOLE_GENERATOR_ENTITY = REGISTRATE
-            .blockEntity("wormhole_generator_entity", WormholeGeneratorEntity::new)
+    public static final BlockEntityEntry<WormholeGeneratorCoreEntity> WORMHOLE_GENERATOR_CORE_ENTITY = REGISTRATE
+            .blockEntity("wormhole_generator_core_entity", WormholeGeneratorCoreEntity::new)
+            .validBlocks(BlockInit.WORMHOLE_GENERATOR)
+            .register();
+
+    public static final BlockEntityEntry<WormholeGeneratorFluidEntity> WORMHOLE_GENERATOR_FLUID_ENTITY = REGISTRATE
+            .blockEntity("wormhole_generator_fluid_entity", WormholeGeneratorFluidEntity::new)
+            .validBlocks(BlockInit.WORMHOLE_GENERATOR)
+            .register();
+
+    public static final BlockEntityEntry<WormholeGeneratorItemEntity> WORMHOLE_GENERATOR_ITEM_ENTITY = REGISTRATE
+            .blockEntity("wormhole_generator_item_entity", WormholeGeneratorItemEntity::new)
+            .validBlocks(BlockInit.WORMHOLE_GENERATOR)
+            .register();
+
+    public static final BlockEntityEntry<WormholeGeneratorKineticEntity> WORMHOLE_GENERATOR_KINETIC_ENTITY = REGISTRATE
+            .blockEntity("wormhole_generator_kinetic_entity", WormholeGeneratorKineticEntity::new)
             .validBlocks(BlockInit.WORMHOLE_GENERATOR)
             .register();
 }

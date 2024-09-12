@@ -32,7 +32,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class WormholeGenerator extends HorizontalKineticBlock implements IBE<WormholeGeneratorEntity> {
+public class WormholeGenerator extends HorizontalKineticBlock implements IBE<WormholeGeneratorCoreEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final EnumProperty<WormholeGeneratorBlockTypes> BLOCK_FUNCTION = EnumProperty.create("block_function", WormholeGeneratorBlockTypes.class);
     public static final BooleanProperty FIRST_PLACED = BooleanProperty.create("first_placed");
@@ -216,8 +216,8 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof WormholeGeneratorEntity) {
-                ((WormholeGeneratorEntity) blockEntity).drops();
+            if (blockEntity instanceof WormholeGeneratorCoreEntity) {
+                ((WormholeGeneratorCoreEntity) blockEntity).drops();
             }
         }
 
@@ -252,8 +252,8 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if(!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(findMasterPos(pLevel, pPos));
-            if(entity instanceof WormholeGeneratorEntity) {
-                NetworkHooks.openScreen((ServerPlayer) pPlayer, (WormholeGeneratorEntity) entity, findMasterPos(pLevel, pPos));
+            if(entity instanceof WormholeGeneratorCoreEntity) {
+                NetworkHooks.openScreen((ServerPlayer) pPlayer, (WormholeGeneratorCoreEntity) entity, findMasterPos(pLevel, pPos));
             } else {
                 throw new IllegalStateException("Our Container provider is missing");
             }
@@ -273,20 +273,22 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
 
     @Nullable
     @Override
-    public WormholeGeneratorEntity getBlockEntity(BlockGetter worldIn, BlockPos pos) {
-        return IBE.super.getBlockEntity(worldIn, findMasterPos(worldIn.getBlockEntity(pos).getLevel(), pos));
+    public WormholeGeneratorCoreEntity getBlockEntity(BlockGetter worldIn, BlockPos pos) {
+        WormholeGeneratorBlockTypes function = worldIn.getBlockState(pos).getValue(BLOCK_FUNCTION);
+        return function != WormholeGeneratorBlockTypes.HELPER ? IBE.super.getBlockEntity(worldIn, pos) : null;
     }
 
     @Override
     @Nullable
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         WormholeGeneratorBlockTypes function = state.getValue(BLOCK_FUNCTION);
-        if(function == WormholeGeneratorBlockTypes.CORE) {
-            return new WormholeGeneratorEntity(TileEntitiesInit.WORMHOLE_GENERATOR_ENTITY.get(), pos, state);
-        } else {
-            return null;
-        }
-
+        return switch (function) {
+            case CORE -> new WormholeGeneratorCoreEntity(TileEntitiesInit.WORMHOLE_GENERATOR_CORE_ENTITY.get(), pos, state);
+            case FLUID_INPUT -> new WormholeGeneratorCoreEntity(TileEntitiesInit.WORMHOLE_GENERATOR_FLUID_ENTITY.get(), pos, state);
+            case ITEM_INPUT -> new WormholeGeneratorCoreEntity(TileEntitiesInit.WORMHOLE_GENERATOR_ITEM_ENTITY.get(), pos, state);
+            case KINETIC_INPUT -> new WormholeGeneratorCoreEntity(TileEntitiesInit.WORMHOLE_GENERATOR_KINETIC_ENTITY.get(), pos, state);
+            default -> null;
+        };
     }
 
 
@@ -296,8 +298,8 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
     }
 
     @Override
-    public BlockEntityType<? extends WormholeGeneratorEntity> getBlockEntityType() {
-        return TileEntitiesInit.WORMHOLE_GENERATOR_ENTITY.get();
+    public BlockEntityType<? extends WormholeGeneratorCoreEntity> getBlockEntityType() {
+        return TileEntitiesInit.WORMHOLE_GENERATOR_CORE_ENTITY.get();
     }
 
     @Override
@@ -306,7 +308,7 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
             return null;
         }
 
-        return createTickerHelper(pBlockEntityType, TileEntitiesInit.WORMHOLE_GENERATOR_ENTITY.get(),
+        return createTickerHelper(pBlockEntityType, TileEntitiesInit.WORMHOLE_GENERATOR_CORE_ENTITY.get(),
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, findMasterPos(pLevel1, pPos), pState1));
     }
 
