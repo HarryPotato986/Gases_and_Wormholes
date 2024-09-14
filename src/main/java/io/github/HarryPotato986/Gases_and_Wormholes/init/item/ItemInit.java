@@ -26,7 +26,7 @@ public class ItemInit {
             () -> new BlockItem(BlockInit.ATMOSPHERE_EXTRACTOR.get(), new Item.Properties()));
 
     public static final RegistryObject<BlockItem> WORMHOLE_GENERATOR_ITEM = ITEMS.register("wormhole_generator_item",
-            () -> new  WormholeGeneratorBlockItem(BlockInit.WORMHOLE_GENERATOR.get(), new Item.Properties()));
+            () -> new  WormholeGeneratorBlockItem(BlockInit.WORMHOLE_GENERATOR_HELPER.get(), new Item.Properties()));
 
 
 

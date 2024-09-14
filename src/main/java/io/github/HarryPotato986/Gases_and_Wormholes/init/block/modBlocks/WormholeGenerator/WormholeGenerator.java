@@ -32,6 +32,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
+/*
 public class WormholeGenerator extends HorizontalKineticBlock implements IBE<WormholeGeneratorCoreEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final EnumProperty<WormholeGeneratorBlockTypes> BLOCK_FUNCTION = EnumProperty.create("block_function", WormholeGeneratorBlockTypes.class);
@@ -293,8 +294,8 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
 
 
     @Override
-    public Class<WormholeGeneratorEntity> getBlockEntityClass() {
-        return WormholeGeneratorEntity.class;
+    public Class<WormholeGeneratorCoreEntity> getBlockEntityClass() {
+        return WormholeGeneratorCoreEntity.class;
     }
 
     @Override
@@ -312,7 +313,7 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, findMasterPos(pLevel1, pPos), pState1));
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> pServerType, BlockEntityType<E> pClientType, BlockEntityTicker<? super E> pTicker) {
         return pClientType == pServerType ? (BlockEntityTicker<A>)pTicker : null;
     }
@@ -324,4 +325,7 @@ public class WormholeGenerator extends HorizontalKineticBlock implements IBE<Wor
         pBuilder.add(FIRST_PLACED);
     }
 }
+
+
+ */
 

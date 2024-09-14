@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGenerator.FACING;
+import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorFluid.FACING;
 
 public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements MenuProvider {
     private final ItemStackHandler itemHandler = new ItemStackHandler(2) {
@@ -70,7 +70,7 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
     private boolean ACQUIRED_FLUID = false;
     private boolean DISTRIBUTED_FLUID = false;
 
-    private final FluidTank LIQUID_NITROGEN_TANK = createFluidTank(10000);
+    public final FluidTank LIQUID_NITROGEN_TANK = createFluidTank(10000);
 
 
     public String X1 = "";
@@ -225,17 +225,19 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            Direction localDir = this.getBlockState().getValue(WormholeGenerator.FACING);
-            LazyOptional<T> handler = switch (localDir) {
-                case NORTH -> returnCorrectTank(side.getOpposite());
-                case EAST -> returnCorrectTank(side.getClockWise());
-                case SOUTH -> returnCorrectTank(side);
-                case WEST -> returnCorrectTank(side.getCounterClockWise());
-                default -> null;
-            };
+            if (side != null) {
+                Direction localDir = this.getBlockState().getValue(FACING);
+                LazyOptional<T> handler = switch (localDir) {
+                    case NORTH -> returnCorrectTank(side.getOpposite());
+                    case EAST -> returnCorrectTank(side.getClockWise());
+                    case SOUTH -> returnCorrectTank(side);
+                    case WEST -> returnCorrectTank(side.getCounterClockWise());
+                    default -> null;
+                };
 
-            if(handler != null) {
-                return handler;
+                if(handler != null) {
+                    return handler;
+                }
             }
         }
 

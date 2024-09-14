@@ -39,10 +39,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGenerator.FACING;
+import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorItem.FACING;
 
 public class WormholeGeneratorItemEntity extends KineticBlockEntity implements MenuProvider {
-    private final ItemStackHandler itemHandler = new ItemStackHandler(2) {
+    public final ItemStackHandler itemHandler = new ItemStackHandler(2) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
@@ -225,17 +225,19 @@ public class WormholeGeneratorItemEntity extends KineticBlockEntity implements M
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            Direction localDir = this.getBlockState().getValue(WormholeGenerator.FACING);
-            LazyOptional<T> handler = switch (localDir) {
-                case NORTH -> returnCorrectTank(side.getOpposite());
-                case EAST -> returnCorrectTank(side.getClockWise());
-                case SOUTH -> returnCorrectTank(side);
-                case WEST -> returnCorrectTank(side.getCounterClockWise());
-                default -> null;
-            };
+            if (side != null) {
+                Direction localDir = this.getBlockState().getValue(FACING);
+                LazyOptional<T> handler = switch (localDir) {
+                    case NORTH -> returnCorrectTank(side.getOpposite());
+                    case EAST -> returnCorrectTank(side.getClockWise());
+                    case SOUTH -> returnCorrectTank(side);
+                    case WEST -> returnCorrectTank(side.getCounterClockWise());
+                    default -> null;
+                };
 
-            if(handler != null) {
-                return handler;
+                if(handler != null) {
+                    return handler;
+                }
             }
         }
 

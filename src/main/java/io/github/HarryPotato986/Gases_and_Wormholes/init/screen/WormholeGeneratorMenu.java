@@ -91,7 +91,7 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player pPlayer) {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer, BlockInit.WORMHOLE_GENERATOR.get());
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer, BlockInit.WORMHOLE_GENERATOR_CORE.get());
     }
 
     private void addPlayerInventory(Inventory playerInventory) {

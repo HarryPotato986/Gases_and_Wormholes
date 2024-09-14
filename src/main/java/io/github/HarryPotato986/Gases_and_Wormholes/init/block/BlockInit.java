@@ -6,8 +6,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.CreativeTabInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractor;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlock;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGenerator;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.*;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.GnWSharedProperties;
 import net.minecraft.core.BlockPos;
@@ -75,7 +74,49 @@ public class BlockInit {
             .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
             .register();
 
+    /*
     public static final BlockEntry<WormholeGenerator> WORMHOLE_GENERATOR = REGISTRATE.block("wormhole_generator", WormholeGenerator::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
+            .properties(p -> p.noOcclusion())
+            .properties(p -> p.isViewBlocking(BlockInit::never))
+            .transform(pickaxeOnly())
+            .register();
+     */
+
+    public static final BlockEntry<WormholeGeneratorKinetic> WORMHOLE_GENERATOR_KINETIC = REGISTRATE.block("wormhole_generator_kinetic", WormholeGeneratorKinetic::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
+            .properties(p -> p.noOcclusion())
+            .properties(p -> p.isViewBlocking(BlockInit::never))
+            .transform(pickaxeOnly())
+            .register();
+
+    public static final BlockEntry<WormholeGeneratorFluid> WORMHOLE_GENERATOR_FLUID = REGISTRATE.block("wormhole_generator_fluid", WormholeGeneratorFluid::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
+            .properties(p -> p.noOcclusion())
+            .properties(p -> p.isViewBlocking(BlockInit::never))
+            .transform(pickaxeOnly())
+            .register();
+
+    public static final BlockEntry<WormholeGeneratorItem> WORMHOLE_GENERATOR_ITEM = REGISTRATE.block("wormhole_generator_item", WormholeGeneratorItem::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
+            .properties(p -> p.noOcclusion())
+            .properties(p -> p.isViewBlocking(BlockInit::never))
+            .transform(pickaxeOnly())
+            .register();
+
+    public static final BlockEntry<WormholeGeneratorCore> WORMHOLE_GENERATOR_CORE = REGISTRATE.block("wormhole_generator_core", WormholeGeneratorCore::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
+            .properties(p -> p.noOcclusion())
+            .properties(p -> p.isViewBlocking(BlockInit::never))
+            .transform(pickaxeOnly())
+            .register();
+
+    public static final BlockEntry<WormholeGeneratorHelper> WORMHOLE_GENERATOR_HELPER = REGISTRATE.block("wormhole_generator_helper", WormholeGeneratorHelper::new)
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
             .properties(p -> p.noOcclusion())
