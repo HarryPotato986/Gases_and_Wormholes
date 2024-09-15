@@ -41,7 +41,8 @@ import java.util.Map;
 
 import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorKinetic.FACING;
 
-public class WormholeGeneratorKineticEntity extends KineticBlockEntity implements MenuProvider {
+public class WormholeGeneratorKineticEntity extends KineticBlockEntity {
+    /*
     private final ItemStackHandler itemHandler = new ItemStackHandler(2) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -129,10 +130,11 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity implement
                 }
             }
         }
-    }
+    }*/
 
     public WormholeGeneratorKineticEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
+        /*
         this.data = new ContainerData() {
             @Override
             public int get(int pIndex) {
@@ -155,16 +157,17 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity implement
             public int getCount() {
                 return 2;
             }
-        };
+        };*/
     }
 
 
     public void tick(Level level, BlockPos pPos, BlockState pState) {
         super.tick();
-        fillUpOnFluid();
-        fillUpOnDust();
+        //fillUpOnFluid();
+        //fillUpOnDust();
     }
 
+    /*
     private void fillUpOnDust() {
         if(this.progress < 1) {
             if(!this.itemHandler.getStackInSlot(BEDROCK_DUST_INPUT).isEmpty()) {
@@ -270,22 +273,23 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity implement
             case NORTH -> lazyFluidHandler.cast();
             default -> null;
         };
-    }
+    }*/
 
     @Override
     public void onLoad() {
         super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> itemHandler);
-        lazyFluidHandler = LazyOptional.of(() -> LIQUID_NITROGEN_TANK);
+        //lazyItemHandler = LazyOptional.of(() -> itemHandler);
+        //lazyFluidHandler = LazyOptional.of(() -> LIQUID_NITROGEN_TANK);
     }
 
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
-        lazyItemHandler.invalidate();
-        lazyFluidHandler.invalidate();
+        //lazyItemHandler.invalidate();
+        //lazyFluidHandler.invalidate();
     }
 
+    /*
     public void drops() {
         SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
         for(int i = 0; i < itemHandler.getSlots(); i++) {
@@ -304,10 +308,11 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity implement
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
         return new WormholeGeneratorMenu(pContainerId, pPlayerInventory, this, this.data);
-    }
+    }*/
 
     @Override
     protected void write(CompoundTag pTag, boolean clientPacket) {
+        /*
         pTag.put("inventory", itemHandler.serializeNBT());
         pTag.putInt("wormhole_generator.progress", progress);
         pTag.put("OxygenTank", LIQUID_NITROGEN_TANK.writeToNBT(new CompoundTag()));
@@ -322,13 +327,14 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity implement
         pTag.putInt("wormhole_facing_1", Wormhole1Facing);
         pTag.putInt("wormhole_facing_2", Wormhole2Facing);
         pTag.putInt("wormhole_size", WormholeSize);
-
+         */
         super.write(pTag, clientPacket);
     }
 
     @Override
     protected void read(CompoundTag pTag, boolean clientPacket) {
         super.read(pTag, clientPacket);
+        /*
         itemHandler.deserializeNBT(pTag.getCompound("inventory"));
         progress = pTag.getInt("atmosphere_extractor.progress");
         LIQUID_NITROGEN_TANK.readFromNBT(pTag.getCompound("OxygenTank"));
@@ -343,6 +349,7 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity implement
         Wormhole1Facing = pTag.getInt("wormhole_facing_1");
         Wormhole2Facing = pTag.getInt("wormhole_facing_2");
         WormholeSize = pTag.getInt("wormhole_size");
+         */
     }
 
     @Override
@@ -350,6 +357,7 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity implement
         super.onDataPacket(connection, packet);
     }
 
+    /*
     public void updateScreenData(String x1, String y1, String z1, String x2, String y2, String z2, int facing1Index, int facing2Index, int sizeIndex) {
         System.out.println("yerp");
         System.out.println(x1);
@@ -371,5 +379,5 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity implement
     public int[] getButtonData() {
         return new int[]{Wormhole1Facing, Wormhole2Facing, WormholeSize};
     }
-
+    */
 }

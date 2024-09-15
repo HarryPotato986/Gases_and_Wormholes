@@ -34,6 +34,7 @@ wormhole generator:
         rewrite blocks so they each have block entities. (Have to replace each state with own block type)  -DONE
         Make core block take lazyfluidhandler from fluidhandler block. Same for lazyitemhandler.
             Clean up new block entities, so they only do what they need to.
+                Write speed code.
         Look at FluidTankBlockEntity and IMultiBlockEntityContainer for inspiration.
         make core take speed data from kineticHandler block.
 

@@ -41,7 +41,8 @@ import java.util.Map;
 
 import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorFluid.FACING;
 
-public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements MenuProvider {
+public class WormholeGeneratorFluidEntity extends KineticBlockEntity {
+    /*
     private final ItemStackHandler itemHandler = new ItemStackHandler(2) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -59,34 +60,34 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
                 default -> super.isItemValid(slot, stack);
             };
         }
-    };
+    };*/
 
-    private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
+    //private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
     private LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
 
-    private static final int LIQUID_NITROGEN_SLOT = 0;
-    private static final int BEDROCK_DUST_INPUT = 1;
+    //private static final int LIQUID_NITROGEN_SLOT = 0;
+    //private static final int BEDROCK_DUST_INPUT = 1;
 
-    private boolean ACQUIRED_FLUID = false;
-    private boolean DISTRIBUTED_FLUID = false;
+    //private boolean ACQUIRED_FLUID = false;
+    //private boolean DISTRIBUTED_FLUID = false;
 
     public final FluidTank LIQUID_NITROGEN_TANK = createFluidTank(10000);
 
 
-    public String X1 = "";
-    public String Y1 = "";
-    public String Z1 = "";
-    public String X2 = "";
-    public String Y2 = "";
-    public String Z2 = "";
-    public int Wormhole1Facing = 0;
-    public int Wormhole2Facing = 0;
-    public int WormholeSize = 0;
+    //public String X1 = "";
+    //public String Y1 = "";
+    //public String Z1 = "";
+    //public String X2 = "";
+    //public String Y2 = "";
+    //public String Z2 = "";
+    //public int Wormhole1Facing = 0;
+    //public int Wormhole2Facing = 0;
+    //public int WormholeSize = 0;
 
 
 
 
-
+    /*
     private final Map<Direction, LazyOptional<DirectionWrappedHandler>> directionWrappedHandlerMap =
             new InventoryDirectionWrapper(itemHandler,
                     new InventoryDirectionEntry(Direction.DOWN, BEDROCK_DUST_INPUT, false),
@@ -99,7 +100,7 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
 
     protected final ContainerData data;
     private int progress = 0;
-    private int maxProgress = 100;
+    private int maxProgress = 100;*/
 
     private FluidTank createFluidTank(int capacity) {
         return new FluidTank(capacity) {
@@ -133,6 +134,7 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
 
     public WormholeGeneratorFluidEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
+        /*
         this.data = new ContainerData() {
             @Override
             public int get(int pIndex) {
@@ -155,16 +157,17 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
             public int getCount() {
                 return 2;
             }
-        };
+        };*/
     }
 
 
     public void tick(Level level, BlockPos pPos, BlockState pState) {
         super.tick();
-        fillUpOnFluid();
-        fillUpOnDust();
+        //fillUpOnFluid();
+        //fillUpOnDust();
     }
 
+    /*
     private void fillUpOnDust() {
         if(this.progress < 1) {
             if(!this.itemHandler.getStackInSlot(BEDROCK_DUST_INPUT).isEmpty()) {
@@ -221,6 +224,7 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
     public FluidStack getFluid() {
         return LIQUID_NITROGEN_TANK.getFluid();
     }
+     */
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
@@ -240,7 +244,7 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
                 }
             }
         }
-
+        /*
         if(cap == ForgeCapabilities.ITEM_HANDLER) {
             if(side == null) {
                 return lazyItemHandler.cast();
@@ -260,7 +264,7 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
                     case WEST -> directionWrappedHandlerMap.get(side.getCounterClockWise()).cast();
                 };
             }
-        }
+        }*/
 
         return super.getCapability(cap);
     }
@@ -275,17 +279,18 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
     @Override
     public void onLoad() {
         super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> itemHandler);
+        //lazyItemHandler = LazyOptional.of(() -> itemHandler);
         lazyFluidHandler = LazyOptional.of(() -> LIQUID_NITROGEN_TANK);
     }
 
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
-        lazyItemHandler.invalidate();
+        //lazyItemHandler.invalidate();
         lazyFluidHandler.invalidate();
     }
 
+    /*
     public void drops() {
         SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
         for(int i = 0; i < itemHandler.getSlots(); i++) {
@@ -304,14 +309,15 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
         return new WormholeGeneratorMenu(pContainerId, pPlayerInventory, this, this.data);
-    }
+    }*/
 
     @Override
     protected void write(CompoundTag pTag, boolean clientPacket) {
-        pTag.put("inventory", itemHandler.serializeNBT());
-        pTag.putInt("wormhole_generator.progress", progress);
+        //pTag.put("inventory", itemHandler.serializeNBT());
+        //pTag.putInt("wormhole_generator.progress", progress);
         pTag.put("OxygenTank", LIQUID_NITROGEN_TANK.writeToNBT(new CompoundTag()));
 
+        /*
         pTag.putString("x1", X1);
         pTag.putString("y1", Y1);
         pTag.putString("z1", Z1);
@@ -321,7 +327,7 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
 
         pTag.putInt("wormhole_facing_1", Wormhole1Facing);
         pTag.putInt("wormhole_facing_2", Wormhole2Facing);
-        pTag.putInt("wormhole_size", WormholeSize);
+        pTag.putInt("wormhole_size", WormholeSize);*/
 
         super.write(pTag, clientPacket);
     }
@@ -329,10 +335,11 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
     @Override
     protected void read(CompoundTag pTag, boolean clientPacket) {
         super.read(pTag, clientPacket);
-        itemHandler.deserializeNBT(pTag.getCompound("inventory"));
-        progress = pTag.getInt("atmosphere_extractor.progress");
+        //itemHandler.deserializeNBT(pTag.getCompound("inventory"));
+        //progress = pTag.getInt("atmosphere_extractor.progress");
         LIQUID_NITROGEN_TANK.readFromNBT(pTag.getCompound("OxygenTank"));
 
+        /*
         X1 = pTag.getString("x1");
         Y1 = pTag.getString("y1");
         Z1 = pTag.getString("z1");
@@ -342,7 +349,7 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
 
         Wormhole1Facing = pTag.getInt("wormhole_facing_1");
         Wormhole2Facing = pTag.getInt("wormhole_facing_2");
-        WormholeSize = pTag.getInt("wormhole_size");
+        WormholeSize = pTag.getInt("wormhole_size");*/
     }
 
     @Override
@@ -350,6 +357,7 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
         super.onDataPacket(connection, packet);
     }
 
+    /*
     public void updateScreenData(String x1, String y1, String z1, String x2, String y2, String z2, int facing1Index, int facing2Index, int sizeIndex) {
         System.out.println("yerp");
         System.out.println(x1);
@@ -370,6 +378,6 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity implements 
 
     public int[] getButtonData() {
         return new int[]{Wormhole1Facing, Wormhole2Facing, WormholeSize};
-    }
+    }*/
 
 }
