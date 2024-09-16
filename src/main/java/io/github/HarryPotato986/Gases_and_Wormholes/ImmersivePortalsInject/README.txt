@@ -1,0 +1,1 @@
+As there is no API for the forge version of the mod, I have injected the code from the 1.19.3 version of the mod.
