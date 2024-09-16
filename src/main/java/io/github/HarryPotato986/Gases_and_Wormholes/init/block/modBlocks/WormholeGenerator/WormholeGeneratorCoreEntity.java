@@ -43,9 +43,8 @@ import java.util.Map;
 
 import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorCore.FACING;
 
-public class WormholeGeneratorCoreEntity extends WormholeGeneratorEntity implements MenuProvider {
-    /*
-    private final ItemStackHandler itemHandler = new ItemStackHandler(2) {
+public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements MenuProvider {
+    private final ItemStackHandler tempItemHandler = new ItemStackHandler(2) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
@@ -63,10 +62,9 @@ public class WormholeGeneratorCoreEntity extends WormholeGeneratorEntity impleme
             };
         }
     };
-     */
 
-    private BlockPos itemInput;
-    private BlockPos fluidInput;
+    public BlockPos itemInput;
+    public BlockPos fluidInput;
     private BlockPos kineticInput;
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
@@ -78,7 +76,7 @@ public class WormholeGeneratorCoreEntity extends WormholeGeneratorEntity impleme
     private boolean ACQUIRED_FLUID = false;
     private boolean DISTRIBUTED_FLUID = false;
 
-    //private final FluidTank LIQUID_NITROGEN_TANK = createFluidTank(10000);
+    private final FluidTank tempTank = createFluidTank(10000);
 
 
     public String X1 = "";
@@ -99,10 +97,10 @@ public class WormholeGeneratorCoreEntity extends WormholeGeneratorEntity impleme
         Direction facing = this.getBlockState().getValue(FACING);
         BlockPos pos = this.getBlockPos();
         BlockPos offset = switch (facing) {
-            case NORTH -> new BlockPos(1, 0, 0);
-            case SOUTH -> new BlockPos(-1, 0, 0);
-            case WEST -> new BlockPos(0, 0, -1);
-            case EAST -> new BlockPos(0, 0, 1);
+            case NORTH -> new BlockPos(-1, 0, 0);
+            case SOUTH -> new BlockPos(1, 0, 0);
+            case WEST -> new BlockPos(0, 0, 1);
+            case EAST -> new BlockPos(0, 0, -1);
             default -> null;
         };
         if (offset == null) {
@@ -115,10 +113,10 @@ public class WormholeGeneratorCoreEntity extends WormholeGeneratorEntity impleme
         Direction facing = this.getBlockState().getValue(FACING);
         BlockPos pos = this.getBlockPos();
         BlockPos offset = switch (facing) {
-            case NORTH -> new BlockPos(-1, 0, 0);
-            case SOUTH -> new BlockPos(1, 0, 0);
-            case WEST -> new BlockPos(0, 0, 1);
-            case EAST -> new BlockPos(0, 0, -1);
+            case NORTH -> new BlockPos(1, 0, 0);
+            case SOUTH -> new BlockPos(-1, 0, 0);
+            case WEST -> new BlockPos(0, 0, -1);
+            case EAST -> new BlockPos(0, 0, 1);
             default -> null;
         };
         if (offset == null) {
@@ -144,19 +142,41 @@ public class WormholeGeneratorCoreEntity extends WormholeGeneratorEntity impleme
     }
 
     private ItemStackHandler getItemHandler() {
+        if (itemInput == null) {
+            itemInput = findItemInput();
+            System.out.println("ItemHandlerPOS: " + itemInput.toString());
+        }
+
+        if (!this.hasLevel()) {
+            //System.out.println("Used tempItemHandler because no level");
+            return tempItemHandler;
+        }
+
         BlockEntity BE = this.getLevel().getBlockEntity(itemInput);
         if (BE instanceof WormholeGeneratorItemEntity) {
             return ((WormholeGeneratorItemEntity) BE).itemHandler;
         }
-        return null;
+        System.out.println("Used tempItemHandler because no BE");
+        return tempItemHandler;
     }
 
     private FluidTank getFluidTank() {
+        if (fluidInput == null) {
+            fluidInput = findFluidInput();
+            System.out.println("FluidTankPOS: " + fluidInput.toString());
+        }
+
+        if (!this.hasLevel()) {
+            //System.out.println("Used tempTank because no level");
+            return tempTank;
+        }
+
         BlockEntity BE = this.getLevel().getBlockEntity(fluidInput);
         if (BE instanceof WormholeGeneratorFluidEntity) {
             return ((WormholeGeneratorFluidEntity) BE).LIQUID_NITROGEN_TANK;
         }
-        return null;
+        System.out.println("Used tempTank because no BE");
+        return tempTank;
     }
 
     private final Map<Direction, LazyOptional<DirectionWrappedHandler>> directionWrappedHandlerMap =
@@ -300,20 +320,19 @@ public class WormholeGeneratorCoreEntity extends WormholeGeneratorEntity impleme
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        /*
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            if (side != null) {
-                Direction localDir = this.getBlockState().getValue(FACING);
-                LazyOptional<T> handler = switch (localDir) {
-                    case NORTH -> returnCorrectTank(side.getOpposite());
-                    case EAST -> returnCorrectTank(side.getClockWise());
-                    case SOUTH -> returnCorrectTank(side);
-                    case WEST -> returnCorrectTank(side.getCounterClockWise());
-                    default -> null;
-                };
+            Direction localDir = this.getBlockState().getValue(FACING);
+            LazyOptional<T> handler = switch (localDir) {
+                case NORTH -> returnCorrectTank(side.getOpposite());
+                case EAST -> returnCorrectTank(side.getClockWise());
+                case SOUTH -> returnCorrectTank(side);
+                case WEST -> returnCorrectTank(side.getCounterClockWise());
+                default -> null;
+            };
 
-                if(handler != null) {
-                    return handler;
-                }
+            if(handler != null) {
+                return handler;
             }
         }
 
@@ -336,9 +355,9 @@ public class WormholeGeneratorCoreEntity extends WormholeGeneratorEntity impleme
                     case WEST -> directionWrappedHandlerMap.get(side.getCounterClockWise()).cast();
                 };
             }
-        }
+        }*/
 
-        return super.getCapability(cap);
+        return super.getCapability(cap, side);
     }
 
     private <T> @Nullable LazyOptional<T> returnCorrectTank(@NotNull Direction side) {

@@ -40,6 +40,7 @@ public class TileEntitiesInit {
     public static final BlockEntityEntry<WormholeGeneratorCoreEntity> WORMHOLE_GENERATOR_CORE_ENTITY = REGISTRATE
             .blockEntity("wormhole_generator_core_entity", WormholeGeneratorCoreEntity::new)
             .validBlocks(BlockInit.WORMHOLE_GENERATOR_CORE)
+            .renderer(() -> WormholeGeneratorRenderer::new)
             .register();
 
     public static final BlockEntityEntry<WormholeGeneratorFluidEntity> WORMHOLE_GENERATOR_FLUID_ENTITY = REGISTRATE
@@ -54,6 +55,8 @@ public class TileEntitiesInit {
 
     public static final BlockEntityEntry<WormholeGeneratorKineticEntity> WORMHOLE_GENERATOR_KINETIC_ENTITY = REGISTRATE
             .blockEntity("wormhole_generator_kinetic_entity", WormholeGeneratorKineticEntity::new)
+            .instance(() -> WormholeGeneratorShaftInstance::new, false)
             .validBlocks(BlockInit.WORMHOLE_GENERATOR_KINETIC)
+            .renderer(() -> WormholeGeneratorShaftRenderer::new)
             .register();
 }

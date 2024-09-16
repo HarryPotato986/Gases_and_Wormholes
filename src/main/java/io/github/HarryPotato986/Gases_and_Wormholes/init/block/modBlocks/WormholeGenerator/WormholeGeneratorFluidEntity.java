@@ -220,28 +220,26 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity {
         return this.itemHandler.getStackInSlot(fluidInputSlot).getCount() > 0 &&
                 this.itemHandler.getStackInSlot(fluidInputSlot).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
     }
-
+    */
     public FluidStack getFluid() {
         return LIQUID_NITROGEN_TANK.getFluid();
     }
-     */
+
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            if (side != null) {
-                Direction localDir = this.getBlockState().getValue(FACING);
-                LazyOptional<T> handler = switch (localDir) {
-                    case NORTH -> returnCorrectTank(side.getOpposite());
-                    case EAST -> returnCorrectTank(side.getClockWise());
-                    case SOUTH -> returnCorrectTank(side);
-                    case WEST -> returnCorrectTank(side.getCounterClockWise());
-                    default -> null;
-                };
+            Direction localDir = this.getBlockState().getValue(FACING);
+            LazyOptional<T> handler = switch (localDir) {
+                case NORTH -> returnCorrectTank(side);
+                case EAST -> returnCorrectTank(side.getCounterClockWise());
+                case SOUTH -> returnCorrectTank(side.getOpposite());
+                case WEST -> returnCorrectTank(side.getClockWise());
+                default -> null;
+            };
 
-                if(handler != null) {
-                    return handler;
-                }
+            if(handler != null) {
+                return handler;
             }
         }
         /*
@@ -266,14 +264,15 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity {
             }
         }*/
 
-        return super.getCapability(cap);
+        return super.getCapability(cap, side);
     }
 
     private <T> @Nullable LazyOptional<T> returnCorrectTank(@NotNull Direction side) {
-        return switch (side) {
-            case NORTH -> lazyFluidHandler.cast();
-            default -> null;
-        };
+        if (side == Direction.NORTH) {
+            return lazyFluidHandler.cast();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -315,7 +314,7 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity {
     protected void write(CompoundTag pTag, boolean clientPacket) {
         //pTag.put("inventory", itemHandler.serializeNBT());
         //pTag.putInt("wormhole_generator.progress", progress);
-        pTag.put("OxygenTank", LIQUID_NITROGEN_TANK.writeToNBT(new CompoundTag()));
+        pTag.put("liquid_nitrogen_tank", LIQUID_NITROGEN_TANK.writeToNBT(new CompoundTag()));
 
         /*
         pTag.putString("x1", X1);
@@ -337,7 +336,7 @@ public class WormholeGeneratorFluidEntity extends KineticBlockEntity {
         super.read(pTag, clientPacket);
         //itemHandler.deserializeNBT(pTag.getCompound("inventory"));
         //progress = pTag.getInt("atmosphere_extractor.progress");
-        LIQUID_NITROGEN_TANK.readFromNBT(pTag.getCompound("OxygenTank"));
+        LIQUID_NITROGEN_TANK.readFromNBT(pTag.getCompound("liquid_nitrogen_tank"));
 
         /*
         X1 = pTag.getString("x1");

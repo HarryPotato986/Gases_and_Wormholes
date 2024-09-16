@@ -165,7 +165,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
         renderDustBar(guiGraphics, x + 33, y + 26);
 
-        fluidRenderer.render(guiGraphics, x + 11, y + 26, menu.blockEntity.getFluid());
+        fluidRenderer.render(guiGraphics, x + 11, y + 26, menu.FIBlockEntity.getFluid());
     }
 
     private void renderDustBar(GuiGraphics guiGraphics, int x, int y) {

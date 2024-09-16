@@ -30,15 +30,8 @@ liquid nitrogen for recipes:
 
 TODO List:
 wormhole generator:
-    add fluid, item and power input
-        rewrite blocks so they each have block entities. (Have to replace each state with own block type)  -DONE
-        Make core block take lazyfluidhandler from fluidhandler block. Same for lazyitemhandler.
-            Clean up new block entities, so they only do what they need to.
-                Write speed code.
-        Look at FluidTankBlockEntity and IMultiBlockEntityContainer for inspiration.
-        make core take speed data from kineticHandler block.
+    work on main function of WormholeGenerator
 
-    keep working on screen
 
 try to fix linkedBlockEntity tick method (maybe full rewrite 😭)
 
@@ -51,4 +44,6 @@ DO LATER List:
 
 Known bugs:
 look into why the AtmoExtr instantly gains fluid when network is connected to it
+if you setblock a single wormhole generator block (other than a core) and break it, masterpos will return null
+    Fix: handle the null so it skips removeAll().
 

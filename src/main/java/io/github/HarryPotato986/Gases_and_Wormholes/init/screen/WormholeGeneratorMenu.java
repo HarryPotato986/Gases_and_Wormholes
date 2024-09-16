@@ -2,6 +2,8 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.screen;
 
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorCoreEntity;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorFluidEntity;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorItemEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -14,6 +16,8 @@ import net.minecraftforge.items.SlotItemHandler;
 
 public class WormholeGeneratorMenu extends AbstractContainerMenu {
     public final WormholeGeneratorCoreEntity blockEntity;
+    public final WormholeGeneratorItemEntity IIBlockEntity;
+    public final WormholeGeneratorFluidEntity FIBlockEntity;
     private final Level level;
     private final ContainerData data;
 
@@ -27,11 +31,13 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
         blockEntity = ((WormholeGeneratorCoreEntity) entity);
         this.level = inv.player.level();
         this.data = data;
+        IIBlockEntity = ((WormholeGeneratorItemEntity) level.getBlockEntity(blockEntity.itemInput));
+        FIBlockEntity = ((WormholeGeneratorFluidEntity) level.getBlockEntity(blockEntity.fluidInput));
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
 
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {
+        this.IIBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {
             this.addSlot(new SlotItemHandler(iItemHandler, 0, 11, 74));
             this.addSlot(new SlotItemHandler(iItemHandler, 1, 29, 74));
         });

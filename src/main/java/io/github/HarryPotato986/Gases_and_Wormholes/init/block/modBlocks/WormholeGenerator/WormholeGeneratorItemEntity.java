@@ -264,15 +264,15 @@ public class WormholeGeneratorItemEntity extends KineticBlockEntity {
                 }
 
                 return switch (localDir) {
-                    default -> directionWrappedHandlerMap.get(side.getOpposite()).cast();
-                    case EAST -> directionWrappedHandlerMap.get(side.getClockWise()).cast();
-                    case SOUTH -> directionWrappedHandlerMap.get(side).cast();
-                    case WEST -> directionWrappedHandlerMap.get(side.getCounterClockWise()).cast();
+                    default -> directionWrappedHandlerMap.get(side).cast();
+                    case EAST -> directionWrappedHandlerMap.get(side.getCounterClockWise()).cast();
+                    case SOUTH -> directionWrappedHandlerMap.get(side.getOpposite()).cast();
+                    case WEST -> directionWrappedHandlerMap.get(side.getClockWise()).cast();
                 };
             }
         }
 
-        return super.getCapability(cap);
+        return super.getCapability(cap, side);
     }
 
     /*

@@ -42,6 +42,11 @@ public class WormholeGeneratorKinetic extends HorizontalKineticBlock implements 
     }
 
     @Override
+    public Direction.Axis getRotationAxis(BlockState state) {
+        return state.getValue(FACING).getAxis();
+    }
+
+    @Override
     public RenderShape getRenderShape(BlockState pState) {
         return RenderShape.INVISIBLE;
     }
@@ -111,11 +116,6 @@ public class WormholeGeneratorKinetic extends HorizontalKineticBlock implements 
         }
 
         return InteractionResult.sidedSuccess(pLevel.isClientSide());
-    }
-
-    @Override
-    public Direction.Axis getRotationAxis(BlockState state) {
-        return null;
     }
 
     @Override
