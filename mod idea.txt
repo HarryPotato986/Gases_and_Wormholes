@@ -37,7 +37,12 @@ try to fix linkedBlockEntity tick method (maybe full rewrite 😭)
 
 
 DO LATER List:
-
+Immersive Portals inject:       - do NOT waste time pursuing this until IPs is stable in 1.21.X NeoForge.
+    2 main options:
+        - start using code to make portals, adding only necessary files into my mod, fixing them as I go.
+        - try to add the whole mod as a messed up sudo jar-in-jar/api abomination, as no API exists.
+    radical option 3:
+        update to 1.21.x while porting to NeoForge, them learn Gradle and properly api
 
 
 
