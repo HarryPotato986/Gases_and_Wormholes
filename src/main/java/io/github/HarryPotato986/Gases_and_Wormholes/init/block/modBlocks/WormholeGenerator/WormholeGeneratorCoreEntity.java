@@ -14,6 +14,8 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -513,11 +515,18 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
 
     public void beginShutdown() {
-
+        if (!running) {
+            return;
+        }
+        running = false;
     }
 
-    public void beginStartup(Level level) {
-
+    public void beginStartup(Level level, Player player) {
+        if (running) {
+            return;
+        }
+        level.playSound(player, this.getBlockPos(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS);
+        running = true;
     }
 
 }

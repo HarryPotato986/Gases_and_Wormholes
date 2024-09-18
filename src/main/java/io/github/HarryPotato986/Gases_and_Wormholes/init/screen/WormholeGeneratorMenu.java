@@ -19,6 +19,7 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
     public final WormholeGeneratorItemEntity IIBlockEntity;
     public final WormholeGeneratorFluidEntity FIBlockEntity;
     private final Level level;
+    private final Player player;
     private final ContainerData data;
 
     public WormholeGeneratorMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
@@ -30,6 +31,7 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
         checkContainerSize(inv, 2);
         blockEntity = ((WormholeGeneratorCoreEntity) entity);
         this.level = inv.player.level();
+        this.player = inv.player;
         this.data = data;
         IIBlockEntity = ((WormholeGeneratorItemEntity) level.getBlockEntity(blockEntity.itemInput));
         FIBlockEntity = ((WormholeGeneratorFluidEntity) level.getBlockEntity(blockEntity.fluidInput));
@@ -121,5 +123,13 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
         int maxProgress = this.data.get(1);  // Max Progress
 
         return maxProgress != 0 && progress != 0 ? ((float) progress / (float) (maxProgress + 1)) : 0;
+    }
+
+    public Level getLevel() {
+        return this.level;
+    }
+
+    public Player getPlayer() {
+        return this.player;
     }
 }

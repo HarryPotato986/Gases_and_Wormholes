@@ -270,5 +270,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
     public void onStart() {
         System.out.println("Button is much work");
+        menu.blockEntity.beginStartup(menu.getLevel(), menu.getPlayer());
+        this.onClose();
     }
 }
