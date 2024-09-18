@@ -63,6 +63,8 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         }
     };
 
+    public boolean running = false;
+
     public BlockPos itemInput;
     public BlockPos fluidInput;
     private BlockPos kineticInput;
@@ -191,7 +193,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
     protected final ContainerData data;
     private int progress = 0;
-    private int maxProgress = 100;
+    private int maxProgress = 200;
 
     private FluidTank createFluidTank(int capacity) {
         return new FluidTank(capacity) {
@@ -259,13 +261,42 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         super.tick();
         fillUpOnFluid();
         fillUpOnDust();
+        if (running) {
+            consumeFluid();
+            consumeDust();
+        }
+    }
+
+    private void consumeFluid() {
+        FluidTank fluidTank = getFluidTank();
+        if (fluidTank.isEmpty()) {
+            beginShutdown();
+            return;
+        }
+        int drainAmount = 2 * (WormholeSize * WormholeSize);
+        fluidTank.drain(2, IFluidHandler.FluidAction.EXECUTE);  //120 every 3 sec : 2 every tick
+    }
+
+    private void consumeDust() {
+        ItemStackHandler itemStack = getItemHandler();
+        if (progress <= 0) {
+            beginShutdown();
+            return;
+        }
+        int consumeAmount = (WormholeSize * WormholeSize);
+        itemStack.extractItem(BEDROCK_DUST_INPUT, consumeAmount, false);
+    }
+
+    private void updateMaxProgress() {
+        //float newProductionSpeed = Math.max(((3 * 128) / Math.abs(getSpeed())), 1.0f);
+        //maxProgress = Math.round(newProductionSpeed * 20.0f);
     }
 
     private void fillUpOnDust() {
-        if(this.progress < 1) {
+        if(this.progress <= 100) {
             if(!getItemHandler().getStackInSlot(BEDROCK_DUST_INPUT).isEmpty()) {
                 getItemHandler().extractItem(BEDROCK_DUST_INPUT, 1, false);
-                this.progress = this.maxProgress;
+                this.progress += 100;
             }
         }
     }
@@ -403,6 +434,8 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
     @Override
     protected void write(CompoundTag pTag, boolean clientPacket) {
+        pTag.putBoolean("running", running);
+
         pTag.put("item_input", NbtUtils.writeBlockPos(this.itemInput));
         pTag.put("fluid_input", NbtUtils.writeBlockPos(this.fluidInput));
         pTag.put("kinetic_input", NbtUtils.writeBlockPos(this.kineticInput));
@@ -428,6 +461,8 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
     @Override
     protected void read(CompoundTag pTag, boolean clientPacket) {
         super.read(pTag, clientPacket);
+
+        running = pTag.getBoolean("running");
 
         itemInput = NbtUtils.readBlockPos(pTag.getCompound("item_input"));
         fluidInput = NbtUtils.readBlockPos(pTag.getCompound("fluid_input"));
@@ -474,6 +509,15 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
     public int[] getButtonData() {
         return new int[]{Wormhole1Facing, Wormhole2Facing, WormholeSize};
+    }
+
+
+    public void beginShutdown() {
+
+    }
+
+    public void beginStartup(Level level) {
+
     }
 
 }
