@@ -33,6 +33,7 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
         this.level = inv.player.level();
         this.player = inv.player;
         this.data = data;
+
         IIBlockEntity = ((WormholeGeneratorItemEntity) level.getBlockEntity(blockEntity.itemInput));
         FIBlockEntity = ((WormholeGeneratorFluidEntity) level.getBlockEntity(blockEntity.fluidInput));
 
