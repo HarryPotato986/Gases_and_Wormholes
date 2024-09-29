@@ -41,6 +41,9 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorCore.FACING;
@@ -92,6 +95,10 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
     public int Wormhole1Facing = 0;
     public int Wormhole2Facing = 0;
     public int WormholeSize = 0;
+
+
+    public BlockPos[] masterList;
+    public Map<BlockPos, BlockPos> lookUpTable;
 
 
 
@@ -457,6 +464,10 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         pTag.putInt("wormhole_facing_2", Wormhole2Facing);
         pTag.putInt("wormhole_size", WormholeSize);
 
+        if (running && masterList != null && lookUpTable != null && masterList.length > 0 && !lookUpTable.isEmpty()) {
+            pTag.put("wormholeLocationData", writeWormholeLocationData());
+        }
+
         super.write(pTag, clientPacket);
     }
 
@@ -471,7 +482,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         kineticInput = NbtUtils.readBlockPos(pTag.getCompound("kinetic_input"));
 
         //itemHandler.deserializeNBT(pTag.getCompound("inventory"));
-        progress = pTag.getInt("atmosphere_extractor.progress");
+        progress = pTag.getInt("wormhole_generator.progress");
         //LIQUID_NITROGEN_TANK.readFromNBT(pTag.getCompound("OxygenTank"));
 
         X1 = pTag.getString("x1");
@@ -484,7 +495,52 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         Wormhole1Facing = pTag.getInt("wormhole_facing_1");
         Wormhole2Facing = pTag.getInt("wormhole_facing_2");
         WormholeSize = pTag.getInt("wormhole_size");
+
+        readWormholeLocationData(pTag);
     }
+
+    private CompoundTag writeWormholeLocationData() {
+        int masterListLength = masterList.length;
+        int lookUpTableLength = lookUpTable.size();
+        List<BlockPos> saved = new ArrayList<>();
+        CompoundTag locationData = new CompoundTag();
+
+        int i = 1;
+        for (BlockPos pos : masterList) {
+            if (saved.contains(pos)) {
+                continue;
+            }
+            CompoundTag linkedPair = new CompoundTag();
+            linkedPair.put("partner1", NbtUtils.writeBlockPos(pos));
+            linkedPair.put("partner2", NbtUtils.writeBlockPos(lookUpTable.get(pos)));
+            saved.add(pos);
+            saved.add(lookUpTable.get(pos));
+            locationData.put("pair" + i, linkedPair);
+        }
+        locationData.putInt("numberOfPairs", i);
+        return locationData;
+    }
+
+    private void readWormholeLocationData(CompoundTag pTag) {
+        CompoundTag locationData = pTag.getCompound("wormholeLocationData");
+        int numberOfPairs = locationData.getInt("numberOfPairs");
+        List<BlockPos> tempList = new ArrayList<>();
+        lookUpTable.clear();
+
+        for (int i = 0; i < numberOfPairs; i++) {
+            CompoundTag linkedPair = locationData.getCompound("pair" + (i + 1));
+            BlockPos partner1 = NbtUtils.readBlockPos(linkedPair.getCompound("partner1"));
+            BlockPos partner2 = NbtUtils.readBlockPos(linkedPair.getCompound("partner2"));
+            tempList.add(partner1);
+            tempList.add(partner2);
+            lookUpTable.put(partner1, partner2);
+            lookUpTable.put(partner2, partner1);
+        }
+        masterList = new BlockPos[tempList.size()];
+        masterList = tempList.toArray(masterList);
+    }
+
+
 
     @Override
     public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
@@ -527,6 +583,16 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         }
         level.playSound(player, this.getBlockPos(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS);
         running = true;
+
+        placeWormholes();
+    }
+
+    private void placeWormholes() {
+        placeLinkedPair();
+    }
+
+    private void placeLinkedPair() {
+
     }
 
 }

@@ -30,10 +30,12 @@ liquid nitrogen for recipes:
 
 TODO List:
 wormhole generator:
-    work on main function of WormholeGenerator
+    make is place a test wormhole
+    test the rewrite of linkedBlockEntity
 
 
 try to fix linkedBlockEntity tick method (maybe full rewrite 😭)
+    wormhole generator entity sets up
 
 
 DO LATER List:
