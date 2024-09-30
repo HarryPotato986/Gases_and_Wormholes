@@ -7,15 +7,16 @@ import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.WormholeGenerato
 import io.github.HarryPotato986.Gases_and_Wormholes.util.DirectionWrappedHandler;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.InventoryDirectionEntry;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.InventoryDirectionWrapper;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -26,6 +27,8 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,10 +44,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorCore.FACING;
 
@@ -98,8 +98,12 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
 
     public BlockPos[] masterList;
-    public Map<BlockPos, BlockPos> lookUpTable;
-
+    public Map<BlockPos, BlockPos> lookUpTable = new HashMap<>();
+    private List<BlockPos> setupQueue = new ArrayList<>();
+    private List<BlockPos[]> placementPosQueue = new ArrayList<>();
+    private List<BlockState[]> placementStateQueue = new ArrayList<>();
+    private int setupDelay = 0;
+    private int placementDelay = 0;
 
 
 
@@ -270,16 +274,57 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         super.tick();
         fillUpOnFluid();
         fillUpOnDust();
+
+        System.out.println("is running: " + running);
         if (running) {
             consumeFluid();
             consumeDust();
+
+            //System.out.println(placementPosQueue.get(0)[0] + " " + placementPosQueue.get(0)[1]);
+            if (!level.isClientSide) {
+                if (placementDelay <= 0) {
+                    while (!placementPosQueue.isEmpty()) {
+                        BlockPos[] pairPos = placementPosQueue.remove(0);
+                        BlockState[] pairState = placementStateQueue.remove(0);
+                        BlockPos partner1Pos = pairPos[0];
+                        BlockPos partner2Pos = pairPos[1];
+                        BlockState partner1State = pairState[0];
+                        BlockState partner2State = pairState[1];
+
+                        level.setBlockAndUpdate(partner1Pos, partner1State);
+                        level.setBlockAndUpdate(partner2Pos, partner2State);
+                    }
+                } else {
+                    placementDelay--;
+                }
+
+                if (setupDelay <= 0) {
+                    while (!setupQueue.isEmpty()) {
+                        System.out.println("Queue is working");
+                        BlockPos partner1 = setupQueue.remove(0);
+                        System.out.println("partner 1: " + partner1);
+                        BlockPos partner2 = lookUpTable.get(partner1);
+                        System.out.println("partner 2: " + partner2);
+
+                        if (level.getBlockEntity(partner1) instanceof LinkedBlockEntity partner1BE && level.getBlockEntity(partner2) instanceof LinkedBlockEntity partner2BE) {
+                            partner1BE.setLinkedPartner(partner2);
+                            System.out.println("set partner for block at: " + partner1);
+                            partner2BE.setLinkedPartner(partner1);
+                            System.out.println("set partner for block at: " + partner2);
+                        }
+
+                    }
+                } else {
+                    setupDelay--;
+                }
+            }
         }
     }
 
     private void consumeFluid() {
         FluidTank fluidTank = getFluidTank();
         if (fluidTank.isEmpty()) {
-            beginShutdown();
+            //beginShutdown();
             return;
         }
         int drainAmount = 2 * (WormholeSize * WormholeSize);
@@ -289,7 +334,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
     private void consumeDust() {
         ItemStackHandler itemStack = getItemHandler();
         if (progress <= 0) {
-            beginShutdown();
+            //beginShutdown();
             return;
         }
         int consumeAmount = (WormholeSize * WormholeSize);
@@ -467,15 +512,16 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         if (running && masterList != null && lookUpTable != null && masterList.length > 0 && !lookUpTable.isEmpty()) {
             pTag.put("wormholeLocationData", writeWormholeLocationData());
         }
+        pTag.put("queues", writeQueueData());
 
         super.write(pTag, clientPacket);
     }
 
     @Override
     protected void read(CompoundTag pTag, boolean clientPacket) {
-        super.read(pTag, clientPacket);
-
         running = pTag.getBoolean("running");
+
+        super.read(pTag, clientPacket);
 
         itemInput = NbtUtils.readBlockPos(pTag.getCompound("item_input"));
         fluidInput = NbtUtils.readBlockPos(pTag.getCompound("fluid_input"));
@@ -497,6 +543,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         WormholeSize = pTag.getInt("wormhole_size");
 
         readWormholeLocationData(pTag);
+        readQueueData(pTag);
     }
 
     private CompoundTag writeWormholeLocationData() {
@@ -538,6 +585,86 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         }
         masterList = new BlockPos[tempList.size()];
         masterList = tempList.toArray(masterList);
+    }
+
+    private CompoundTag writeQueueData() {
+        CompoundTag queueData = new CompoundTag();
+        CompoundTag placementQueues = new CompoundTag();
+        CompoundTag setupQueueTag = new CompoundTag();
+
+        int placementQueueSize = placementPosQueue.size();
+        int setupQueueSize = setupQueue.size();
+        placementQueues.putInt("placementQueueSize", placementQueueSize);
+        setupQueueTag.putInt("setupQueueSize", setupQueueSize);
+        placementQueues.putInt("placementDelay", placementDelay);
+        setupQueueTag.putInt("setupDelay", setupDelay);
+
+        for (int i = 0; i < placementQueueSize; i++) {
+            CompoundTag linkedPair = new CompoundTag();
+            BlockPos partner1Pos = placementPosQueue.get(i)[0];
+            BlockPos partner2Pos = placementPosQueue.get(i)[1];
+            BlockState partner1State = placementStateQueue.get(i)[0];
+            BlockState partner2State = placementStateQueue.get(i)[1];
+
+            linkedPair.put("partner1Pos", NbtUtils.writeBlockPos(partner1Pos));
+            linkedPair.put("partner2Pos", NbtUtils.writeBlockPos(partner2Pos));
+            linkedPair.put("partner1State", NbtUtils.writeBlockState(partner1State));
+            linkedPair.put("partner2State", NbtUtils.writeBlockState(partner2State));
+
+            placementQueues.put("queuedPair" + i, linkedPair);
+        }
+
+        for (int i = 0; i < setupQueueSize; i++) {
+            setupQueueTag.put("pos" + i, NbtUtils.writeBlockPos(setupQueue.get(i)));
+        }
+
+        queueData.put("placementQueues", placementQueues);
+        queueData.put("setupQueue", setupQueueTag);
+        return queueData;
+    }
+
+    private void readQueueData(CompoundTag pTag) {
+        HolderGetter<Block> getter = new HolderGetter<Block>() {
+            @Override
+            public Optional<Holder.Reference<Block>> get(ResourceKey<Block> pResourceKey) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<HolderSet.Named<Block>> get(TagKey<Block> pTagKey) {
+                return Optional.empty();
+            }
+        };
+        
+        placementPosQueue.clear();
+        placementStateQueue.clear();
+        setupQueue.clear();
+        
+        CompoundTag queueData = pTag.getCompound("queues");
+        CompoundTag placementQueues = queueData.getCompound("placementQueues");
+        CompoundTag setupQueueTag = queueData.getCompound("setupQueue");
+
+        int placementQueueSize = placementQueues.getInt("placementQueueSize");
+        int setupQueueSize = setupQueueTag.getInt("setupQueueSize");
+        placementDelay = placementQueues.getInt("placementDelay");
+        setupDelay = setupQueueTag.getInt("setupDelay");
+
+        for (int i = 0; i < placementQueueSize; i++) {
+            CompoundTag linkedPair = placementQueues.getCompound("queuedPair" + i);
+
+            BlockPos partner1Pos = NbtUtils.readBlockPos(linkedPair.getCompound("partner1Pos"));
+            BlockPos partner2Pos = NbtUtils.readBlockPos(linkedPair.getCompound("partner2Pos"));
+            BlockState partner1State = NbtUtils.readBlockState(getter, linkedPair.getCompound("partner1State"));
+            BlockState partner2State = NbtUtils.readBlockState(getter, linkedPair.getCompound("partner2State"));
+            
+            placementPosQueue.add(new BlockPos[]{partner1Pos, partner2Pos});
+            placementStateQueue.add(new BlockState[]{partner1State, partner2State});
+        }
+
+        for (int i = 0; i < setupQueueSize; i++) {
+            setupQueue.add(NbtUtils.readBlockPos(setupQueueTag.getCompound("pos" + i)));
+        }
+
     }
 
 
@@ -592,7 +719,28 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
     }
 
     private void placeLinkedPair() {
+        //BlockState defaultState = BlockInit.LINKED_BLOCK.getDefaultState();
+        //BlockState partner1 = defaultState.setValue(FACING,Direction.NORTH);
+        //BlockState partner2 = defaultState.setValue(FACING,Direction.SOUTH);
+        BlockPos partner1Pos = this.getBlockPos().offset(-5,0,0);
+        BlockPos partner2Pos = this.getBlockPos().offset(-10,0,0);
 
+        //level.setBlockAndUpdate(partner1Pos, partner1);
+        //level.setBlockAndUpdate(partner2Pos, partner2);
+        //masterList = new BlockPos[]{partner1Pos, partner2Pos};
+        //lookUpTable.put(partner1Pos, partner2Pos);
+        //lookUpTable.put(partner2Pos, partner1Pos);
+
+        //setupQueue.add(partner1Pos);
+        //setupDelay = 4;
+
+        //this.getLevel().setBlockAndUpdate(partner1Pos, Blocks.OAK_PLANKS.defaultBlockState());
+        //this.getLevel().setBlockAndUpdate(partner2Pos, Blocks.OAK_PLANKS.defaultBlockState());
+
+        BlockState tempState = Blocks.OAK_PLANKS.defaultBlockState();
+        placementPosQueue.add(new BlockPos[]{partner1Pos, partner2Pos});
+        placementStateQueue.add(new BlockState[]{tempState, tempState});
+        placementDelay = 20;
     }
 
 }

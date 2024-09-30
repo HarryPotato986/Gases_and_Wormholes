@@ -29,12 +29,12 @@ public class LinkedBlockRenderer extends KineticBlockEntityRenderer<LinkedBlockE
 
         Direction direction = be.getBlockState().getValue(FACING);
         BlockPos pos = be.getBlockPos();
-        boolean BEInFrontIsKinetic = be.isBlockEntityInFrontKinetic();
+        boolean BEInFrontIsKinetic = be.isBEInFrontKinetic();
 
-        LinkedBlockEntity linkedPartner = (LinkedBlockEntity) be.getLinkedPartnerBlockEntity();
+        LinkedBlockEntity linkedPartner = be.getLinkedPartnerBE();
         boolean BEInFrontOfPartnerIsKinetic;
         if(linkedPartner != null) {
-            BEInFrontOfPartnerIsKinetic = linkedPartner.isBlockEntityInFrontKinetic();
+            BEInFrontOfPartnerIsKinetic = linkedPartner.isBEInFrontKinetic();
         } else {BEInFrontOfPartnerIsKinetic = false;}
 
         if(BEInFrontIsKinetic || BEInFrontOfPartnerIsKinetic) {

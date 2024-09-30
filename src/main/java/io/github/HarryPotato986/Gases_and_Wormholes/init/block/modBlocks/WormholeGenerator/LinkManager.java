@@ -1,5 +1,5 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
-
+/*
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 
@@ -22,3 +22,4 @@ public class LinkManager {
 
 
 }
+*/

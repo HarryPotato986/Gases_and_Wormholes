@@ -23,7 +23,7 @@ public class LinkedBlockInstance extends KineticBlockEntityInstance<LinkedBlockE
         super(materialManager, blockEntity);
 
         BE = blockEntity;
-        linkedPartnerBE = (LinkedBlockEntity) BE.getLinkedPartnerBlockEntity();
+        linkedPartnerBE = BE.getLinkedPartnerBE();
 
         direction = blockState.getValue(FACING);
 

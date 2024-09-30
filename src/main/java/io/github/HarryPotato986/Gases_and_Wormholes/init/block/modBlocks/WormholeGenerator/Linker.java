@@ -1,5 +1,5 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
-
+/*
 import com.simibubi.create.content.kinetics.RotationPropagator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -88,6 +88,6 @@ public class Linker {
         }
     }
 }
-
+*/
 
 

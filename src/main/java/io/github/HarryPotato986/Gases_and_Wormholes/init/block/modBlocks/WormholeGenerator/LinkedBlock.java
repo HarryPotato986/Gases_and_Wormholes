@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlockEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    public static final BooleanProperty IS_PRIMARY_BLOCK = BooleanProperty.create("is_primary_block");
+    //public static final BooleanProperty IS_PRIMARY_BLOCK = BooleanProperty.create("is_primary_block");
     //public static final BlockPos PARTNER_POS;
 
     public static final VoxelShape SHAPE_N = Block.box(0, 0, 6, 16, 16, 16);
@@ -100,31 +100,37 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
     }
 
     @Override
+    public LinkedBlockEntity getBlockEntity(BlockGetter worldIn, BlockPos pos) {
+        return IBE.super.getBlockEntity(worldIn, pos);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new LinkedBlockEntity(TileEntitiesInit.LINKED_BLOCK_ENTITY.get(), pos, state);
+    }
+
+    @Override
     public BlockEntityType<? extends LinkedBlockEntity> getBlockEntityType() {
         return TileEntitiesInit.LINKED_BLOCK_ENTITY.get();
     }
 
+    /*
     @Override
     public boolean triggerEvent(BlockState pState, Level pLevel, BlockPos pPos, int pId, int pParam) {
         super.triggerEvent(pState, pLevel, pPos, pId, pParam);
         BlockEntity blockentity = pLevel.getBlockEntity(pPos);
         return blockentity == null ? false : blockentity.triggerEvent(pId, pParam);
     }
+    */
 
     @Nullable
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> pServerType, BlockEntityType<E> pClientType, BlockEntityTicker<? super E> pTicker) {
         return pClientType == pServerType ? (BlockEntityTicker<A>)pTicker : null;
     }
 
-    @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection().getOpposite());
-    }
-
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(FACING);
-        pBuilder.add(IS_PRIMARY_BLOCK);
+        //pBuilder.add(IS_PRIMARY_BLOCK);
     }
 }
