@@ -33,6 +33,8 @@ wormhole generator:
     make is place a test wormhole
     test the rewrite of linkedBlockEntity
         running gets stuck as false, even after start button is pressed. if manually set to true then stuck on true
+            rewrite running to be a blockstate
+                still gets stuck, can't set value from block entity (as in it's not working)
 
 
 try to fix linkedBlockEntity tick method (maybe full rewrite 😭)

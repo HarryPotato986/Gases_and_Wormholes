@@ -25,6 +25,8 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
+import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorCore.RUNNING;
+
 public class WormholeGeneratorHelper extends Block {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty FIRST_PLACED = BooleanProperty.create("first_placed");
@@ -178,6 +180,7 @@ public class WormholeGeneratorHelper extends Block {
 
                     } else if(offset.equals(coreOffset)) {
                         BlockState coreBlockState = BlockInit.WORMHOLE_GENERATOR_CORE.getDefaultState()
+                                .setValue(RUNNING, false)
                                 .setValue(FACING, facing);
                         pLevel.setBlockAndUpdate(pPos.offset(coreOffset), coreBlockState);
 

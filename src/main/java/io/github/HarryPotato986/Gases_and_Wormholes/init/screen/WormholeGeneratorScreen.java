@@ -86,7 +86,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         HorizontalFacingButtonStates facing2 = HorizontalFacingButtonStates.NORTH.getEnum(buttonValues[1]);
         WormholeSizeButtonStates size = WormholeSizeButtonStates.ONE.getEnum(buttonValues[2]);
 
-        startButton = this.addRenderableWidget(GnWButton.GnWBuilder(Component.literal(menu.blockEntity.running ? "Stop" : "Start"), (B) -> {
+        startButton = this.addRenderableWidget(GnWButton.GnWBuilder(Component.literal(menu.blockEntity.isRunning() ? "Stop" : "Start"), (B) -> {
             this.onStart();
         }).bounds(x + 62, y + 82, 134, 19).build());
 
@@ -270,11 +270,13 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
     public void onStart() {
         System.out.println("Button is much work");
-        if (!menu.blockEntity.running) {
+        if (!menu.blockEntity.isRunning()) {
             menu.blockEntity.beginStartup(menu.getLevel(), menu.getPlayer());
+            System.out.println("after beginStartup() but printed from screen: " + menu.blockEntity.isRunning());
         } else {
             menu.blockEntity.beginShutdown();
         }
+        System.out.println("after beginStartup() right before screen close: " + menu.blockEntity.isRunning());
         this.onClose();
     }
 }

@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class WormholeGeneratorCore extends Block implements IBE<WormholeGeneratorCoreEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final BooleanProperty RUNNING = BooleanProperty.create("is_running");
 
 
     public WormholeGeneratorCore(Properties pProperties) {
@@ -119,5 +120,6 @@ public class WormholeGeneratorCore extends Block implements IBE<WormholeGenerato
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(FACING);
+        pBuilder.add(RUNNING);
     }
 }

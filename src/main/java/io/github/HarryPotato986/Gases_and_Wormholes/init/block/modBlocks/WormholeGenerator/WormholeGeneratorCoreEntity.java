@@ -47,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorCore.FACING;
+import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorCore.RUNNING;
 
 public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements MenuProvider {
     private final ItemStackHandler tempItemHandler = new ItemStackHandler(2) {
@@ -68,7 +69,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         }
     };
 
-    public boolean running = false;
+    public boolean running;
 
     public BlockPos itemInput;
     public BlockPos fluidInput;
@@ -107,6 +108,14 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
 
 
+
+    public Boolean isRunning() {
+        return getBlockState().getValue(RUNNING);
+    }
+
+    public void setRunning(Boolean isRunning) {
+        getBlockState().setValue(RUNNING, isRunning);
+    }
 
     private BlockPos findItemInput() {
         Direction facing = this.getBlockState().getValue(FACING);
@@ -275,8 +284,9 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         fillUpOnFluid();
         fillUpOnDust();
 
-        System.out.println("is running: " + running);
-        if (running) {
+        //System.out.println("is running: " + running);
+        if (isRunning()) {
+            System.out.println("it do be running");
             consumeFluid();
             consumeDust();
 
@@ -488,7 +498,8 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
     @Override
     protected void write(CompoundTag pTag, boolean clientPacket) {
-        pTag.putBoolean("running", running);
+        //pTag.putBoolean("running", running);
+        //System.out.println("after write(): " + running);
 
         pTag.put("item_input", NbtUtils.writeBlockPos(this.itemInput));
         pTag.put("fluid_input", NbtUtils.writeBlockPos(this.fluidInput));
@@ -509,7 +520,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         pTag.putInt("wormhole_facing_2", Wormhole2Facing);
         pTag.putInt("wormhole_size", WormholeSize);
 
-        if (running && masterList != null && lookUpTable != null && masterList.length > 0 && !lookUpTable.isEmpty()) {
+        if (isRunning() && masterList != null && lookUpTable != null && masterList.length > 0 && !lookUpTable.isEmpty()) {
             pTag.put("wormholeLocationData", writeWormholeLocationData());
         }
         pTag.put("queues", writeQueueData());
@@ -519,7 +530,8 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
     @Override
     protected void read(CompoundTag pTag, boolean clientPacket) {
-        running = pTag.getBoolean("running");
+        //running = pTag.getBoolean("running");
+        //System.out.println("after read(): " + running);
 
         super.read(pTag, clientPacket);
 
@@ -698,18 +710,18 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
 
     public void beginShutdown() {
-        if (!running) {
+        if (!isRunning()) {
             return;
         }
-        running = false;
+        setRunning(false);
     }
 
     public void beginStartup(Level level, Player player) {
-        if (running) {
+        if (isRunning()) {
             return;
         }
         level.playSound(player, this.getBlockPos(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS);
-        running = true;
+        setRunning(true);
 
         placeWormholes();
     }
@@ -719,6 +731,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
     }
 
     private void placeLinkedPair() {
+        System.out.println("after beginStartup() but in linked pair: " + isRunning());
         //BlockState defaultState = BlockInit.LINKED_BLOCK.getDefaultState();
         //BlockState partner1 = defaultState.setValue(FACING,Direction.NORTH);
         //BlockState partner2 = defaultState.setValue(FACING,Direction.SOUTH);
