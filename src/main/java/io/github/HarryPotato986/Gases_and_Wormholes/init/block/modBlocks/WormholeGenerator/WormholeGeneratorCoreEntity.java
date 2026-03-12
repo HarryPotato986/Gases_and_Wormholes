@@ -110,11 +110,16 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
 
     public Boolean isRunning() {
-        return getBlockState().getValue(RUNNING);
+        return getLevel().getBlockState(getBlockPos()).getValue(RUNNING);
+        //return getBlockState().getValue(RUNNING);
     }
 
-    public void setRunning(Boolean isRunning) {
-        getBlockState().setValue(RUNNING, isRunning);
+    public void setRunning(Boolean running) {
+        if (getLevel() != null && running != isRunning()) {
+            BlockState state = getBlockState().setValue(RUNNING, running);
+            getLevel().setBlock(getBlockPos(), state, 3);
+            setBlockState(state);
+        }
     }
 
     private BlockPos findItemInput() {
@@ -284,7 +289,9 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         fillUpOnFluid();
         fillUpOnDust();
 
-        //System.out.println("is running: " + running);
+        //System.out.println("is running: " + isRunning());
+        //System.out.println("is running: " + pState.getValue(RUNNING));
+        //System.out.println("is running: " + (level.getBlockState(pPos).getValue(RUNNING)));
         if (isRunning()) {
             System.out.println("it do be running");
             consumeFluid();

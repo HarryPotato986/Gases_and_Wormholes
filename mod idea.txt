@@ -29,8 +29,10 @@ liquid nitrogen for recipes:
 
 
 TODO List:
+Something is super broken, so I can't even keep working in the version I was in. Probably a good excuse to port to 1.21.1 NeoForge.
+
 wormhole generator:
-    make is place a test wormhole
+    make it place a test wormhole
     test the rewrite of linkedBlockEntity
         running gets stuck as false, even after start button is pressed. if manually set to true then stuck on true
             rewrite running to be a blockstate
@@ -39,6 +41,14 @@ wormhole generator:
 
 try to fix linkedBlockEntity tick method (maybe full rewrite 😭)
     wormhole generator entity sets up
+
+New thoughts:
+    maybe some sort of uuid thing to link the linkedBlockEntitys
+    looking how create networks work, like where they store them
+    maybe the fact that I'm using oak plank block state on line 760 of WormholeGeneratorCoreEntity
+    maybe make setRunning in WormholeGeneratorCoreEntity take the level and blockState from beginStartup and beginShutdown, which get it from WormholeGeneratorScreen
+    maybe also call setRunning in tick and use the pState and level that are already there
+    maybe you need to manually block update in setRunning
 
 
 DO LATER List:

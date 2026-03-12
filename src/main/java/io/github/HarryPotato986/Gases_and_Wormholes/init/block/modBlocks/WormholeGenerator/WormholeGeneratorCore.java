@@ -3,6 +3,7 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.Wormho
 import com.simibubi.create.foundation.block.IBE;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,6 +32,7 @@ public class WormholeGeneratorCore extends Block implements IBE<WormholeGenerato
 
     public WormholeGeneratorCore(Properties pProperties) {
         super(pProperties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(RUNNING, Boolean.valueOf(false)));
     }
 
 
