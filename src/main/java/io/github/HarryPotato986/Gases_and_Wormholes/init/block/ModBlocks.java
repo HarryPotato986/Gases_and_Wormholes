@@ -1,39 +1,34 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block;
 
-import com.simibubi.create.content.kinetics.BlockStressDefaults;
+
 import com.simibubi.create.foundation.data.SharedProperties;
+import com.simibubi.create.infrastructure.config.CStress;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.CreativeTabInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractor;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.*;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.GnWSharedProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-
+import net.neoforged.neoforge.registries.DeferredRegister;
 import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 import static com.simibubi.create.foundation.data.TagGen.axeOrPickaxe;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 import static io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes.REGISTRATE;
 
-public class BlockInit {
+public class ModBlocks {
 
-    static {
-        REGISTRATE.setCreativeTab(CreativeTabInit.GASES_AND_WORMHOLES_TAB);
-    }
+    //static {
+    //    REGISTRATE.setCreativeTab(CreativeTabInit.GASES_AND_WORMHOLES_TAB);
+    //}
 
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Gases_and_Wormholes.MODID);
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Gases_and_Wormholes.MODID);
 
     /*
     public static final RegistryObject<Block> TEMP_BLOCK = BLOCKS.register("temp_block",
@@ -48,9 +43,6 @@ public class BlockInit {
     public static final RegistryObject<Block> ATMOSPHERE_EXTRACTOR = BLOCKS.register("atmosphere_extractor",
             () -> new AtmosphereExtractor(BlockBehaviour.Properties.copy(Blocks.STONE)));
     */
-    public static final RegistryObject<LiquidBlock> LIQUID_NITROGEN_BLOCK = BLOCKS.register("liquid_nitrogen_block",
-            () -> new LiquidBlock(FluidInit.SOURCE_LIQUID_NITROGEN, BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
-
 
 
     public static final BlockEntry<Block> TEMP_BLOCK = REGISTRATE.block("temp_block", Block::new)
@@ -66,7 +58,7 @@ public class BlockInit {
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.GOLD))
             .transform(axeOrPickaxe())
-            .transform(BlockStressDefaults.setImpact(16.0))
+            .transform(CStress.setImpact(16.0))
             .register();
 
     public static final BlockEntry<LinkedBlock> LINKED_BLOCK = REGISTRATE.block("linked_block", LinkedBlock::new)
@@ -88,7 +80,7 @@ public class BlockInit {
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
             .properties(p -> p.noOcclusion())
-            .properties(p -> p.isViewBlocking(BlockInit::never))
+            .properties(p -> p.isViewBlocking(ModBlocks::never))
             .transform(pickaxeOnly())
             .register();
 
@@ -96,7 +88,7 @@ public class BlockInit {
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
             .properties(p -> p.noOcclusion())
-            .properties(p -> p.isViewBlocking(BlockInit::never))
+            .properties(p -> p.isViewBlocking(ModBlocks::never))
             .transform(pickaxeOnly())
             .register();
 
@@ -104,7 +96,7 @@ public class BlockInit {
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
             .properties(p -> p.noOcclusion())
-            .properties(p -> p.isViewBlocking(BlockInit::never))
+            .properties(p -> p.isViewBlocking(ModBlocks::never))
             .transform(pickaxeOnly())
             .register();
 
@@ -112,7 +104,7 @@ public class BlockInit {
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
             .properties(p -> p.noOcclusion())
-            .properties(p -> p.isViewBlocking(BlockInit::never))
+            .properties(p -> p.isViewBlocking(ModBlocks::never))
             .transform(pickaxeOnly())
             .register();
 
@@ -120,7 +112,7 @@ public class BlockInit {
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.COLOR_BLACK))
             .properties(p -> p.noOcclusion())
-            .properties(p -> p.isViewBlocking(BlockInit::never))
+            .properties(p -> p.isViewBlocking(ModBlocks::never))
             .transform(pickaxeOnly())
             .register();
 

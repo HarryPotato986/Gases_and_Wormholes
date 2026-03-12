@@ -1,6 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.screen;
 
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -105,7 +105,7 @@ public class AtmosphereExtractorMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player pPlayer) {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer, BlockInit.ATMOSPHERE_EXTRACTOR.get());
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer, ModBlocks.ATMOSPHERE_EXTRACTOR.get());
     }
 
     private void addPlayerInventory(Inventory playerInventory) {

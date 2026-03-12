@@ -1,7 +1,7 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init;
 
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ItemInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -15,14 +15,14 @@ public class CreativeTabInit {
     public static final RegistryObject<CreativeModeTab> GASES_AND_WORMHOLES_TAB = TABS.register("gases_and_wormholes_tab",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.gases_and_wormholes_tab"))
-                    .icon((ItemInit.TEMP_BLOCK_ITEM.get()::getDefaultInstance))
+                    .icon((ModItems.TEMP_BLOCK_ITEM.get()::getDefaultInstance))
                     .displayItems((displayParams, output) -> {
-                        output.accept(ItemInit.TEMP_BLOCK_ITEM.get());
-                        output.accept(ItemInit.BEDROCK_DUST.get());
-                        output.accept(ItemInit.ATMOSPHERE_EXTRACTOR_ITEM.get());
-                        output.accept(ItemInit.LIQUID_NITROGEN_BUCKET.get());
-                        output.accept(ItemInit.NITROGEN_GAS_BUCKET.get());
-                        output.accept(ItemInit.OXYGEN_GAS_BUCKET.get());
+                        output.accept(ModItems.TEMP_BLOCK_ITEM.get());
+                        output.accept(ModItems.BEDROCK_DUST.get());
+                        output.accept(ModItems.ATMOSPHERE_EXTRACTOR_ITEM.get());
+                        output.accept(ModItems.LIQUID_NITROGEN_BUCKET.get());
+                        output.accept(ModItems.NITROGEN_GAS_BUCKET.get());
+                        output.accept(ModItems.OXYGEN_GAS_BUCKET.get());
                     })
                     .build()
     );

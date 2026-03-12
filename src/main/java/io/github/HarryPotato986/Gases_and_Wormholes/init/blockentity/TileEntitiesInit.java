@@ -2,7 +2,7 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorEntity;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorInstance;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorRenderer;
@@ -26,37 +26,37 @@ public class TileEntitiesInit {
     public static final BlockEntityEntry<AtmosphereExtractorEntity> ATMOSPHERE_EXTRACTOR_ENTITY = REGISTRATE
             .blockEntity("atmosphere_extractor_entity", AtmosphereExtractorEntity::new)
             .instance(() -> AtmosphereExtractorInstance::new, false)
-            .validBlocks(BlockInit.ATMOSPHERE_EXTRACTOR)
+            .validBlocks(ModBlocks.ATMOSPHERE_EXTRACTOR)
             .renderer(() -> AtmosphereExtractorRenderer::new)
             .register();
 
     public static final BlockEntityEntry<LinkedBlockEntity> LINKED_BLOCK_ENTITY = REGISTRATE
             .blockEntity("linked_block_entity", LinkedBlockEntity::new)
             //.instance(() -> LinkedBlockInstance::new)
-            .validBlocks(BlockInit.LINKED_BLOCK)
+            .validBlocks(ModBlocks.LINKED_BLOCK)
             .renderer(() -> LinkedBlockRenderer::new)
             .register();
 
     public static final BlockEntityEntry<WormholeGeneratorCoreEntity> WORMHOLE_GENERATOR_CORE_ENTITY = REGISTRATE
             .blockEntity("wormhole_generator_core_entity", WormholeGeneratorCoreEntity::new)
-            .validBlocks(BlockInit.WORMHOLE_GENERATOR_CORE)
+            .validBlocks(ModBlocks.WORMHOLE_GENERATOR_CORE)
             .renderer(() -> WormholeGeneratorRenderer::new)
             .register();
 
     public static final BlockEntityEntry<WormholeGeneratorFluidEntity> WORMHOLE_GENERATOR_FLUID_ENTITY = REGISTRATE
             .blockEntity("wormhole_generator_fluid_entity", WormholeGeneratorFluidEntity::new)
-            .validBlocks(BlockInit.WORMHOLE_GENERATOR_FLUID)
+            .validBlocks(ModBlocks.WORMHOLE_GENERATOR_FLUID)
             .register();
 
     public static final BlockEntityEntry<WormholeGeneratorItemEntity> WORMHOLE_GENERATOR_ITEM_ENTITY = REGISTRATE
             .blockEntity("wormhole_generator_item_entity", WormholeGeneratorItemEntity::new)
-            .validBlocks(BlockInit.WORMHOLE_GENERATOR_ITEM)
+            .validBlocks(ModBlocks.WORMHOLE_GENERATOR_ITEM)
             .register();
 
     public static final BlockEntityEntry<WormholeGeneratorKineticEntity> WORMHOLE_GENERATOR_KINETIC_ENTITY = REGISTRATE
             .blockEntity("wormhole_generator_kinetic_entity", WormholeGeneratorKineticEntity::new)
             .instance(() -> WormholeGeneratorShaftInstance::new, false)
-            .validBlocks(BlockInit.WORMHOLE_GENERATOR_KINETIC)
+            .validBlocks(ModBlocks.WORMHOLE_GENERATOR_KINETIC)
             .renderer(() -> WormholeGeneratorShaftRenderer::new)
             .register();
 }

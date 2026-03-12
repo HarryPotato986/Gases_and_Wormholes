@@ -6,8 +6,8 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -38,29 +38,8 @@ public class BaseFluidType extends FluidType {
         this.fogColor = fogColor;
     }
 
-    public ResourceLocation getStillTexture() {
-        return stillTexture;
-    }
-
-    public ResourceLocation getFlowingTexture() {
-        return flowingTexture;
-    }
-
-    public int getTintColor() {
-        return tintColor;
-    }
-
-    public ResourceLocation getOverlayTexture() {
-        return overlayTexture;
-    }
-
-    public Vector3f getFogColor() {
-        return fogColor;
-    }
-
-    @Override
-    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-        consumer.accept(new IClientFluidTypeExtensions() {
+    public IClientFluidTypeExtensions getClientFluidTypeExtensions() {
+        return new IClientFluidTypeExtensions() {
             @Override
             public ResourceLocation getStillTexture() {
                 return stillTexture;
@@ -72,7 +51,7 @@ public class BaseFluidType extends FluidType {
             }
 
             @Override
-            public @Nullable ResourceLocation getOverlayTexture() {
+            public ResourceLocation getOverlayTexture() {
                 return overlayTexture;
             }
 
@@ -93,6 +72,6 @@ public class BaseFluidType extends FluidType {
                 RenderSystem.setShaderFogStart(1f);
                 RenderSystem.setShaderFogEnd(6f); // distance when the fog starts
             }
-        });
+        };
     }
 }

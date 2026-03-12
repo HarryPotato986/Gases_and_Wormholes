@@ -1,6 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.screen;
 
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorCoreEntity;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorFluidEntity;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorItemEntity;
@@ -100,7 +100,7 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player pPlayer) {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer, BlockInit.WORMHOLE_GENERATOR_CORE.get());
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer, ModBlocks.WORMHOLE_GENERATOR_CORE.get());
     }
 
     private void addPlayerInventory(Inventory playerInventory) {

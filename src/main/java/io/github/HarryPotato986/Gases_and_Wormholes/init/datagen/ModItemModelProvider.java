@@ -1,7 +1,7 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.datagen;
 
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ItemInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -17,8 +17,8 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        simpleItem(ItemInit.BEDROCK_DUST);
-        simpleItem(ItemInit.LIQUID_NITROGEN_BUCKET);
+        simpleItem(ModItems.BEDROCK_DUST);
+        simpleItem(ModItems.LIQUID_NITROGEN_BUCKET);
 
     }
 

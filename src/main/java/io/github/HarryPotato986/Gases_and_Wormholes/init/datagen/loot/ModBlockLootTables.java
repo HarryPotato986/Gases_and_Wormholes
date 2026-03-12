@@ -1,10 +1,8 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.datagen.loot;
 
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -18,12 +16,12 @@ public class ModBlockLootTables extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
-    this.dropSelf(BlockInit.TEMP_BLOCK.get());
-    this.dropSelf(BlockInit.ATMOSPHERE_EXTRACTOR.get());
+    this.dropSelf(ModBlocks.TEMP_BLOCK.get());
+    this.dropSelf(ModBlocks.ATMOSPHERE_EXTRACTOR.get());
     }
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return BlockInit.BLOCKS.getEntries().stream().map(RegistryObject::get)::iterator;
+        return ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get)::iterator;
     }
 }

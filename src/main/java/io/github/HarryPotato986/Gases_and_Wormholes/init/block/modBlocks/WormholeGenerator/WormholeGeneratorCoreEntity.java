@@ -1,8 +1,8 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ItemInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.ModFluids;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModItems;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.WormholeGeneratorMenu;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.DirectionWrappedHandler;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.InventoryDirectionEntry;
@@ -62,8 +62,8 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return switch (slot) {
-                case LIQUID_NITROGEN_SLOT -> stack.getItem() == ItemInit.LIQUID_NITROGEN_BUCKET.get() || stack.getItem() == Items.BUCKET;
-                case BEDROCK_DUST_INPUT -> stack.getItem() == ItemInit.BEDROCK_DUST.get();
+                case LIQUID_NITROGEN_SLOT -> stack.getItem() == ModItems.LIQUID_NITROGEN_BUCKET.get() || stack.getItem() == Items.BUCKET;
+                case BEDROCK_DUST_INPUT -> stack.getItem() == ModItems.BEDROCK_DUST.get();
                 default -> super.isItemValid(slot, stack);
             };
         }
@@ -377,7 +377,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
             ACQUIRED_FLUID = false;
             DISTRIBUTED_FLUID = false;
         }else if(hasFluidSourceInSlot(LIQUID_NITROGEN_SLOT)) {
-            transferItemFluidToTank(LIQUID_NITROGEN_SLOT, getFluidTank(), FluidInit.SOURCE_LIQUID_NITROGEN.get());
+            transferItemFluidToTank(LIQUID_NITROGEN_SLOT, getFluidTank(), ModFluids.SOURCE_LIQUID_NITROGEN.get());
         }
     }
 

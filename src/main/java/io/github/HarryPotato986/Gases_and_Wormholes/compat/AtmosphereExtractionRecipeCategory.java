@@ -1,7 +1,7 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.compat;
 
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.recipe.AtmosphereExtractorRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -27,7 +27,7 @@ public class AtmosphereExtractionRecipeCategory implements IRecipeCategory<Atmos
 
     public AtmosphereExtractionRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 85);
-        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BlockInit.ATMOSPHERE_EXTRACTOR.get()));
+        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.ATMOSPHERE_EXTRACTOR.get()));
     }
 
 

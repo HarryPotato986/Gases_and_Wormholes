@@ -2,7 +2,7 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.Wormho
 
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -68,7 +68,7 @@ public class WormholeGeneratorKinetic extends HorizontalKineticBlock implements 
                     BlockPos offset = new BlockPos(x, y, z);
                     BlockState foundState = level.getBlockState(pos.offset(offset));
                     Block foundBlock = foundState.getBlock();
-                    if(foundBlock == BlockInit.WORMHOLE_GENERATOR_CORE.get()) {
+                    if(foundBlock == ModBlocks.WORMHOLE_GENERATOR_CORE.get()) {
                         if(offset.equals(BlockPos.ZERO)) {
                             return pos;
                         }

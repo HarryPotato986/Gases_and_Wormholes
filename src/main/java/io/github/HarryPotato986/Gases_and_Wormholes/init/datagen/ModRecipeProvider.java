@@ -1,7 +1,7 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.datagen;
 
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ItemInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -19,13 +19,13 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> pWriter) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockInit.TEMP_BLOCK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.TEMP_BLOCK.get())
                 .pattern(" A ")
                 .pattern("A A")
                 .pattern(" A ")
-                .define('A', ItemInit.BEDROCK_DUST.get())
+                .define('A', ModItems.BEDROCK_DUST.get())
                 .unlockedBy("has_bedrock_dust", inventoryTrigger(ItemPredicate.Builder.item()
-                        .of(ItemInit.BEDROCK_DUST.get()).build()))
+                        .of(ModItems.BEDROCK_DUST.get()).build()))
                 .save(pWriter);
     }
 }

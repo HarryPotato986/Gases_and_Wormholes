@@ -1,6 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -100,7 +100,7 @@ public class WormholeGeneratorHelper extends Block {
                     BlockPos offset = new BlockPos(x, y, z);
                     BlockState foundState = level.getBlockState(pos.offset(offset));
                     Block foundBlock = foundState.getBlock();
-                    if(foundBlock == BlockInit.WORMHOLE_GENERATOR_CORE.get()) {
+                    if(foundBlock == ModBlocks.WORMHOLE_GENERATOR_CORE.get()) {
                         if(offset.equals(BlockPos.ZERO)) {
                             return pos;
                         }
@@ -164,28 +164,28 @@ public class WormholeGeneratorHelper extends Block {
                         continue;
 
                     if(offset.equals(kineticOffset)) {
-                        BlockState kineticBlockState = BlockInit.WORMHOLE_GENERATOR_KINETIC.getDefaultState()
+                        BlockState kineticBlockState = ModBlocks.WORMHOLE_GENERATOR_KINETIC.getDefaultState()
                                 .setValue(FACING, facing);
                         pLevel.setBlockAndUpdate(pPos.offset(kineticOffset), kineticBlockState);
 
                     } else if(offset.equals(fluidOffset)) {
-                        BlockState fluidBlockState = BlockInit.WORMHOLE_GENERATOR_FLUID.getDefaultState()
+                        BlockState fluidBlockState = ModBlocks.WORMHOLE_GENERATOR_FLUID.getDefaultState()
                                 .setValue(FACING, facing.getClockWise());
                         pLevel.setBlockAndUpdate(pPos.offset(fluidOffset), fluidBlockState);
 
                     } else if(offset.equals(itemOffset)) {
-                        BlockState itemBlockState = BlockInit.WORMHOLE_GENERATOR_ITEM.getDefaultState()
+                        BlockState itemBlockState = ModBlocks.WORMHOLE_GENERATOR_ITEM.getDefaultState()
                                 .setValue(FACING, facing.getCounterClockWise());
                         pLevel.setBlockAndUpdate(pPos.offset(itemOffset), itemBlockState);
 
                     } else if(offset.equals(coreOffset)) {
-                        BlockState coreBlockState = BlockInit.WORMHOLE_GENERATOR_CORE.getDefaultState()
+                        BlockState coreBlockState = ModBlocks.WORMHOLE_GENERATOR_CORE.getDefaultState()
                                 .setValue(RUNNING, false)
                                 .setValue(FACING, facing);
                         pLevel.setBlockAndUpdate(pPos.offset(coreOffset), coreBlockState);
 
                     } else {
-                        BlockState blockState = BlockInit.WORMHOLE_GENERATOR_HELPER.getDefaultState()
+                        BlockState blockState = ModBlocks.WORMHOLE_GENERATOR_HELPER.getDefaultState()
                                 .setValue(FIRST_PLACED, false)
                                 .setValue(FACING, facing);
                         pLevel.setBlockAndUpdate(pPos.offset(offset), blockState);

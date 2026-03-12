@@ -1,7 +1,7 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
 import com.simibubi.create.foundation.block.IBE;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.BlockInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -55,7 +55,7 @@ public class WormholeGeneratorFluid extends Block implements IBE<WormholeGenerat
                     BlockPos offset = new BlockPos(x, y, z);
                     BlockState foundState = level.getBlockState(pos.offset(offset));
                     Block foundBlock = foundState.getBlock();
-                    if(foundBlock == BlockInit.WORMHOLE_GENERATOR_CORE.get()) {
+                    if(foundBlock == ModBlocks.WORMHOLE_GENERATOR_CORE.get()) {
                         if(offset.equals(BlockPos.ZERO)) {
                             return pos;
                         }

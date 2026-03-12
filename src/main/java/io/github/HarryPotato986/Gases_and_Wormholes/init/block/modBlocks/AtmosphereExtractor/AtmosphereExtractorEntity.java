@@ -1,8 +1,7 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.recipe.AtmosphereExtractorRecipe;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.ModFluids;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.AtmosphereExtractorMenu;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.*;
 import net.minecraft.core.BlockPos;
@@ -23,9 +22,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -297,8 +294,8 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
             setChanged(level, pPos, pState);
 
             if(progress >= maxProgress) {
-                generateFluid(NITROGEN_TANK, FluidInit.NITROGEN_GAS.get(),78);
-                generateFluid(OXYGEN_TANK, FluidInit.OXYGEN_GAS.get(),21);
+                generateFluid(NITROGEN_TANK, ModFluids.NITROGEN_GAS.get(),78);
+                generateFluid(OXYGEN_TANK, ModFluids.OXYGEN_GAS.get(),21);
                 progress = 0;
             }
         }
@@ -342,14 +339,14 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
             ACQUIRED_FLUID[OXYGEN_SLOT] = false;
             DISTRIBUTED_FLUID[OXYGEN_SLOT] = false;
         }else if(hasFluidSourceInSlot(OXYGEN_SLOT)) {
-            transferItemFluidToTank(OXYGEN_SLOT, this.OXYGEN_TANK, FluidInit.OXYGEN_GAS.get());
+            transferItemFluidToTank(OXYGEN_SLOT, this.OXYGEN_TANK, ModFluids.OXYGEN_GAS.get());
         }
 
         if(this.itemHandler.getStackInSlot(NITROGEN_SLOT).isEmpty()) {
             ACQUIRED_FLUID[NITROGEN_SLOT] = false;
             DISTRIBUTED_FLUID[NITROGEN_SLOT] = false;
         }else if(hasFluidSourceInSlot(NITROGEN_SLOT)) {
-            transferItemFluidToTank(NITROGEN_SLOT, this.NITROGEN_TANK, FluidInit.NITROGEN_GAS.get());
+            transferItemFluidToTank(NITROGEN_SLOT, this.NITROGEN_TANK, ModFluids.NITROGEN_GAS.get());
         }
     }
 

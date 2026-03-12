@@ -1,9 +1,7 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.FluidInit;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ItemInit;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.WormholeGeneratorMenu;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModItems;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.DirectionWrappedHandler;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.InventoryDirectionEntry;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.InventoryDirectionWrapper;
@@ -11,21 +9,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Containers;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -54,8 +45,8 @@ public class WormholeGeneratorItemEntity extends KineticBlockEntity {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return switch (slot) {
-                case LIQUID_NITROGEN_SLOT -> stack.getItem() == ItemInit.LIQUID_NITROGEN_BUCKET.get() || stack.getItem() == Items.BUCKET;
-                case BEDROCK_DUST_INPUT -> stack.getItem() == ItemInit.BEDROCK_DUST.get();
+                case LIQUID_NITROGEN_SLOT -> stack.getItem() == ModItems.LIQUID_NITROGEN_BUCKET.get() || stack.getItem() == Items.BUCKET;
+                case BEDROCK_DUST_INPUT -> stack.getItem() == ModItems.BEDROCK_DUST.get();
                 default -> super.isItemValid(slot, stack);
             };
         }
