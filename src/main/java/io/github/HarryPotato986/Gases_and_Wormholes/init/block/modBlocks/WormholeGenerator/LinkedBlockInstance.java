@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
+/*
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.api.instance.TickableInstance;
 import com.simibubi.create.AllPartialModels;
@@ -43,12 +44,12 @@ public class LinkedBlockInstance extends KineticBlockEntityInstance<LinkedBlockE
             setup(shaft);
             active = true;
         }
-         */
+
 
         //setup(shaft);
     }
 
-    /*
+
     @Override
     public boolean shouldReset() {
         boolean isBlockEntityInFrontKinetic = BE.isBlockEntityInFrontKinetic();
@@ -65,7 +66,7 @@ public class LinkedBlockInstance extends KineticBlockEntityInstance<LinkedBlockE
 
         return false;
     }
-     */
+
 
     @Override
     public void update() {
@@ -89,4 +90,4 @@ public class LinkedBlockInstance extends KineticBlockEntityInstance<LinkedBlockE
     }
 }
 
-
+*/

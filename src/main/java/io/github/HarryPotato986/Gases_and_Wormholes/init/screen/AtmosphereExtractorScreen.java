@@ -11,12 +11,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+
 
 import java.util.Optional;
 
 public class AtmosphereExtractorScreen extends AbstractContainerScreen<AtmosphereExtractorMenu> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/atmosphere_extractor_gui.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "textures/gui/atmosphere_extractor_gui.png");
 
     private EnergyDisplayTooltipArea energyInfoArea;
     private FluidTankRenderer nitrogenTankRenderer;
@@ -59,18 +60,6 @@ public class AtmosphereExtractorScreen extends AbstractContainerScreen<Atmospher
         }
     }
 
-    private void renderEnergyAreaTooltip(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, int x, int y) {
-        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 156, 11, 8, 64)) {
-            pGuiGraphics.renderTooltip(this.font, energyInfoArea.getTooltips(),
-                    Optional.empty(), pMouseX - x, pMouseY - y);
-        }
-    }
-
-    private void assignEnergyInfoArea() {
-        this.energyInfoArea = new EnergyDisplayTooltipArea(((width - imageWidth) / 2) + 156,
-                ((height - imageHeight) / 2) + 11, menu.blockEntity.getEnergyStorage());
-    }
-
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -102,7 +91,7 @@ public class AtmosphereExtractorScreen extends AbstractContainerScreen<Atmospher
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        renderBackground(guiGraphics);
+        renderBackground(guiGraphics, mouseX, mouseY, delta);
         super.render(guiGraphics, mouseX, mouseY, delta);
         renderTooltip(guiGraphics, mouseX, mouseY);
     }

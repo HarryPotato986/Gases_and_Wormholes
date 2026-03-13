@@ -2,7 +2,7 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.Wormho
 
 import com.simibubi.create.foundation.block.IBE;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -125,7 +125,7 @@ public class WormholeGeneratorItem extends Block implements IBE<WormholeGenerato
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new WormholeGeneratorItemEntity(TileEntitiesInit.WORMHOLE_GENERATOR_ITEM_ENTITY.get(), pos, state);
+        return new WormholeGeneratorItemEntity(ModBlockEntities.WORMHOLE_GENERATOR_ITEM_ENTITY.get(), pos, state);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class WormholeGeneratorItem extends Block implements IBE<WormholeGenerato
 
     @Override
     public BlockEntityType<? extends WormholeGeneratorItemEntity> getBlockEntityType() {
-        return TileEntitiesInit.WORMHOLE_GENERATOR_ITEM_ENTITY.get();
+        return ModBlockEntities.WORMHOLE_GENERATOR_ITEM_ENTITY.get();
     }
 
     @Override
@@ -144,7 +144,7 @@ public class WormholeGeneratorItem extends Block implements IBE<WormholeGenerato
             return null;
         }
 
-        return createTickerHelper(pBlockEntityType, TileEntitiesInit.WORMHOLE_GENERATOR_ITEM_ENTITY.get(),
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.WORMHOLE_GENERATOR_ITEM_ENTITY.get(),
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
     }
 

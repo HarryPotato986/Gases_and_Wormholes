@@ -2,14 +2,14 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.Atmosp
 
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
+
 import org.jetbrains.annotations.Nullable;
 
 
@@ -59,28 +59,17 @@ public class AtmosphereExtractor extends HorizontalKineticBlock implements IBE<A
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+    public ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if(entity instanceof AtmosphereExtractorEntity) {
-                NetworkHooks.openScreen(((ServerPlayer)pPlayer), (AtmosphereExtractorEntity)entity, pPos);
+            if(entity instanceof AtmosphereExtractorEntity atmosphereExtractorEntity) {
+                ((ServerPlayer) pPlayer).openMenu(new SimpleMenuProvider(atmosphereExtractorEntity, Component.literal("Atmosphere Extractor")), pPos);
             }else{
                 throw new IllegalStateException("Our Container provider is missing!");
             }
         }
 
-        return InteractionResult.sidedSuccess(pLevel.isClientSide());
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        if(pLevel.isClientSide()) {
-            return null;
-        }
-
-        return createTickerHelper(pBlockEntityType, TileEntitiesInit.ATMOSPHERE_EXTRACTOR_ENTITY.get(),
-                (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
+        return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
     }
 
     @Override
@@ -101,7 +90,7 @@ public class AtmosphereExtractor extends HorizontalKineticBlock implements IBE<A
 
     @Override
     public BlockEntityType<? extends AtmosphereExtractorEntity> getBlockEntityType() {
-        return TileEntitiesInit.ATMOSPHERE_EXTRACTOR_ENTITY.get();
+        return ModBlockEntities.ATMOSPHERE_EXTRACTOR_ENTITY.get();
     }
 
     @Override
@@ -115,6 +104,17 @@ public class AtmosphereExtractor extends HorizontalKineticBlock implements IBE<A
     public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
         BlockEntity blockentity = pLevel.getBlockEntity(pPos);
         return blockentity instanceof MenuProvider ? (MenuProvider)blockentity : null;
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        if(pLevel.isClientSide()) {
+            return null;
+        }
+
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.ATMOSPHERE_EXTRACTOR_ENTITY.get(),
+                (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
     }
 
     @Nullable

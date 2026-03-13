@@ -1,20 +1,24 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity;
 
+import com.simibubi.create.AllPartialModels;
+import com.simibubi.create.content.kinetics.base.OrientedRotatingVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorEntity;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorInstance;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorVisual;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorRenderer;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
 
 import static io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes.REGISTRATE;
 
-public class TileEntitiesInit {
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Gases_and_Wormholes.MODID);
+public class ModBlockEntities {
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
+            DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, Gases_and_Wormholes.MODID);
 
     /*
     public static final RegistryObject<BlockEntityType<AtmosphereExtractorEntity>> ATMOSPHERE_EXTRACTOR_ENTITY =
@@ -25,7 +29,7 @@ public class TileEntitiesInit {
 
     public static final BlockEntityEntry<AtmosphereExtractorEntity> ATMOSPHERE_EXTRACTOR_ENTITY = REGISTRATE
             .blockEntity("atmosphere_extractor_entity", AtmosphereExtractorEntity::new)
-            .instance(() -> AtmosphereExtractorInstance::new, false)
+            .visual(() -> AtmosphereExtractorVisual::new, false)
             .validBlocks(ModBlocks.ATMOSPHERE_EXTRACTOR)
             .renderer(() -> AtmosphereExtractorRenderer::new)
             .register();
@@ -55,7 +59,7 @@ public class TileEntitiesInit {
 
     public static final BlockEntityEntry<WormholeGeneratorKineticEntity> WORMHOLE_GENERATOR_KINETIC_ENTITY = REGISTRATE
             .blockEntity("wormhole_generator_kinetic_entity", WormholeGeneratorKineticEntity::new)
-            .instance(() -> WormholeGeneratorShaftInstance::new, false)
+            .visual(() -> OrientedRotatingVisual.of(AllPartialModels.SHAFT_HALF), false)
             .validBlocks(ModBlocks.WORMHOLE_GENERATOR_KINETIC)
             .renderer(() -> WormholeGeneratorShaftRenderer::new)
             .register();

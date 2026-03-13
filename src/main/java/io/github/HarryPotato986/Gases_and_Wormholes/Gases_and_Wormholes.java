@@ -13,10 +13,10 @@ import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.ModFluids;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.ModFluidTypes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModItems;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.ModBlockEntities;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.recipe.ModRecipes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.AtmosphereExtractorScreen;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.MenuTypesInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.ModMenuTypes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.WormholeGeneratorScreen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -42,11 +42,11 @@ public class Gases_and_Wormholes {
 
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
-        TileEntitiesInit.BLOCK_ENTITIES.register(modEventBus);
+        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModFluidTypes.FLUID_TYPES.register(modEventBus);
         ModFluids.FLUIDS.register(modEventBus);
         //CreativeTabInit.register(modEventBus);
-        MenuTypesInit.MENUS.register(modEventBus);
+        ModMenuTypes.MENUS.register(modEventBus);
         ModRecipes.SERIALIZERS.register(modEventBus);
 
 
@@ -69,8 +69,8 @@ public class Gases_and_Wormholes {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            MenuScreens.register(MenuTypesInit.ATMOSPHERE_EXTRACTOR_MENU.get(), AtmosphereExtractorScreen::new);
-            MenuScreens.register(MenuTypesInit.WORMHOLE_GENERATOR_MENU.get(), WormholeGeneratorScreen::new);
+            MenuScreens.register(ModMenuTypes.ATMOSPHERE_EXTRACTOR_MENU.get(), AtmosphereExtractorScreen::new);
+            MenuScreens.register(ModMenuTypes.WORMHOLE_GENERATOR_MENU.get(), WormholeGeneratorScreen::new);
 
             ItemBlockRenderTypes.setRenderLayer(ModFluids.SOURCE_LIQUID_NITROGEN.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(ModFluids.FLOWING_LIQUID_NITROGEN.get(), RenderType.translucent());

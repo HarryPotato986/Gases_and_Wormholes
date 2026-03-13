@@ -1,7 +1,7 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
 import com.simibubi.create.foundation.block.IBE;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
@@ -91,7 +90,7 @@ public class WormholeGeneratorCore extends Block implements IBE<WormholeGenerato
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new WormholeGeneratorCoreEntity(TileEntitiesInit.WORMHOLE_GENERATOR_CORE_ENTITY.get(), pos, state);
+        return new WormholeGeneratorCoreEntity(ModBlockEntities.WORMHOLE_GENERATOR_CORE_ENTITY.get(), pos, state);
     }
 
     @Override
@@ -101,7 +100,7 @@ public class WormholeGeneratorCore extends Block implements IBE<WormholeGenerato
 
     @Override
     public BlockEntityType<? extends WormholeGeneratorCoreEntity> getBlockEntityType() {
-        return TileEntitiesInit.WORMHOLE_GENERATOR_CORE_ENTITY.get();
+        return ModBlockEntities.WORMHOLE_GENERATOR_CORE_ENTITY.get();
     }
 
     @Override
@@ -110,7 +109,7 @@ public class WormholeGeneratorCore extends Block implements IBE<WormholeGenerato
             return null;
         }
 
-        return createTickerHelper(pBlockEntityType, TileEntitiesInit.WORMHOLE_GENERATOR_CORE_ENTITY.get(),
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.WORMHOLE_GENERATOR_CORE_ENTITY.get(),
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
     }
 

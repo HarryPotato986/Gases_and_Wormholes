@@ -1,12 +1,10 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.block.IBE;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -18,7 +16,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -73,7 +70,7 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
             return null;
         }
 
-        return createTickerHelper(pBlockEntityType, TileEntitiesInit.LINKED_BLOCK_ENTITY.get(),
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.LINKED_BLOCK_ENTITY.get(),
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
     }
 
@@ -106,12 +103,12 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new LinkedBlockEntity(TileEntitiesInit.LINKED_BLOCK_ENTITY.get(), pos, state);
+        return new LinkedBlockEntity(ModBlockEntities.LINKED_BLOCK_ENTITY.get(), pos, state);
     }
 
     @Override
     public BlockEntityType<? extends LinkedBlockEntity> getBlockEntityType() {
-        return TileEntitiesInit.LINKED_BLOCK_ENTITY.get();
+        return ModBlockEntities.LINKED_BLOCK_ENTITY.get();
     }
 
     /*

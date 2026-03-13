@@ -3,7 +3,7 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.Wormho
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.TileEntitiesInit;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -125,7 +125,7 @@ public class WormholeGeneratorKinetic extends HorizontalKineticBlock implements 
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new WormholeGeneratorKineticEntity(TileEntitiesInit.WORMHOLE_GENERATOR_KINETIC_ENTITY.get(), pos, state);
+        return new WormholeGeneratorKineticEntity(ModBlockEntities.WORMHOLE_GENERATOR_KINETIC_ENTITY.get(), pos, state);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class WormholeGeneratorKinetic extends HorizontalKineticBlock implements 
 
     @Override
     public BlockEntityType<? extends WormholeGeneratorKineticEntity> getBlockEntityType() {
-        return TileEntitiesInit.WORMHOLE_GENERATOR_KINETIC_ENTITY.get();
+        return ModBlockEntities.WORMHOLE_GENERATOR_KINETIC_ENTITY.get();
     }
 
     @Override
@@ -144,7 +144,7 @@ public class WormholeGeneratorKinetic extends HorizontalKineticBlock implements 
             return null;
         }
 
-        return createTickerHelper(pBlockEntityType, TileEntitiesInit.WORMHOLE_GENERATOR_KINETIC_ENTITY.get(),
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.WORMHOLE_GENERATOR_KINETIC_ENTITY.get(),
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
     }
 

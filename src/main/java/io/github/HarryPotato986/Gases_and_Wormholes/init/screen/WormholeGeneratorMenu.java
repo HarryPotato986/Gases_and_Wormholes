@@ -27,7 +27,7 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
     }
 
     public WormholeGeneratorMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
-        super(MenuTypesInit.WORMHOLE_GENERATOR_MENU.get(), pContainerId);
+        super(ModMenuTypes.WORMHOLE_GENERATOR_MENU.get(), pContainerId);
         checkContainerSize(inv, 2);
         blockEntity = ((WormholeGeneratorCoreEntity) entity);
         this.level = inv.player.level();
