@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.datagen;
 
+/*
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -26,3 +27,5 @@ public class ModItemTagGenerator extends ItemTagsProvider {
         return "Item Tags";
     }
 }
+
+ */

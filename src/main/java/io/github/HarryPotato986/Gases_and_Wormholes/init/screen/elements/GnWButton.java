@@ -7,13 +7,14 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -30,26 +31,29 @@ public class GnWButton extends AbstractButton {
     protected final CreateNarration createNarration;
 
     public ResourceLocation TEXTURE;
-    protected int TEXTURE_X = 0;
-    protected int TEXTURE_Y = 0;
+    protected WidgetSprites SPRITES;
+    protected int TEXTURE_X;
+    protected int TEXTURE_Y;
 
     public static GnWBuilder GnWBuilder(Component pMessage, OnPress pOnPress) {
         return new GnWBuilder(pMessage, pOnPress);
     }
 
     protected GnWButton(int pX, int pY, int pWidth, int pHeight, Component pMessage, OnPress pOnPress,
-                        CreateNarration pCreateNarration, ResourceLocation texture, int textureX, int textureY) {
+                        CreateNarration pCreateNarration, ResourceLocation texture, ResourceLocation textureDisabled,
+                        ResourceLocation textureHighlighted, int textureX, int textureY) {
         super(pX, pY, pWidth, pHeight, pMessage);
         this.onPress = pOnPress;
         this.createNarration = pCreateNarration;
         this.TEXTURE = texture;
+        this.SPRITES = new WidgetSprites(texture, textureDisabled, textureHighlighted);
         this.TEXTURE_X = textureX;
         this.TEXTURE_Y = textureY;
     }
 
     protected GnWButton(GnWBuilder builder) {
         this(builder.x, builder.y, builder.width, builder.height, builder.message, builder.onPress,
-                builder.createNarration, builder.TEXTURE, builder.TEXTURE_X, builder.TEXTURE_Y);
+                builder.createNarration, builder.TEXTURE, builder.TEXTURE_DISABLED, builder.TEXTURE_HIGHLIGHTED, builder.TEXTURE_X, builder.TEXTURE_Y);
     }
 
     public void onPress() {
@@ -71,7 +75,7 @@ public class GnWButton extends AbstractButton {
         pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        pGuiGraphics.blitNineSliced(TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 1, 1, 1,1, 194, 18, TEXTURE_X, this.getTextureY());
+        pGuiGraphics.blitSprite(SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight());
         pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = getFGColor();
         this.renderString(pGuiGraphics, minecraft.font, i | Mth.ceil(this.alpha * 255.0F) << 24);
@@ -107,7 +111,9 @@ public class GnWButton extends AbstractButton {
         protected int height = 20;
         protected CreateNarration createNarration = GnWButton.DEFAULT_NARRATION;
 
-        protected ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/gnw_button.png");
+        protected ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button");
+        protected ResourceLocation TEXTURE_DISABLED = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button_disabled");
+        protected ResourceLocation TEXTURE_HIGHLIGHTED = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button_highlighted");
         protected int TEXTURE_X = 0;
         protected int TEXTURE_Y = 0;
 

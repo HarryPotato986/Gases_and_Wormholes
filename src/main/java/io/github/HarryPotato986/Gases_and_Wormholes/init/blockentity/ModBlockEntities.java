@@ -36,7 +36,7 @@ public class ModBlockEntities {
 
     public static final BlockEntityEntry<LinkedBlockEntity> LINKED_BLOCK_ENTITY = REGISTRATE
             .blockEntity("linked_block_entity", LinkedBlockEntity::new)
-            //.instance(() -> LinkedBlockInstance::new)
+            .visual(() -> LinkedBlockVisual::new, false)
             .validBlocks(ModBlocks.LINKED_BLOCK)
             .renderer(() -> LinkedBlockRenderer::new)
             .register();

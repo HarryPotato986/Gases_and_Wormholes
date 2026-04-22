@@ -1,9 +1,17 @@
 package io.github.HarryPotato986.Gases_and_Wormholes;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.api.stress.BlockStressValues;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.BaseFluidType;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModCreativeModeTabs;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
@@ -14,7 +22,6 @@ import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.ModFluids;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.ModFluidTypes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModItems;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.ModBlockEntities;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.recipe.ModRecipes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.AtmosphereExtractorScreen;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.ModMenuTypes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.WormholeGeneratorScreen;
@@ -38,22 +45,23 @@ public class Gases_and_Wormholes {
     public Gases_and_Wormholes(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
 
+        REGISTRATE.registerEventListeners(modEventBus);
+
         NeoForge.EVENT_BUS.register(this);
+
+        ModCreativeModeTabs.register(modEventBus);
 
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModFluidTypes.FLUID_TYPES.register(modEventBus);
         ModFluids.FLUIDS.register(modEventBus);
-        //CreativeTabInit.register(modEventBus);
         ModMenuTypes.MENUS.register(modEventBus);
-        ModRecipes.SERIALIZERS.register(modEventBus);
 
-
+        modEventBus.register(ClientModEvents.class);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
@@ -65,15 +73,30 @@ public class Gases_and_Wormholes {
 
     }
 
-    @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents {
+    //@EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
+    public class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            MenuScreens.register(ModMenuTypes.ATMOSPHERE_EXTRACTOR_MENU.get(), AtmosphereExtractorScreen::new);
-            MenuScreens.register(ModMenuTypes.WORMHOLE_GENERATOR_MENU.get(), WormholeGeneratorScreen::new);
-
             ItemBlockRenderTypes.setRenderLayer(ModFluids.SOURCE_LIQUID_NITROGEN.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(ModFluids.FLOWING_LIQUID_NITROGEN.get(), RenderType.translucent());
+        }
+
+        @SubscribeEvent
+        public static void registerScreens(RegisterMenuScreensEvent event) {
+            event.register(ModMenuTypes.ATMOSPHERE_EXTRACTOR_MENU.get(), AtmosphereExtractorScreen::new);
+            event.register(ModMenuTypes.WORMHOLE_GENERATOR_MENU.get(), WormholeGeneratorScreen::new);
+        }
+
+        @SubscribeEvent
+        public static void onClientExtensions(RegisterClientExtensionsEvent event) {
+            event.registerFluidType(((BaseFluidType) ModFluidTypes.LIQUID_NITROGEN_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
+                    ModFluidTypes.LIQUID_NITROGEN_FLUID_TYPE.get());
+
+            event.registerFluidType(((BaseFluidType) ModFluidTypes.NITROGEN_GAS_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
+                    ModFluidTypes.NITROGEN_GAS_FLUID_TYPE.get());
+
+            event.registerFluidType(((BaseFluidType) ModFluidTypes.OXYGEN_GAS_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
+                    ModFluidTypes.OXYGEN_GAS_FLUID_TYPE.get());
         }
     }
 }

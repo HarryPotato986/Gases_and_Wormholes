@@ -14,10 +14,16 @@ public class ModBusEvents {
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.ATMOSPHERE_EXTRACTOR_ENTITY.get(),
                 (be, side) -> be.getItemHandler(side));
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.WORMHOLE_GENERATOR_ITEM_ENTITY.get(),
+                (be, side) -> be.getItemHandler(side));
 
 
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.ATMOSPHERE_EXTRACTOR_ENTITY.get(),
+                (be, side) -> be.getFluidHandler(side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.WORMHOLE_GENERATOR_FLUID_ENTITY.get(),
                 (be, side) -> be.getFluidHandler(side));
     }
 }

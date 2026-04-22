@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.datagen;
 
+/*
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModItems;
 import net.minecraft.data.PackOutput;
@@ -28,3 +29,5 @@ public class ModItemModelProvider extends ItemModelProvider {
                 new ResourceLocation(Gases_and_Wormholes.MODID,"item/" + item.getId().getPath()));
     }
 }
+
+ */

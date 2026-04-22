@@ -34,7 +34,7 @@ public class AtmosphereExtractorVisual extends KineticBlockEntityVisual<Atmosphe
 
         shaft.setup(blockEntity)
                 .setPosition(getVisualPosition())
-                .rotateToFace(Direction.SOUTH, opposite)
+                .rotateToFace(Direction.NORTH, opposite)
                 .setChanged();
     }
 

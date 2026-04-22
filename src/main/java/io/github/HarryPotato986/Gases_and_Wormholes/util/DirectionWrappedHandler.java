@@ -1,17 +1,20 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.util;
 
+/*
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+*/
 
 /*
  * WrappedHandler by noeppi_noeppi
  * under Apache License 2.0: https://github.com/ModdingX/LibX/blob/1.19/LICENSE
  *
  */
+/*
 public class DirectionWrappedHandler implements IItemHandlerModifiable {
     private final IItemHandlerModifiable handler;
     private final Predicate<Integer> extract;
@@ -62,3 +65,4 @@ public class DirectionWrappedHandler implements IItemHandlerModifiable {
         return this.insert.test(slot, stack) && this.handler.isItemValid(slot, stack);
     }
 }
+*/

@@ -12,9 +12,9 @@ import java.util.function.Supplier;
 
 public class ModFluidTypes {
 
-    public static final ResourceLocation WATER_STILL_RL = ResourceLocation.parse("block/water_still");
-    public static final ResourceLocation WATER_FLOWING_RL = ResourceLocation.parse("block/water_flow");
-    public static final ResourceLocation WATER_OVERLAY_RL = ResourceLocation.parse("block/water_overlay");
+    public static final ResourceLocation WATER_STILL_RL = ResourceLocation.withDefaultNamespace("block/water_still");
+    public static final ResourceLocation WATER_FLOWING_RL = ResourceLocation.withDefaultNamespace("block/water_flow");
+    public static final ResourceLocation WATER_OVERLAY_RL = ResourceLocation.withDefaultNamespace("block/water_overlay");
 
     public static final DeferredRegister<FluidType> FLUID_TYPES =
             DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, Gases_and_Wormholes.MODID);

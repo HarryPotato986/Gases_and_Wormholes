@@ -5,8 +5,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -20,14 +20,15 @@ public class GnWMultiStateButton<S extends Enum<S> & MessageGetter<S> & Indexabl
     }
 
     protected GnWMultiStateButton(int pX, int pY, int pWidth, int pHeight, Component pMessage, OnPress pOnPress, CreateNarration pCreateNarration,
-                                  ResourceLocation texture, int textureX, int textureY, S defaultState) {
-        super(pX, pY, pWidth, pHeight, pMessage, pOnPress, pCreateNarration, texture, textureX, textureY);
+                                  ResourceLocation texture, ResourceLocation textureDisabled,
+                                  ResourceLocation textureHighlighted, int textureX, int textureY, S defaultState) {
+        super(pX, pY, pWidth, pHeight, pMessage, pOnPress, pCreateNarration, texture, textureDisabled, textureHighlighted, textureX, textureY);
         this.STATE = defaultState;
     }
 
     protected GnWMultiStateButton(GnWMultiStateBuilder<S> builder) {
         this(builder.x, builder.y, builder.width, builder.height, builder.message, builder.onPress,
-                builder.createNarration, builder.TEXTURE, builder.TEXTURE_X, builder.TEXTURE_Y, builder.STATE);
+                builder.createNarration, builder.TEXTURE, builder.TEXTURE_DISABLED, builder.TEXTURE_HIGHLIGHTED, builder.TEXTURE_X, builder.TEXTURE_Y, builder.STATE);
     }
 
     @Override
@@ -55,7 +56,9 @@ public class GnWMultiStateButton<S extends Enum<S> & MessageGetter<S> & Indexabl
         protected int height = 20;
         protected CreateNarration createNarration = GnWButton.DEFAULT_NARRATION;
 
-        protected ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/gnw_button.png");
+        protected ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button");
+        protected ResourceLocation TEXTURE_DISABLED = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button_disabled");
+        protected ResourceLocation TEXTURE_HIGHLIGHTED = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button_highlighted");
         protected int TEXTURE_X = 0;
         protected int TEXTURE_Y = 0;
 

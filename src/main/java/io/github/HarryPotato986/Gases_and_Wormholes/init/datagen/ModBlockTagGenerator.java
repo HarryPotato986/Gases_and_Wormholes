@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.datagen;
 
+/*
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import net.minecraft.core.HolderLookup;
@@ -30,3 +31,5 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
         return "Block Tags";
     }
 }
+
+ */

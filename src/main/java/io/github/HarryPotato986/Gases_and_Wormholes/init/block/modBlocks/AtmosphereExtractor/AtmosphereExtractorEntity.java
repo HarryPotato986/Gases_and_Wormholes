@@ -96,6 +96,7 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         };
     }
 
+    /*
     private ModEnergyStorage createEnergyStorage() {
         return new ModEnergyStorage(64000, 200) {
             @Override
@@ -106,6 +107,7 @@ public class AtmosphereExtractorEntity extends KineticBlockEntity implements Men
         };
 
     }
+     */
 
 
     public AtmosphereExtractorEntity(BlockEntityType<?> type, BlockPos pPos, BlockState pBlockState) {

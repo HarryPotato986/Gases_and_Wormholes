@@ -29,26 +29,42 @@ liquid nitrogen for recipes:
 
 
 TODO List:
-Something is super broken, so I can't even keep working in the version I was in. Probably a good excuse to port to 1.21.1 NeoForge.
 
 wormhole generator:
-    make it place a test wormhole
-    test the rewrite of linkedBlockEntity
-        running gets stuck as false, even after start button is pressed. if manually set to true then stuck on true
-            rewrite running to be a blockstate
-                still gets stuck, can't set value from block entity (as in it's not working)
+    ClientPayloadHandler will receive the two wormhole POSs, the two facing directions, and the size of the wormhole.
+    It will generate a dict where the keys are the chunkPos of the blocks, and the values are lists of arrays, where the array has:
+     - the pos of the linked block
+     - the pos of it's partner
+    the function will then iterate through the key value pairs:
+        It will load the chunk of the key
+        It will iterate through the list of arrays:
+            It will place a linked block at the pos stored in array[0]
+            It will inject the partner pos stored in array[1] into the block entity
+        It will close the chunk
 
+// Assuming all positions are in the same general chunk area
+    BlockPos firstPos = targetPositions.get(0);
+    ChunkPos chunkPos = new ChunkPos(firstPos);
+    String ticketId = "my_multiblock_edit";
 
-try to fix linkedBlockEntity tick method (maybe full rewrite 😭)
-    wormhole generator entity sets up
+    try {
+        // 1. Force load the chunk once!
+        ForcedChunkManager.forceChunk(level, "yourmod", ticketId, chunkPos.x, chunkPos.z, true, true);
 
-New thoughts:
-    maybe some sort of uuid thing to link the linkedBlockEntitys
-    looking how create networks work, like where they store them
-    maybe the fact that I'm using oak plank block state on line 760 of WormholeGeneratorCoreEntity
-    maybe make setRunning in WormholeGeneratorCoreEntity take the level and blockState from beginStartup and beginShutdown, which get it from WormholeGeneratorScreen
-    maybe also call setRunning in tick and use the pState and level that are already there
-    maybe you need to manually block update in setRunning
+        // Allow a quick safety check to ensure it loaded
+        if (level.isLoaded(firstPos)) {
+
+            // 2. Loop through and set all blocks efficiently
+            for (BlockPos pos : targetPositions) {
+                // Example: level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+            }
+
+        }
+
+    } finally {
+        // 3. Close the chunk exactly once when the entire loop finishes!
+        ForcedChunkManager.forceChunk(level, "yourmod", ticketId, chunkPos.x, chunkPos.z, false, false);
+    }
 
 
 DO LATER List:

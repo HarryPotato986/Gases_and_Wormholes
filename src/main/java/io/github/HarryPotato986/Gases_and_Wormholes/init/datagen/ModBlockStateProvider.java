@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.datagen;
 
+/*
 import com.tterrag.registrate.util.entry.BlockEntry;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
@@ -25,3 +26,5 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
     }
 }
+
+ */

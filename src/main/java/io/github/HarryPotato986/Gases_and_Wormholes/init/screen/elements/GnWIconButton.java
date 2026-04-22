@@ -8,8 +8,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -30,9 +30,10 @@ public class GnWIconButton extends GnWButton{
     }
 
     protected GnWIconButton(int pX, int pY, int pWidth, int pHeight, OnPress pOnPress,
-                            CreateNarration pCreateNarration, ResourceLocation texture, int textureX, int textureY,
+                            CreateNarration pCreateNarration, ResourceLocation texture, ResourceLocation textureDisabled,
+                            ResourceLocation textureHighlighted, int textureX, int textureY,
                             ResourceLocation icon, int iconX, int iconY, int iconWidth, int iconHeight, boolean isIconBound) {
-        super(pX, pY, pWidth, pHeight, BLANK, pOnPress, pCreateNarration, texture, textureX, textureY);
+        super(pX, pY, pWidth, pHeight, BLANK, pOnPress, pCreateNarration, texture, textureDisabled, textureHighlighted, textureX, textureY);
         this.ICON_TEXTURE = icon;
         this.ICON_X = iconX;
         this.ICON_Y = iconY;
@@ -43,7 +44,7 @@ public class GnWIconButton extends GnWButton{
 
     public GnWIconButton(GnWIconBuilder builder) {
         this(builder.x, builder.y, builder.width, builder.height, builder.onPress,
-                builder.createNarration, builder.TEXTURE, builder.TEXTURE_X, builder.TEXTURE_Y,
+                builder.createNarration, builder.TEXTURE, builder.TEXTURE_DISABLED, builder.TEXTURE_HIGHLIGHTED, builder.TEXTURE_X, builder.TEXTURE_Y,
                 builder.ICON_TEXTURE, builder.ICON_X, builder.ICON_Y, builder.ICON_WIDTH, builder.ICON_HEIGHT, builder.IS_ICON_BOUND);
     }
 
@@ -57,9 +58,9 @@ public class GnWIconButton extends GnWButton{
             this.setWidth(this.ICON_WIDTH + 4);
             this.setHeight(this.ICON_HEIGHT + 4);
         }
-        pGuiGraphics.blitNineSliced(TEXTURE, this.getX(), this.getY(), this.ICON_WIDTH + 4, this.ICON_HEIGHT + 4, 1, 1, 1,1, 194, 18, TEXTURE_X, this.getTextureY());
+        pGuiGraphics.blitSprite(SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.ICON_WIDTH + 4, this.ICON_HEIGHT + 4);
         pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-        pGuiGraphics.blit(this.ICON_TEXTURE, findCenter(this.getX(), this.getWidth(), this.ICON_WIDTH), findCenter(this.getY(), this.getHeight(), this.ICON_HEIGHT), this.ICON_X, this.ICON_Y, this.ICON_WIDTH, this.ICON_HEIGHT);
+        pGuiGraphics.blit(this.ICON_TEXTURE, findCenter(this.getX(), this.getWidth(), this.ICON_WIDTH), findCenter(this.getY(), this.getHeight(), this.ICON_HEIGHT), 0, this.ICON_X, this.ICON_Y, this.ICON_WIDTH, this.ICON_HEIGHT, this.ICON_WIDTH, this.ICON_HEIGHT);
 
     }
 
@@ -79,11 +80,13 @@ public class GnWIconButton extends GnWButton{
         protected int height = 20;
         protected CreateNarration createNarration = GnWButton.DEFAULT_NARRATION;
 
-        protected ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/gnw_button.png");
+        protected ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button");
+        protected ResourceLocation TEXTURE_DISABLED = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button_disabled");
+        protected ResourceLocation TEXTURE_HIGHLIGHTED = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button_highlighted");
         protected int TEXTURE_X = 0;
         protected int TEXTURE_Y = 0;
 
-        protected ResourceLocation ICON_TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/gnw_button.png");
+        protected ResourceLocation ICON_TEXTURE = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "textures/gui/Wormhole_button_icons.png");
         protected int ICON_X = 0;
         protected int ICON_Y = 0;
         protected int ICON_WIDTH = 16;

@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.compat;
 
+/*
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.recipe.AtmosphereExtractorRecipe;
@@ -16,8 +17,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class AtmosphereExtractionRecipeCategory implements IRecipeCategory<AtmosphereExtractorRecipe> {
-    public static final ResourceLocation UID = new ResourceLocation(Gases_and_Wormholes.MODID, "atmosphere_extraction");
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/atmosphere_extractor_gui.png");
+    public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "atmosphere_extraction");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "textures/gui/atmosphere_extractor_gui.png");
 
     public static final RecipeType<AtmosphereExtractorRecipe> ATMOSPHERE_EXTRACTION_TYPE =
             new RecipeType<>(UID, AtmosphereExtractorRecipe.class);
@@ -58,3 +59,5 @@ public class AtmosphereExtractionRecipeCategory implements IRecipeCategory<Atmos
         builder.addSlot(RecipeIngredientRole.OUTPUT, 80, 59).addItemStack(recipe.getResultItem(null));
     }
 }
+
+ */

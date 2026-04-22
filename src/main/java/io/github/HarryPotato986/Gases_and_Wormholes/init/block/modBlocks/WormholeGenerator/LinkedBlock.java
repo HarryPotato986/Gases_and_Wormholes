@@ -1,10 +1,18 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -16,7 +24,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlockEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final BooleanProperty HAS_SHAFT = BooleanProperty.create("has_shaft");
     //public static final BooleanProperty IS_PRIMARY_BLOCK = BooleanProperty.create("is_primary_block");
     //public static final BlockPos PARTNER_POS;
 
@@ -92,6 +103,77 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
     }
 
     @Override
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighborPos) {
+        super.onNeighborChange(state, level, pos, neighborPos);
+
+        //if (!level.isClientSide() && neighborPos == pos.relative(state.getValue(FACING)) && level.getBlockEntity(pos) instanceof LinkedBlockEntity be) {
+        //    be.onNeighborBlockUpdate();
+        //    System.out.println("onNeighborChange");
+        //}
+    }
+
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
+
+        if (!level.isClientSide() && neighborPos == pos.relative(state.getValue(FACING)) && level.getBlockEntity(pos) instanceof LinkedBlockEntity be) {
+            be.onNeighborBlockUpdate();
+        }
+        //System.out.println("neighborChanged");
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
+        boolean currentShaftState = state.getValue(HAS_SHAFT);
+
+        // Putting a shaft inside the block
+        if (!currentShaftState && heldItem.is(AllBlocks.SHAFT.get().asItem())) {
+            if (!level.isClientSide()) {
+                // Consume 1 shaft from the player
+                if (!player.getAbilities().instabuild) {
+                    heldItem.shrink(1);
+                }
+
+                level.setBlock(pos, state.setValue(HAS_SHAFT, true), 3);
+
+                if (level.getBlockEntity(pos) instanceof LinkedBlockEntity be) {
+                    BlockPos partnerPos = be.getLinkedPartner();
+                    if (level.getBlockState(partnerPos).getBlock() == ModBlocks.LINKED_BLOCK.get() &&
+                            level.getBlockEntity(partnerPos) instanceof LinkedBlockEntity) {
+                        level.setBlock(partnerPos, state.setValue(HAS_SHAFT, true), 3);
+                    }
+                }
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        }
+
+        // Using the Wrench to remove the shaft
+        if (currentShaftState && heldItem.is(AllItems.WRENCH.get())) {
+            if (!level.isClientSide()) {
+                // Drop the shaft as a physical item in the world
+                ItemStack drop = new ItemStack(AllBlocks.SHAFT.get());
+                BlockPos dropPos = pos.relative(state.getValue(FACING));
+                ItemEntity itemEntity = new ItemEntity(level, dropPos.getX() + 0.5, dropPos.getY() + 0.5, dropPos.getZ() + 0.5, drop);
+                level.addFreshEntity(itemEntity);
+
+                level.setBlock(pos, state.setValue(HAS_SHAFT, false), 3);
+
+                if (level.getBlockEntity(pos) instanceof LinkedBlockEntity be) {
+                    BlockPos partnerPos = be.getLinkedPartner();
+                    if (level.getBlockState(partnerPos).getBlock() == ModBlocks.LINKED_BLOCK.get() &&
+                            level.getBlockEntity(partnerPos) instanceof LinkedBlockEntity) {
+                        level.setBlock(partnerPos, state.setValue(HAS_SHAFT, false), 3);
+                    }
+                }
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        }
+
+        return super.useWithoutItem(state, level, pos, player, hitResult);
+    }
+
+    @Override
     public Class<LinkedBlockEntity> getBlockEntityClass() {
         return LinkedBlockEntity.class;
     }
@@ -128,6 +210,7 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(FACING);
+        pBuilder.add(HAS_SHAFT);
         //pBuilder.add(IS_PRIMARY_BLOCK);
     }
 }

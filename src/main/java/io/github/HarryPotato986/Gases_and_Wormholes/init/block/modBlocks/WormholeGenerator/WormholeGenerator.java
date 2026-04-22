@@ -1,8 +1,8 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
+/*
 import net.minecraftforge.network.NetworkHooks;
 
-/*
 public class WormholeGenerator extends HorizontalKineticBlock implements IBE<WormholeGeneratorCoreEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final EnumProperty<WormholeGeneratorBlockTypes> BLOCK_FUNCTION = EnumProperty.create("block_function", WormholeGeneratorBlockTypes.class);

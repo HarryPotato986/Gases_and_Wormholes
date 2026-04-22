@@ -73,8 +73,12 @@ public class AtmosphereExtractorScreen extends AbstractContainerScreen<Atmospher
         renderProgressArrow(guiGraphics, x, y);
 
         //energyInfoArea.render(guiGraphics);
-        nitrogenTankRenderer.render(guiGraphics, x + 26, y + 11, menu.blockEntity.getFluid(0));
-        oxygenTankRenderer.render(guiGraphics, x + 134, y + 11, menu.blockEntity.getFluid(1));
+        FluidStack test = menu.blockEntity.getFluid(0);
+        FluidStack test2 = menu.blockEntity.getFluid(1);
+        if (test != null && test2 != null && !test.isEmpty() && !test2.isEmpty()) {
+            nitrogenTankRenderer.render(guiGraphics, x + 26, y + 11, menu.blockEntity.getFluid(0));
+            oxygenTankRenderer.render(guiGraphics, x + 134, y + 11, menu.blockEntity.getFluid(1));
+        }
     }
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {

@@ -39,6 +39,11 @@ public enum WormholeSizeButtonStates implements IconGetter<WormholeSizeButtonSta
     }
 
     @Override
+    public String toString() {
+        return getExtraInfo();
+    }
+
+    @Override
     public WormholeSizeButtonStates getEnum(int index) {
         return switch (index) {
             default -> ONE;

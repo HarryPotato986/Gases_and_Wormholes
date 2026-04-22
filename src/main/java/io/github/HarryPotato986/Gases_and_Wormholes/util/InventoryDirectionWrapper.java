@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.util;
 
+/*
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -19,3 +20,5 @@ public class InventoryDirectionWrapper {
         }
     }
 }
+
+ */

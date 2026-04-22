@@ -4,15 +4,11 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.ModFluids;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModItems;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.WormholeGeneratorMenu;
-import io.github.HarryPotato986.Gases_and_Wormholes.util.DirectionWrappedHandler;
-import io.github.HarryPotato986.Gases_and_Wormholes.util.InventoryDirectionEntry;
-import io.github.HarryPotato986.Gases_and_Wormholes.util.InventoryDirectionWrapper;
+import io.github.HarryPotato986.Gases_and_Wormholes.networking.packet.WormholeData;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -33,14 +29,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidActionResult;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,7 +59,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return switch (slot) {
-                case LIQUID_NITROGEN_SLOT -> stack.getItem() == ModItems.LIQUID_NITROGEN_BUCKET.get() || stack.getItem() == Items.BUCKET;
+                case LIQUID_NITROGEN_SLOT -> stack.getItem() == ModFluids.LIQUID_NITROGEN_BUCKET.get() || stack.getItem() == Items.BUCKET;
                 case BEDROCK_DUST_INPUT -> stack.getItem() == ModItems.BEDROCK_DUST.get();
                 default -> super.isItemValid(slot, stack);
             };
@@ -75,8 +72,6 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
     public BlockPos fluidInput;
     private BlockPos kineticInput;
 
-    private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
-    private LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
 
     private static final int LIQUID_NITROGEN_SLOT = 0;
     private static final int BEDROCK_DUST_INPUT = 1;
@@ -98,13 +93,13 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
     public int WormholeSize = 0;
 
 
-    public BlockPos[] masterList;
-    public Map<BlockPos, BlockPos> lookUpTable = new HashMap<>();
-    private List<BlockPos> setupQueue = new ArrayList<>();
-    private List<BlockPos[]> placementPosQueue = new ArrayList<>();
-    private List<BlockState[]> placementStateQueue = new ArrayList<>();
-    private int setupDelay = 0;
-    private int placementDelay = 0;
+    //public BlockPos[] masterList;
+    //public Map<BlockPos, BlockPos> lookUpTable = new HashMap<>();
+    //private List<BlockPos> setupQueue = new ArrayList<>();
+    //private List<BlockPos[]> placementPosQueue = new ArrayList<>();
+    //private List<BlockState[]> placementStateQueue = new ArrayList<>();
+    //private int setupDelay = 0;
+    //private int placementDelay = 0;
 
 
 
@@ -170,7 +165,26 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         return pos.offset(offset);
     }
 
-    private ItemStackHandler getItemHandler() {
+    private ItemStackHandler getLocalItemHandler() {
+        if (itemInput == null) {
+            itemInput = findItemInput();
+            //System.out.println("ItemHandlerPOS: " + itemInput.toString());
+        }
+
+        if (!this.hasLevel()) {
+            //System.out.println("Used tempItemHandler because no level");
+            return tempItemHandler;
+        }
+
+        BlockEntity BE = this.getLevel().getBlockEntity(itemInput);
+        if (BE instanceof WormholeGeneratorItemEntity) {
+            return ((WormholeGeneratorItemEntity) BE).itemHandler;
+        }
+        System.out.println("Used tempItemHandler because no BE");
+        return tempItemHandler;
+    }
+
+    public IItemHandler getItemHandler() {
         if (itemInput == null) {
             itemInput = findItemInput();
             System.out.println("ItemHandlerPOS: " + itemInput.toString());
@@ -192,7 +206,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
     private FluidTank getFluidTank() {
         if (fluidInput == null) {
             fluidInput = findFluidInput();
-            System.out.println("FluidTankPOS: " + fluidInput.toString());
+            //System.out.println("FluidTankPOS: " + fluidInput.toString());
         }
 
         if (!this.hasLevel()) {
@@ -208,6 +222,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         return tempTank;
     }
 
+    /*
     private final Map<Direction, LazyOptional<DirectionWrappedHandler>> directionWrappedHandlerMap =
             new InventoryDirectionWrapper(getItemHandler(),
                     new InventoryDirectionEntry(Direction.DOWN, BEDROCK_DUST_INPUT, false),
@@ -216,7 +231,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
                     new InventoryDirectionEntry(Direction.EAST, BEDROCK_DUST_INPUT, false),
                     new InventoryDirectionEntry(Direction.WEST, BEDROCK_DUST_INPUT, false),
                     new InventoryDirectionEntry(Direction.UP, BEDROCK_DUST_INPUT, false)).directionsMap;
-
+    */
 
     protected final ContainerData data;
     private int progress = 0;
@@ -297,12 +312,13 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
             consumeFluid();
             consumeDust();
 
+            /*
             //System.out.println(placementPosQueue.get(0)[0] + " " + placementPosQueue.get(0)[1]);
             if (!level.isClientSide) {
                 if (placementDelay <= 0) {
                     while (!placementPosQueue.isEmpty()) {
-                        BlockPos[] pairPos = placementPosQueue.remove(0);
-                        BlockState[] pairState = placementStateQueue.remove(0);
+                        BlockPos[] pairPos = placementPosQueue.removeFirst();
+                        BlockState[] pairState = placementStateQueue.removeFirst();
                         BlockPos partner1Pos = pairPos[0];
                         BlockPos partner2Pos = pairPos[1];
                         BlockState partner1State = pairState[0];
@@ -318,7 +334,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
                 if (setupDelay <= 0) {
                     while (!setupQueue.isEmpty()) {
                         System.out.println("Queue is working");
-                        BlockPos partner1 = setupQueue.remove(0);
+                        BlockPos partner1 = setupQueue.removeFirst();
                         System.out.println("partner 1: " + partner1);
                         BlockPos partner2 = lookUpTable.get(partner1);
                         System.out.println("partner 2: " + partner2);
@@ -335,6 +351,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
                     setupDelay--;
                 }
             }
+            */
         }
     }
 
@@ -349,7 +366,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
     }
 
     private void consumeDust() {
-        ItemStackHandler itemStack = getItemHandler();
+        ItemStackHandler itemStack = getLocalItemHandler();
         if (progress <= 0) {
             //beginShutdown();
             return;
@@ -382,26 +399,19 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
     }
 
     private void transferItemFluidToTank(int fluidInputSlot, FluidTank fluidTank, Fluid fluid) {
-        getItemHandler().getStackInSlot(fluidInputSlot).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(iFluidHandlerItem -> {
-            if(!ACQUIRED_FLUID && getItemHandler().getStackInSlot(fluidInputSlot).getItem() == Items.BUCKET){
-                //int fillAmount = Math.min(fluidTank.getFluidAmount(), 1000);
-
-                int fillAmount = iFluidHandlerItem.fill(fluidTank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
-                fluidTank.drain(fillAmount, IFluidHandler.FluidAction.EXECUTE);
-                getItemHandler().extractItem(fluidInputSlot, 1, false);
-                getItemHandler().insertItem(fluidInputSlot, iFluidHandlerItem.getContainer(), false);
+        if(!ACQUIRED_FLUID && getItemHandler().getStackInSlot(fluidInputSlot).getItem() == Items.BUCKET){
+            FluidActionResult result = FluidUtil.tryFillContainer(getItemHandler().getStackInSlot(fluidInputSlot), fluidTank, Integer.MAX_VALUE, null, true);
+            if (result.result != ItemStack.EMPTY) {
+                getLocalItemHandler().setStackInSlot(fluidInputSlot, result.result);
                 DISTRIBUTED_FLUID = true;
-            } else if(!DISTRIBUTED_FLUID){
-                int drainAmount = Math.min(fluidTank.getSpace(), 1000);
-
-                FluidStack stack = iFluidHandlerItem.drain(drainAmount, IFluidHandler.FluidAction.SIMULATE);
-                if (stack.getFluid() == fluid) {
-                    stack = iFluidHandlerItem.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
-                    fillTankWithFluid(stack, iFluidHandlerItem.getContainer(), fluidTank, fluidInputSlot);
-                    ACQUIRED_FLUID = true;
-                }
             }
-        });
+        } else if(!DISTRIBUTED_FLUID) {
+            FluidActionResult result = FluidUtil.tryEmptyContainer(getItemHandler().getStackInSlot(fluidInputSlot), fluidTank, Integer.MAX_VALUE, null, true);
+            if (result.result != ItemStack.EMPTY) {
+                getLocalItemHandler().setStackInSlot(fluidInputSlot, result.result);
+                ACQUIRED_FLUID = true;
+            }
+        }
     }
 
     private void fillTankWithFluid(FluidStack stack, ItemStack container, FluidTank fluidTank, int fluidInputSlot) {
@@ -413,74 +423,17 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
     private boolean hasFluidSourceInSlot(int fluidInputSlot) {
         return getItemHandler().getStackInSlot(fluidInputSlot).getCount() > 0 &&
-                getItemHandler().getStackInSlot(fluidInputSlot).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+                getItemHandler().getStackInSlot(fluidInputSlot).getCapability(Capabilities.FluidHandler.ITEM) != null;
     }
 
     public FluidStack getFluid() {
         return getFluidTank().getFluid();
     }
 
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        /*
-        if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            Direction localDir = this.getBlockState().getValue(FACING);
-            LazyOptional<T> handler = switch (localDir) {
-                case NORTH -> returnCorrectTank(side.getOpposite());
-                case EAST -> returnCorrectTank(side.getClockWise());
-                case SOUTH -> returnCorrectTank(side);
-                case WEST -> returnCorrectTank(side.getCounterClockWise());
-                default -> null;
-            };
-
-            if(handler != null) {
-                return handler;
-            }
-        }
-
-        if(cap == ForgeCapabilities.ITEM_HANDLER) {
-            if(side == null) {
-                return lazyItemHandler.cast();
-            }
-
-            if(directionWrappedHandlerMap.containsKey(side)) {
-                Direction localDir = this.getBlockState().getValue(FACING);
-
-                if(side == Direction.DOWN || side == Direction.UP) {
-                    return directionWrappedHandlerMap.get(side).cast();
-                }
-
-                return switch (localDir) {
-                    default -> directionWrappedHandlerMap.get(side.getOpposite()).cast();
-                    case EAST -> directionWrappedHandlerMap.get(side.getClockWise()).cast();
-                    case SOUTH -> directionWrappedHandlerMap.get(side).cast();
-                    case WEST -> directionWrappedHandlerMap.get(side.getCounterClockWise()).cast();
-                };
-            }
-        }*/
-
-        return super.getCapability(cap, side);
-    }
-
-    private <T> @Nullable LazyOptional<T> returnCorrectTank(@NotNull Direction side) {
-        return switch (side) {
-            case NORTH -> lazyFluidHandler.cast();
-            default -> null;
-        };
-    }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> getItemHandler());
-        lazyFluidHandler = LazyOptional.of(() -> getFluidTank());
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyItemHandler.invalidate();
-        lazyFluidHandler.invalidate();
     }
 
     public void drops() {
@@ -504,7 +457,7 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
     }
 
     @Override
-    protected void write(CompoundTag pTag, boolean clientPacket) {
+    protected void write(CompoundTag pTag, HolderLookup.Provider registries, boolean clientPacket) {
         //pTag.putBoolean("running", running);
         //System.out.println("after write(): " + running);
 
@@ -527,24 +480,26 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         pTag.putInt("wormhole_facing_2", Wormhole2Facing);
         pTag.putInt("wormhole_size", WormholeSize);
 
+        /*
         if (isRunning() && masterList != null && lookUpTable != null && masterList.length > 0 && !lookUpTable.isEmpty()) {
             pTag.put("wormholeLocationData", writeWormholeLocationData());
         }
         pTag.put("queues", writeQueueData());
+        */
 
-        super.write(pTag, clientPacket);
+        super.write(pTag, registries, clientPacket);
     }
 
     @Override
-    protected void read(CompoundTag pTag, boolean clientPacket) {
+    protected void read(CompoundTag pTag, HolderLookup.Provider registries, boolean clientPacket) {
         //running = pTag.getBoolean("running");
         //System.out.println("after read(): " + running);
 
-        super.read(pTag, clientPacket);
+        super.read(pTag, registries, clientPacket);
 
-        itemInput = NbtUtils.readBlockPos(pTag.getCompound("item_input"));
-        fluidInput = NbtUtils.readBlockPos(pTag.getCompound("fluid_input"));
-        kineticInput = NbtUtils.readBlockPos(pTag.getCompound("kinetic_input"));
+        itemInput = NbtUtils.readBlockPos(pTag, "item_input").orElse(null);
+        fluidInput = NbtUtils.readBlockPos(pTag, "fluid_input").orElse(null);
+        kineticInput = NbtUtils.readBlockPos(pTag, "kinetic_input").orElse(null);
 
         //itemHandler.deserializeNBT(pTag.getCompound("inventory"));
         progress = pTag.getInt("wormhole_generator.progress");
@@ -561,10 +516,11 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         Wormhole2Facing = pTag.getInt("wormhole_facing_2");
         WormholeSize = pTag.getInt("wormhole_size");
 
-        readWormholeLocationData(pTag);
-        readQueueData(pTag);
+        //readWormholeLocationData(pTag);
+        //readQueueData(pTag);
     }
 
+    /*
     private CompoundTag writeWormholeLocationData() {
         int masterListLength = masterList.length;
         int lookUpTableLength = lookUpTable.size();
@@ -595,8 +551,8 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
 
         for (int i = 0; i < numberOfPairs; i++) {
             CompoundTag linkedPair = locationData.getCompound("pair" + (i + 1));
-            BlockPos partner1 = NbtUtils.readBlockPos(linkedPair.getCompound("partner1"));
-            BlockPos partner2 = NbtUtils.readBlockPos(linkedPair.getCompound("partner2"));
+            BlockPos partner1 = NbtUtils.readBlockPos(linkedPair, "partner1").orElse(null);
+            BlockPos partner2 = NbtUtils.readBlockPos(linkedPair, "partner2").orElse(null);
             tempList.add(partner1);
             tempList.add(partner2);
             lookUpTable.put(partner1, partner2);
@@ -671,8 +627,8 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         for (int i = 0; i < placementQueueSize; i++) {
             CompoundTag linkedPair = placementQueues.getCompound("queuedPair" + i);
 
-            BlockPos partner1Pos = NbtUtils.readBlockPos(linkedPair.getCompound("partner1Pos"));
-            BlockPos partner2Pos = NbtUtils.readBlockPos(linkedPair.getCompound("partner2Pos"));
+            BlockPos partner1Pos = NbtUtils.readBlockPos(linkedPair, "partner1Pos").orElse(null);
+            BlockPos partner2Pos = NbtUtils.readBlockPos(linkedPair, "partner2Pos").orElse(null);
             BlockState partner1State = NbtUtils.readBlockState(getter, linkedPair.getCompound("partner1State"));
             BlockState partner2State = NbtUtils.readBlockState(getter, linkedPair.getCompound("partner2State"));
             
@@ -681,17 +637,12 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         }
 
         for (int i = 0; i < setupQueueSize; i++) {
-            setupQueue.add(NbtUtils.readBlockPos(setupQueueTag.getCompound("pos" + i)));
+            setupQueue.add(NbtUtils.readBlockPos(setupQueueTag, "pos" + i).orElse(null));
         }
 
     }
+     */
 
-
-
-    @Override
-    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
-        super.onDataPacket(connection, packet);
-    }
 
     public void updateScreenData(String x1, String y1, String z1, String x2, String y2, String z2, int facing1Index, int facing2Index, int sizeIndex) {
         System.out.println("yerp");
@@ -727,16 +678,20 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         if (isRunning()) {
             return;
         }
-        level.playSound(player, this.getBlockPos(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS);
+        level.playSound(player, this.getBlockPos(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS);
         setRunning(true);
 
         placeWormholes();
     }
 
     private void placeWormholes() {
-        placeLinkedPair();
+        //placeLinkedPair();
+        BlockPos partner1Pos = this.getBlockPos().offset(-5,0,0);
+        BlockPos partner2Pos = this.getBlockPos().offset(-10,0,0);
+        PacketDistributor.sendToServer(new WormholeData(partner1Pos, partner2Pos));
     }
 
+    /*
     private void placeLinkedPair() {
         System.out.println("after beginStartup() but in linked pair: " + isRunning());
         //BlockState defaultState = BlockInit.LINKED_BLOCK.getDefaultState();
@@ -762,5 +717,5 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         placementStateQueue.add(new BlockState[]{tempState, tempState});
         placementDelay = 20;
     }
-
+    */
 }

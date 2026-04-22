@@ -2,20 +2,13 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.Wormho
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class WormholeGeneratorKineticEntity extends KineticBlockEntity {
     /*
@@ -258,13 +251,6 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity {
         //lazyFluidHandler = LazyOptional.of(() -> LIQUID_NITROGEN_TANK);
     }
 
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        //lazyItemHandler.invalidate();
-        //lazyFluidHandler.invalidate();
-    }
-
     /*
     public void drops() {
         SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
@@ -287,7 +273,7 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity {
     }*/
 
     @Override
-    protected void write(CompoundTag pTag, boolean clientPacket) {
+    protected void write(CompoundTag pTag, HolderLookup.Provider registries, boolean clientPacket) {
         /*
         pTag.put("inventory", itemHandler.serializeNBT());
         pTag.putInt("wormhole_generator.progress", progress);
@@ -304,12 +290,12 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity {
         pTag.putInt("wormhole_facing_2", Wormhole2Facing);
         pTag.putInt("wormhole_size", WormholeSize);
          */
-        super.write(pTag, clientPacket);
+        super.write(pTag, registries, clientPacket);
     }
 
     @Override
-    protected void read(CompoundTag pTag, boolean clientPacket) {
-        super.read(pTag, clientPacket);
+    protected void read(CompoundTag pTag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(pTag, registries, clientPacket);
         /*
         itemHandler.deserializeNBT(pTag.getCompound("inventory"));
         progress = pTag.getInt("atmosphere_extractor.progress");
@@ -326,11 +312,6 @@ public class WormholeGeneratorKineticEntity extends KineticBlockEntity {
         Wormhole2Facing = pTag.getInt("wormhole_facing_2");
         WormholeSize = pTag.getInt("wormhole_size");
          */
-    }
-
-    @Override
-    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
-        super.onDataPacket(connection, packet);
     }
 
     /*

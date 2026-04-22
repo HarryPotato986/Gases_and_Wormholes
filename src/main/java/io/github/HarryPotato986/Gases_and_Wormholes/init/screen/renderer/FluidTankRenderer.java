@@ -97,8 +97,10 @@ public class FluidTankRenderer {
 
     private TextureAtlasSprite getStillFluidSprite(FluidStack fluidStack) {
         Fluid fluid = fluidStack.getFluid();
+        System.out.println(fluid);
         IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
         ResourceLocation fluidStill = renderProperties.getStillTexture(fluidStack);
+        //fluidStill = ResourceLocation.withDefaultNamespace("block/water_still");
 
         Minecraft minecraft = Minecraft.getInstance();
         return minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);

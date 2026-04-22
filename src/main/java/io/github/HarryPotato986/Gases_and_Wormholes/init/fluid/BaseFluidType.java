@@ -42,7 +42,8 @@ public class BaseFluidType extends FluidType {
         return new IClientFluidTypeExtensions() {
             @Override
             public ResourceLocation getStillTexture() {
-                return stillTexture;
+                //return stillTexture;
+                return ResourceLocation.withDefaultNamespace("block/water_still");
             }
 
             @Override

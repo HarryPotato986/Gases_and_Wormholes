@@ -2,7 +2,8 @@ package io.github.HarryPotato986.Gases_and_Wormholes.init.screen.renderer;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+
 
 import java.util.List;
 

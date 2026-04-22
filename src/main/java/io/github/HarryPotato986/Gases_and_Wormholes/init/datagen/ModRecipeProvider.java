@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.datagen;
 
+/*
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.ModBlocks;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -29,3 +30,5 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(pWriter);
     }
 }
+
+ */

@@ -7,8 +7,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -16,21 +16,22 @@ import javax.annotation.Nullable;
 public class GnWMultiStateIconButton<S extends Enum<S> & IconGetter<S> & IndexableEnum<S>> extends GnWIconButton{
     private S STATE;
 
-    public static <S extends Enum<S> & IconGetter<S> & IndexableEnum<S>> GnWMultiStateIconBuilder<S> GnWMultiStateBuilder(S defaultState, OnPress pOnPress) {
+    public static <S extends Enum<S> & IconGetter<S> & IndexableEnum<S>> GnWMultiStateIconBuilder<S> GnWMultiStateIconBuilder(S defaultState, OnPress pOnPress) {
         return new GnWMultiStateIconBuilder<>(defaultState, pOnPress);
     }
 
     protected GnWMultiStateIconButton(int pX, int pY, int pWidth, int pHeight, OnPress pOnPress, CreateNarration pCreateNarration,
-                                      ResourceLocation texture, int textureX, int textureY,
+                                      ResourceLocation texture, ResourceLocation textureDisabled,
+                                      ResourceLocation textureHighlighted, int textureX, int textureY,
                                       ResourceLocation icon, int iconX, int iconY, int iconWidth, int iconHeight, boolean isIconBound,
                                       S defaultState) {
-        super(pX, pY, pWidth, pHeight, pOnPress, pCreateNarration, texture, textureX, textureY, icon, iconX, iconY, iconWidth, iconHeight, isIconBound);
+        super(pX, pY, pWidth, pHeight, pOnPress, pCreateNarration, texture, textureDisabled, textureHighlighted, textureX, textureY, icon, iconX, iconY, iconWidth, iconHeight, isIconBound);
         this.STATE = defaultState;
     }
 
     public GnWMultiStateIconButton(GnWMultiStateIconBuilder<S> builder) {
         this(builder.x, builder.y, builder.width, builder.height, builder.onPress,
-                builder.createNarration, builder.TEXTURE, builder.TEXTURE_X, builder.TEXTURE_Y,
+                builder.createNarration, builder.TEXTURE, builder.TEXTURE_DISABLED, builder.TEXTURE_HIGHLIGHTED, builder.TEXTURE_X, builder.TEXTURE_Y,
                 builder.ICON_TEXTURE, builder.ICON_X, builder.ICON_Y, builder.ICON_WIDTH, builder.ICON_HEIGHT, builder.IS_ICON_BOUND,
                 builder.STATE);
     }
@@ -45,6 +46,22 @@ public class GnWMultiStateIconButton<S extends Enum<S> & IconGetter<S> & Indexab
                 pGuiGraphics.renderTooltip(font, Component.literal(prefix + state.getExtraInfo()), pMouseX, pMouseY);
             }
         }
+    }
+
+    @Override
+    protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
+        RenderSystem.enableBlend();
+        RenderSystem.enableDepthTest();
+
+        if(this.IS_ICON_BOUND) {
+            this.setWidth(this.ICON_WIDTH + 4);
+            this.setHeight(this.ICON_HEIGHT + 4);
+        }
+        pGuiGraphics.blitSprite(SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.ICON_WIDTH + 4, this.ICON_HEIGHT + 4);
+        pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        pGuiGraphics.blit(this.ICON_TEXTURE, findCenter(this.getX(), this.getWidth(), this.ICON_WIDTH), findCenter(this.getY(), this.getHeight(), this.ICON_HEIGHT), 0, this.ICON_X, this.ICON_Y, this.ICON_WIDTH, this.ICON_HEIGHT, 15, 105);
+
     }
 
     @Override
@@ -71,15 +88,17 @@ public class GnWMultiStateIconButton<S extends Enum<S> & IconGetter<S> & Indexab
         protected int height = 20;
         protected CreateNarration createNarration = GnWButton.DEFAULT_NARRATION;
 
-        protected ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/gnw_button.png");
+        protected ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button");
+        protected ResourceLocation TEXTURE_DISABLED = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button_disabled");
+        protected ResourceLocation TEXTURE_HIGHLIGHTED = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "buttons/gnw_button_highlighted");
         protected int TEXTURE_X = 0;
         protected int TEXTURE_Y = 0;
 
-        protected ResourceLocation ICON_TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/gnw_button.png");
+        protected ResourceLocation ICON_TEXTURE = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "textures/gui/wormhole_button_icons.png");
         protected int ICON_X = 0;
-        protected int ICON_Y;
-        protected int ICON_WIDTH = 16;
-        protected int ICON_HEIGHT = 16;
+        protected int ICON_Y = 0;
+        protected int ICON_WIDTH = 15;
+        protected int ICON_HEIGHT = 15;
         protected boolean IS_ICON_BOUND = true;
 
         protected S STATE;
@@ -155,6 +174,11 @@ public class GnWMultiStateIconButton<S extends Enum<S> & IconGetter<S> & Indexab
             return this;
         }
 
+        public GnWMultiStateIconBuilder<S> iconY(int y) {
+            this.ICON_Y = y;
+            return this;
+        }
+
         public GnWMultiStateIconBuilder<S> iconWidth(int width) {
             this.ICON_WIDTH = width;
             return this;
@@ -171,8 +195,8 @@ public class GnWMultiStateIconButton<S extends Enum<S> & IconGetter<S> & Indexab
             return this;
         }
 
-        public GnWMultiStateIconBuilder<S> iconDimensions(int x, int width, int height) {
-            return this.iconX(x).iconSize(width, height);
+        public GnWMultiStateIconBuilder<S> iconDimensions(int x, int y, int width, int height) {
+            return this.iconX(x).iconY(y).iconSize(width, height);
         }
 
 

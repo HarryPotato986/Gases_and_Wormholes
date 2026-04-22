@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.util;
 
+/*
 import net.minecraft.core.Direction;
 
 public class InventoryDirectionEntry {
@@ -13,3 +14,5 @@ public class InventoryDirectionEntry {
         this.canInsert = canInsert;
     }
 }
+
+ */

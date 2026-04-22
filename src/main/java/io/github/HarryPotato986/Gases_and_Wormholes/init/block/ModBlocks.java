@@ -1,11 +1,11 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block;
 
 
+import com.simibubi.create.api.stress.BlockStressValues;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.simibubi.create.infrastructure.config.CStress;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.CreativeTabInit;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractor;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.*;
 import io.github.HarryPotato986.Gases_and_Wormholes.util.GnWSharedProperties;
@@ -58,7 +58,8 @@ public class ModBlocks {
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.GOLD))
             .transform(axeOrPickaxe())
-            .transform(CStress.setImpact(16.0))
+            .onRegister(b -> BlockStressValues.IMPACTS.register(b, () -> 16))
+            //.transform(CStress.setImpact(16.0))
             .register();
 
     public static final BlockEntry<LinkedBlock> LINKED_BLOCK = REGISTRATE.block("linked_block", LinkedBlock::new)

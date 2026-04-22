@@ -4,10 +4,14 @@ import com.simibubi.create.foundation.block.IBE;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.blockentity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -20,8 +24,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class WormholeGeneratorCore extends Block implements IBE<WormholeGeneratorCoreEntity> {
@@ -50,12 +54,12 @@ public class WormholeGeneratorCore extends Block implements IBE<WormholeGenerato
     }
 
     @Override
-    public void playerWillDestroy(Level pLevel, BlockPos pPos, BlockState pState, Player pPlayer) {
-        removeAll(pLevel, pPos);
-        super.playerWillDestroy(pLevel, pPos, pState, pPlayer);
+    public BlockState playerWillDestroy(Level pLevel, BlockPos pPos, BlockState pState, Player pPlayer) {
+        removeAll(pLevel, pPos, pState, pPlayer);
+        return super.playerWillDestroy(pLevel, pPos, pState, pPlayer);
     }
 
-    public void removeAll(Level level, BlockPos pos) {
+    public void removeAll(Level level, BlockPos pos, BlockState state, Player player) {
         for(int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 for (int z = -1; z <= 1; z++) {
@@ -63,6 +67,7 @@ public class WormholeGeneratorCore extends Block implements IBE<WormholeGenerato
                     if(offset.equals(BlockPos.ZERO)) {
                         continue;
                     }
+                    level.gameEvent(GameEvent.BLOCK_DESTROY, pos.offset(offset), GameEvent.Context.of(player, state));
                     level.destroyBlock(pos.offset(offset), false);
                 }
             }
@@ -70,16 +75,16 @@ public class WormholeGeneratorCore extends Block implements IBE<WormholeGenerato
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+    public ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if(!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if(entity instanceof WormholeGeneratorCoreEntity) {
-                NetworkHooks.openScreen((ServerPlayer) pPlayer, (WormholeGeneratorCoreEntity) entity, pPos);
+            if(entity instanceof WormholeGeneratorCoreEntity be) {
+                ((ServerPlayer) pPlayer).openMenu(new SimpleMenuProvider(be, Component.literal("Wormhole Generator")), pPos);
             } else {
                 throw new IllegalStateException("Our Container provider is missing");
             }
         }
-        return InteractionResult.sidedSuccess(pLevel.isClientSide());
+        return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
     }
 
     @Nullable

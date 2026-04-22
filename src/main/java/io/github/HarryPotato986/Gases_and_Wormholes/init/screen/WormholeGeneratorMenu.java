@@ -11,8 +11,8 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
+
 
 public class WormholeGeneratorMenu extends AbstractContainerMenu {
     public final WormholeGeneratorCoreEntity blockEntity;
@@ -40,10 +40,10 @@ public class WormholeGeneratorMenu extends AbstractContainerMenu {
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
 
-        this.IIBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {
-            this.addSlot(new SlotItemHandler(iItemHandler, 0, 11, 74));
-            this.addSlot(new SlotItemHandler(iItemHandler, 1, 29, 74));
-        });
+
+        this.addSlot(new SlotItemHandler(this.blockEntity.getItemHandler(), 0, 11, 74));
+        this.addSlot(new SlotItemHandler(this.blockEntity.getItemHandler(), 1, 29, 74));
+
 
         addDataSlots(data);
     }

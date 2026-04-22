@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
 public class GasBucketItem extends BucketItem {
@@ -42,13 +41,5 @@ public class GasBucketItem extends BucketItem {
 
             return true;
         }
-    }
-
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        if (this.getClass() == GasBucketItem.class)
-            return new net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper(stack);
-        else
-            return super.initCapabilities(stack, nbt);
     }
 }

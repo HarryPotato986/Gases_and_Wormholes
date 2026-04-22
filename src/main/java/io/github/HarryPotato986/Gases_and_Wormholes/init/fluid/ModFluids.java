@@ -35,8 +35,8 @@ public class ModFluids {
 
     public static final BaseFlowingFluid.Properties LIQUID_NITROGEN_FLUID_PROPERTIES = new BaseFlowingFluid.Properties(
             ModFluidTypes.LIQUID_NITROGEN_FLUID_TYPE, SOURCE_LIQUID_NITROGEN,FLOWING_LIQUID_NITROGEN)
-            .slopeFindDistance(2).levelDecreasePerBlock(1).block(ModFluids.LIQUID_NITROGEN_BLOCK)
-            .bucket(ModFluids.LIQUID_NITROGEN_BUCKET);
+            .slopeFindDistance(2).levelDecreasePerBlock(1)
+            .block(ModFluids.LIQUID_NITROGEN_BLOCK).bucket(ModFluids.LIQUID_NITROGEN_BUCKET);
 
     public static final Supplier<FlowingFluid> NITROGEN_GAS = FLUIDS.register("nitrogen_gas",
             () -> new BaseFlowingFluid.Source(ModFluids.NITROGEN_GAS_PROPERTIES));

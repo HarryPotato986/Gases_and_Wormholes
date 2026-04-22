@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.datagen;
 
+/*
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.ModFluids;
 import net.minecraft.core.HolderLookup;
@@ -23,3 +24,5 @@ public class ModFluidTagsProvider extends FluidTagsProvider {
                 .add(ModFluids.FLOWING_LIQUID_NITROGEN.get());
     }
 }
+
+ */

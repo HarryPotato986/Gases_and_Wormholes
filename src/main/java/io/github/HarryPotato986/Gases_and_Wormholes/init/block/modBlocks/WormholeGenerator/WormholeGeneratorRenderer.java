@@ -37,9 +37,9 @@ public class WormholeGeneratorRenderer implements BlockEntityRenderer<WormholeGe
     }
 
     private void renderFace(Matrix4f pPose, VertexConsumer pConsumer, float pX0, float pX1, float pY0, float pY1, float pZ0, float pZ1, float pZ2, float pZ3) {
-        pConsumer.vertex(pPose, pX0, pY0, pZ0).endVertex();
-        pConsumer.vertex(pPose, pX1, pY0, pZ1).endVertex();
-        pConsumer.vertex(pPose, pX1, pY1, pZ2).endVertex();
-        pConsumer.vertex(pPose, pX0, pY1, pZ3).endVertex();
+        pConsumer.addVertex(pPose, pX0, pY0, pZ0);
+        pConsumer.addVertex(pPose, pX1, pY0, pZ1);
+        pConsumer.addVertex(pPose, pX1, pY1, pZ2);
+        pConsumer.addVertex(pPose, pX0, pY1, pZ3);
     }
 }

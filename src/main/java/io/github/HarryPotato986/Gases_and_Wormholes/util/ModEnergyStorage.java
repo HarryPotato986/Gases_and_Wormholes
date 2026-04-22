@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.util;
 
+/*
 import net.minecraftforge.energy.EnergyStorage;
 
 public abstract class ModEnergyStorage extends EnergyStorage {
@@ -34,3 +35,5 @@ public abstract class ModEnergyStorage extends EnergyStorage {
 
     public abstract void onEnergyChanged();
 }
+
+ */

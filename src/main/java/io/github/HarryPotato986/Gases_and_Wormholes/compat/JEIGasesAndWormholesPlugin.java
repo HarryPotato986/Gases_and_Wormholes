@@ -1,5 +1,6 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.compat;
 
+/*
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.recipe.AtmosphereExtractorRecipe;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.screen.AtmosphereExtractorScreen;
@@ -39,3 +40,5 @@ public class JEIGasesAndWormholesPlugin implements IModPlugin {
         registration.addRecipeClickArea(AtmosphereExtractorScreen.class, 60, 30, 20, 30, AtmosphereExtractionRecipeCategory.ATMOSPHERE_EXTRACTION_TYPE);
     }
 }
+
+ */

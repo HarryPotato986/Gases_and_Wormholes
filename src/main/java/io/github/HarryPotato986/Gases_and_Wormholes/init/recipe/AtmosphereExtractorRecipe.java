@@ -1,11 +1,16 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.recipe;
 
+/*
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.MapCodec;
 import io.github.HarryPotato986.Gases_and_Wormholes.Gases_and_Wormholes;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.SimpleContainer;
@@ -35,7 +40,7 @@ public class AtmosphereExtractorRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack assemble(SimpleContainer pContainer, RegistryAccess pRegistryAccess) {
+    public ItemStack assemble(SimpleContainer input, HolderLookup.Provider registries) {
         return output.copy();
     }
 
@@ -45,18 +50,13 @@ public class AtmosphereExtractorRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
         return output.copy();
     }
 
     @Override
     public NonNullList<Ingredient> getIngredients() {
         return this.inputItems;
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return id;
     }
 
     @Override
@@ -115,5 +115,17 @@ public class AtmosphereExtractorRecipe implements Recipe<SimpleContainer> {
             }
             buf.writeItemStack(recipe.getResultItem(null), false);
         }
+
+        @Override
+        public MapCodec<AtmosphereExtractorRecipe> codec() {
+            return null;
+        }
+
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, AtmosphereExtractorRecipe> streamCodec() {
+            return null;
+        }
     }
 }
+
+ */

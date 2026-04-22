@@ -1,15 +1,14 @@
 package io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractor;
+import io.github.HarryPotato986.Gases_and_Wormholes.init.fluid.ModFluids;
 import io.github.HarryPotato986.Gases_and_Wormholes.init.item.ModItems;
-import io.github.HarryPotato986.Gases_and_Wormholes.util.DirectionWrappedHandler;
-import io.github.HarryPotato986.Gases_and_Wormholes.util.InventoryDirectionEntry;
-import io.github.HarryPotato986.Gases_and_Wormholes.util.InventoryDirectionWrapper;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
@@ -17,18 +16,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 
 import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.WormholeGeneratorItem.FACING;
 
@@ -45,15 +36,12 @@ public class WormholeGeneratorItemEntity extends KineticBlockEntity {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return switch (slot) {
-                case LIQUID_NITROGEN_SLOT -> stack.getItem() == ModItems.LIQUID_NITROGEN_BUCKET.get() || stack.getItem() == Items.BUCKET;
+                case LIQUID_NITROGEN_SLOT -> stack.getItem() == ModFluids.LIQUID_NITROGEN_BUCKET.get() || stack.getItem() == Items.BUCKET;
                 case BEDROCK_DUST_INPUT -> stack.getItem() == ModItems.BEDROCK_DUST.get();
                 default -> super.isItemValid(slot, stack);
             };
         }
     };
-
-    private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
-    //private LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
 
     private static final int LIQUID_NITROGEN_SLOT = 0;
     private static final int BEDROCK_DUST_INPUT = 1;
@@ -77,7 +65,7 @@ public class WormholeGeneratorItemEntity extends KineticBlockEntity {
 
 
 
-
+    /*
     private final Map<Direction, LazyOptional<DirectionWrappedHandler>> directionWrappedHandlerMap =
             new InventoryDirectionWrapper(itemHandler,
                     new InventoryDirectionEntry(Direction.DOWN, BEDROCK_DUST_INPUT, false),
@@ -86,7 +74,7 @@ public class WormholeGeneratorItemEntity extends KineticBlockEntity {
                     new InventoryDirectionEntry(Direction.EAST, BEDROCK_DUST_INPUT, false),
                     new InventoryDirectionEntry(Direction.WEST, BEDROCK_DUST_INPUT, false),
                     new InventoryDirectionEntry(Direction.UP, BEDROCK_DUST_INPUT, false)).directionsMap;
-
+    */
 
     //protected final ContainerData data;
     //private int progress = 0;
@@ -221,71 +209,23 @@ public class WormholeGeneratorItemEntity extends KineticBlockEntity {
     }
     */
 
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        /*
-        if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            if (side != null) {
-                Direction localDir = this.getBlockState().getValue(FACING);
-                LazyOptional<T> handler = switch (localDir) {
-                    case NORTH -> returnCorrectTank(side.getOpposite());
-                    case EAST -> returnCorrectTank(side.getClockWise());
-                    case SOUTH -> returnCorrectTank(side);
-                    case WEST -> returnCorrectTank(side.getCounterClockWise());
-                    default -> null;
-                };
 
-                if(handler != null) {
-                    return handler;
-                }
-            }
+    public IItemHandler getItemHandler(Direction side) {
+        if(side == null) {
+            return this.itemHandler;
         }
-        */
-
-        if(cap == ForgeCapabilities.ITEM_HANDLER) {
-            if(side == null) {
-                return lazyItemHandler.cast();
-            }
-
-            if(directionWrappedHandlerMap.containsKey(side)) {
-                Direction localDir = this.getBlockState().getValue(FACING);
-
-                if(side == Direction.DOWN || side == Direction.UP) {
-                    return directionWrappedHandlerMap.get(side).cast();
-                }
-
-                return switch (localDir) {
-                    default -> directionWrappedHandlerMap.get(side).cast();
-                    case EAST -> directionWrappedHandlerMap.get(side.getCounterClockWise()).cast();
-                    case SOUTH -> directionWrappedHandlerMap.get(side.getOpposite()).cast();
-                    case WEST -> directionWrappedHandlerMap.get(side.getClockWise()).cast();
-                };
-            }
+        Direction facing = this.getBlockState().getValue(WormholeGeneratorItem.FACING);
+        if (side == facing) {
+            return this.itemHandler;
         }
-
-        return super.getCapability(cap, side);
+        return null;
     }
 
-    /*
-    private <T> @Nullable LazyOptional<T> returnCorrectTank(@NotNull Direction side) {
-        return switch (side) {
-            case NORTH -> lazyFluidHandler.cast();
-            default -> null;
-        };
-    }*/
+
 
     @Override
     public void onLoad() {
         super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> itemHandler);
-        //lazyFluidHandler = LazyOptional.of(() -> LIQUID_NITROGEN_TANK);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyItemHandler.invalidate();
-        //lazyFluidHandler.invalidate();
     }
 
     public void drops() {
@@ -311,8 +251,8 @@ public class WormholeGeneratorItemEntity extends KineticBlockEntity {
     }*/
 
     @Override
-    protected void write(CompoundTag pTag, boolean clientPacket) {
-        pTag.put("inventory", itemHandler.serializeNBT());
+    protected void write(CompoundTag pTag, HolderLookup.Provider registries, boolean clientPacket) {
+        pTag.put("inventory", itemHandler.serializeNBT(registries));
         /*
         pTag.putInt("wormhole_generator.progress", progress);
         pTag.put("OxygenTank", LIQUID_NITROGEN_TANK.writeToNBT(new CompoundTag()));
@@ -328,13 +268,13 @@ public class WormholeGeneratorItemEntity extends KineticBlockEntity {
         pTag.putInt("wormhole_facing_2", Wormhole2Facing);
         pTag.putInt("wormhole_size", WormholeSize);
          */
-        super.write(pTag, clientPacket);
+        super.write(pTag, registries, clientPacket);
     }
 
     @Override
-    protected void read(CompoundTag pTag, boolean clientPacket) {
-        super.read(pTag, clientPacket);
-        itemHandler.deserializeNBT(pTag.getCompound("inventory"));
+    protected void read(CompoundTag pTag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(pTag, registries, clientPacket);
+        itemHandler.deserializeNBT(registries, pTag.getCompound("inventory"));
         /*
         progress = pTag.getInt("atmosphere_extractor.progress");
         LIQUID_NITROGEN_TANK.readFromNBT(pTag.getCompound("OxygenTank"));
@@ -351,10 +291,6 @@ public class WormholeGeneratorItemEntity extends KineticBlockEntity {
         WormholeSize = pTag.getInt("wormhole_size");*/
     }
 
-    @Override
-    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
-        super.onDataPacket(connection, packet);
-    }
 
     /*
     public void updateScreenData(String x1, String y1, String z1, String x2, String y2, String z2, int facing1Index, int facing2Index, int sizeIndex) {

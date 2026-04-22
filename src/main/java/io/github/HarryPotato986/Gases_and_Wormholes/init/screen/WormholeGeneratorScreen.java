@@ -14,13 +14,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGeneratorMenu> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Gases_and_Wormholes.MODID, "textures/gui/wormhole_generator_gui.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "textures/gui/wormhole_generator_gui.png");
 
     private FluidTankRenderer fluidRenderer;
     private EditBox X1;
@@ -90,16 +90,13 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
             this.onStart();
         }).bounds(x + 62, y + 82, 134, 19).build());
 
-        wormholeSizeButton = this.addRenderableWidget(GnWMultiStateIconButton.GnWMultiStateBuilder(size, (B) -> {
-
-        }).pos(x + 203, y + 82).iconDimensions(194, 15, 15).build());
+        wormholeSizeButton = this.addRenderableWidget(GnWMultiStateIconButton.GnWMultiStateIconBuilder(size, (B) -> {
+        }).pos(x + 203, y + 82).iconDimensions(0, 0,15, 15).build());
 
         wormhole1FacingButton = this.addRenderableWidget(GnWMultiStateButton.GnWMultiStateBuilder(facing1, (B) -> {
-
         }).bounds(x + 203, y + 18, 19, 19).build());
 
         wormhole2FacingButton = this.addRenderableWidget(GnWMultiStateButton.GnWMultiStateBuilder(facing2, (B) -> {
-
         }).bounds(x + 203, y + 54, 19, 19).build());
 
     }
@@ -174,7 +171,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        renderBackground(guiGraphics);
+        //renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, delta);
 
         this.X1.render(guiGraphics, mouseX, mouseY, delta);
@@ -187,6 +184,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
         renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
+    /*
     @Override
     public void renderBackground(GuiGraphics pGuiGraphics) {
         if (Minecraft.getInstance().level != null) {
@@ -196,6 +194,7 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
             this.renderDirtBackground(pGuiGraphics);
         }
     }
+    */
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
