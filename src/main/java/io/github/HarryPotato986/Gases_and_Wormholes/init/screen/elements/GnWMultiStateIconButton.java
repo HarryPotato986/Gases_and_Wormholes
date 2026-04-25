@@ -27,6 +27,7 @@ public class GnWMultiStateIconButton<S extends Enum<S> & IconGetter<S> & Indexab
                                       S defaultState) {
         super(pX, pY, pWidth, pHeight, pOnPress, pCreateNarration, texture, textureDisabled, textureHighlighted, textureX, textureY, icon, iconX, iconY, iconWidth, iconHeight, isIconBound);
         this.STATE = defaultState;
+        this.ICON_Y = defaultState.getIconY();
     }
 
     public GnWMultiStateIconButton(GnWMultiStateIconBuilder<S> builder) {

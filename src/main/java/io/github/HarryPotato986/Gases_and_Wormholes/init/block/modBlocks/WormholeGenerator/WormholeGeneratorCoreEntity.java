@@ -674,21 +674,21 @@ public class WormholeGeneratorCoreEntity extends KineticBlockEntity implements M
         setRunning(false);
     }
 
-    public void beginStartup(Level level, Player player) {
+    public void beginStartup(Level level, Player player, BlockPos pos1, BlockPos pos2, Direction facing1, Direction facing2, int size) {
         if (isRunning()) {
             return;
         }
         level.playSound(player, this.getBlockPos(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS);
         setRunning(true);
 
-        placeWormholes();
+        placeWormholes(pos1, pos2, facing1, facing2, size);
     }
 
-    private void placeWormholes() {
+    private void placeWormholes(BlockPos pos1, BlockPos pos2, Direction facing1, Direction facing2, int size) {
         //placeLinkedPair();
-        BlockPos partner1Pos = this.getBlockPos().offset(-5,0,0);
-        BlockPos partner2Pos = this.getBlockPos().offset(-10,0,0);
-        PacketDistributor.sendToServer(new WormholeData(partner1Pos, partner2Pos));
+        //BlockPos partner1Pos = this.getBlockPos().offset(-5,0,0);
+        //BlockPos partner2Pos = this.getBlockPos().offset(-10,0,0);
+        PacketDistributor.sendToServer(new WormholeData(worldPosition, pos1, pos2, facing1, facing2, size));
     }
 
     /*

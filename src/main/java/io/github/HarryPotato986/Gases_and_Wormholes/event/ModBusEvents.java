@@ -25,5 +25,8 @@ public class ModBusEvents {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.WORMHOLE_GENERATOR_FLUID_ENTITY.get(),
                 (be, side) -> be.getFluidHandler(side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.LINKED_BLOCK_ENTITY.get(),
+                (be, side) -> be.getFluidHandler(side));
     }
 }

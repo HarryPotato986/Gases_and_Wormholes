@@ -5,22 +5,18 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntityVisual;
 import com.simibubi.create.content.kinetics.base.RotatingInstance;
 import com.simibubi.create.foundation.render.AllInstanceTypes;
 import dev.engine_room.flywheel.api.instance.Instance;
-import dev.engine_room.flywheel.api.task.Plan;
-import dev.engine_room.flywheel.api.visual.DynamicVisual;
 import dev.engine_room.flywheel.api.visualization.VisualizationContext;
 import dev.engine_room.flywheel.lib.model.Models;
-import io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.AtmosphereExtractor.AtmosphereExtractorEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
 import java.util.function.Consumer;
 
-import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlock.FACING;
-import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlock.HAS_SHAFT;
+import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlock.*;
 
 public class LinkedBlockVisual extends KineticBlockEntityVisual<LinkedBlockEntity> {
 
-    protected RotatingInstance shaft;
+    protected RotatingInstance model;
     final Direction direction;
     private final Direction opposite;
 
@@ -31,59 +27,73 @@ public class LinkedBlockVisual extends KineticBlockEntityVisual<LinkedBlockEntit
 
         opposite = direction.getOpposite();
 
-        updateShaftVisibility();
+        updateModel();
     }
 
     @Override
     public void update(float pt) {
-        updateShaftVisibility();
+        updateModel();
     }
 
     @Override
     public void updateLight(float partialTick) {
-        if (this.shaft != null) {
+        if (this.model != null) {
             BlockPos behind = pos.relative(direction);
-            relight(behind, shaft);
+            relight(behind, model);
         }
     }
 
-    private void updateShaftVisibility() {
+    private void updateModel() {
         //boolean shouldRender = blockEntity.shouldRenderShaft();
-        boolean shouldRender = blockEntity.getBlockState().getValue(HAS_SHAFT);
+        LinkedBlockTypes type = blockEntity.getBlockState().getValue(TYPE);
+        boolean hasShaft = type == LinkedBlockTypes.SHAFT;
+        //boolean hasCog = type == LinkedBlockTypes.COG; Code is here in case I change my mind about supporting cogs.
+        //They just render really stupidly, sticking out the sides and z-fighting.
+        boolean shouldRender = hasShaft; //|| hasCog;
 
         // If it should render and doesn't exist yet, create it
         if (shouldRender) {
-            if (shaft == null) {
-                shaft = instancerProvider().instancer(AllInstanceTypes.ROTATING, Models.partial(AllPartialModels.SHAFT_HALF))
-                        .createInstance();
+            if (model == null) {
+                if (hasShaft) {
+                    model = instancerProvider().instancer(AllInstanceTypes.ROTATING, Models.partial(AllPartialModels.SHAFT_HALF))
+                            .createInstance();
 
-                shaft.setup(blockEntity)
-                        .setPosition(getVisualPosition())
-                        .rotateToFace(Direction.NORTH, opposite)
-                        .setChanged();
+                    model.setup(blockEntity)
+                            .setPosition(getVisualPosition())
+                            .rotateToFace(Direction.NORTH, opposite)
+                            .setChanged();
+                } /*else {
+                    model = instancerProvider().instancer(AllInstanceTypes.ROTATING, Models.partial(AllPartialModels.COGWHEEL))
+                            .createInstance();
+
+                    model.setup(blockEntity)
+                            .setPosition(getVisualPosition())
+                            .rotateToFace(Direction.NORTH, opposite)
+                            .setChanged();
+                }*/
 
                 BlockPos behind = pos.relative(direction);
-                relight(behind, shaft);
+                relight(behind, model);
             } else {
-                shaft.setup(blockEntity).setChanged();
+                model.setup(blockEntity).setChanged();
             }
         }
         // If it shouldn't render, but it does exist, delete it
-        else if (!shouldRender && shaft != null) {
-            shaft.delete();
-            shaft = null;
+        else if (model != null) {
+            model.delete();
+            model = null;
         }
     }
 
     @Override
     protected void _delete() {
-        if (shaft != null) {
-            shaft.delete();
+        if (model != null) {
+            model.delete();
         }
     }
 
     @Override
     public void collectCrumblingInstances(Consumer<Instance> consumer) {
-        consumer.accept(shaft);
+        consumer.accept(model);
     }
 }

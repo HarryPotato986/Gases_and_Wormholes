@@ -13,6 +13,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -34,7 +36,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlockEntity> {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    public static final BooleanProperty HAS_SHAFT = BooleanProperty.create("has_shaft");
+    //public static final BooleanProperty HAS_SHAFT = BooleanProperty.create("has_shaft");
+    public static final EnumProperty<LinkedBlockTypes> TYPE = EnumProperty.create("type", LinkedBlockTypes.class);
     //public static final BooleanProperty IS_PRIMARY_BLOCK = BooleanProperty.create("is_primary_block");
     //public static final BlockPos PARTNER_POS;
 
@@ -45,6 +48,9 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
 
     public LinkedBlock(Properties properties) {
         super(properties);
+
+        //this.registerDefaultState(this.stateDefinition.any().setValue(HAS_SHAFT, Boolean.FALSE));
+        this.registerDefaultState(this.stateDefinition.any().setValue(TYPE, LinkedBlockTypes.NONE));
     }
 
     @Override
@@ -125,52 +131,107 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
-        boolean currentShaftState = state.getValue(HAS_SHAFT);
+        boolean isEmpty = state.getValue(TYPE) == LinkedBlockTypes.NONE;
 
-        // Putting a shaft inside the block
-        if (!currentShaftState && heldItem.is(AllBlocks.SHAFT.get().asItem())) {
-            if (!level.isClientSide()) {
-                // Consume 1 shaft from the player
-                if (!player.getAbilities().instabuild) {
-                    heldItem.shrink(1);
-                }
+        // Putting a model inside the block
+        if (isEmpty) {
+            if (heldItem.is(AllBlocks.SHAFT.get().asItem())) {
+                if (!level.isClientSide()) {
+                    // Consume 1 model from the player
+                    if (!player.getAbilities().instabuild) {
+                        heldItem.shrink(1);
+                    }
 
-                level.setBlock(pos, state.setValue(HAS_SHAFT, true), 3);
+                    level.setBlock(pos, state.setValue(TYPE, LinkedBlockTypes.SHAFT), 3);
 
-                if (level.getBlockEntity(pos) instanceof LinkedBlockEntity be) {
-                    BlockPos partnerPos = be.getLinkedPartner();
-                    if (level.getBlockState(partnerPos).getBlock() == ModBlocks.LINKED_BLOCK.get() &&
-                            level.getBlockEntity(partnerPos) instanceof LinkedBlockEntity) {
-                        level.setBlock(partnerPos, state.setValue(HAS_SHAFT, true), 3);
+                    if (level.getBlockEntity(pos) instanceof LinkedBlockEntity be) {
+                        BlockPos partnerPos = be.getLinkedPartner();
+                        if (level.getBlockState(partnerPos).getBlock() == ModBlocks.LINKED_BLOCK.get() &&
+                                level.getBlockEntity(partnerPos) instanceof LinkedBlockEntity) {
+                            BlockState partnerState = level.getBlockState(partnerPos);
+                            level.setBlock(partnerPos, partnerState.setValue(TYPE, LinkedBlockTypes.SHAFT), 3);
+                        }
                     }
                 }
-            }
-            return InteractionResult.sidedSuccess(level.isClientSide());
-        }
+            } else if (heldItem.is(AllBlocks.FLUID_PIPE.get().asItem())) {
+                if (!level.isClientSide()) {
+                    // Consume 1 model from the player
+                    if (!player.getAbilities().instabuild) {
+                        heldItem.shrink(1);
+                    }
 
-        // Using the Wrench to remove the shaft
-        if (currentShaftState && heldItem.is(AllItems.WRENCH.get())) {
-            if (!level.isClientSide()) {
-                // Drop the shaft as a physical item in the world
-                ItemStack drop = new ItemStack(AllBlocks.SHAFT.get());
-                BlockPos dropPos = pos.relative(state.getValue(FACING));
-                ItemEntity itemEntity = new ItemEntity(level, dropPos.getX() + 0.5, dropPos.getY() + 0.5, dropPos.getZ() + 0.5, drop);
-                level.addFreshEntity(itemEntity);
+                    level.setBlock(pos, state.setValue(TYPE, LinkedBlockTypes.PIPE), 3);
 
-                level.setBlock(pos, state.setValue(HAS_SHAFT, false), 3);
-
-                if (level.getBlockEntity(pos) instanceof LinkedBlockEntity be) {
-                    BlockPos partnerPos = be.getLinkedPartner();
-                    if (level.getBlockState(partnerPos).getBlock() == ModBlocks.LINKED_BLOCK.get() &&
-                            level.getBlockEntity(partnerPos) instanceof LinkedBlockEntity) {
-                        level.setBlock(partnerPos, state.setValue(HAS_SHAFT, false), 3);
+                    if (level.getBlockEntity(pos) instanceof LinkedBlockEntity be) {
+                        BlockPos partnerPos = be.getLinkedPartner();
+                        if (level.getBlockState(partnerPos).getBlock() == ModBlocks.LINKED_BLOCK.get() &&
+                                level.getBlockEntity(partnerPos) instanceof LinkedBlockEntity) {
+                            BlockState partnerState = level.getBlockState(partnerPos);
+                            level.setBlock(partnerPos, partnerState.setValue(TYPE, LinkedBlockTypes.PIPE), 3);
+                        }
                     }
                 }
-            }
+            }/* else if (heldItem.is(AllBlocks.COGWHEEL.get().asItem())) { //turns out cogs look dumb
+                if (!level.isClientSide()) {
+                    // Consume 1 model from the player
+                    if (!player.getAbilities().instabuild) {
+                        heldItem.shrink(1);
+                    }
+
+                    level.setBlock(pos, state.setValue(TYPE, LinkedBlockTypes.COG), 3);
+
+                    if (level.getBlockEntity(pos) instanceof LinkedBlockEntity be) {
+                        BlockPos partnerPos = be.getLinkedPartner();
+                        if (level.getBlockState(partnerPos).getBlock() == ModBlocks.LINKED_BLOCK.get() &&
+                                level.getBlockEntity(partnerPos) instanceof LinkedBlockEntity) {
+                            BlockState partnerState = level.getBlockState(partnerPos);
+                            level.setBlock(partnerPos, partnerState.setValue(TYPE, LinkedBlockTypes.COG), 3);
+                        }
+                    }
+                }
+            }*/
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);
+    }
+
+    @Override
+    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+        return super.onWrenched(state, context);
+    }
+
+    @Override
+    public InteractionResult onSneakWrenched(BlockState state, UseOnContext context) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        boolean isEmpty = state.getValue(TYPE) == LinkedBlockTypes.NONE;
+        LinkedBlockTypes type = state.getValue(TYPE);
+
+        // Using the Wrench to remove the item
+        if (!isEmpty) {
+            if (!level.isClientSide()) {
+                // Drop the item
+                ItemStack drop = type.getItemStack();
+
+                BlockPos dropPos = pos.relative(state.getValue(FACING));
+                ItemEntity itemEntity = new ItemEntity(level, dropPos.getX() + 0.5, dropPos.getY() + 0.5, dropPos.getZ() + 0.5, drop);
+                level.addFreshEntity(itemEntity);
+
+                level.setBlock(pos, state.setValue(TYPE, LinkedBlockTypes.NONE), 3);
+
+                if (level.getBlockEntity(pos) instanceof LinkedBlockEntity be) {
+                    BlockPos partnerPos = be.getLinkedPartner();
+                    if (level.getBlockState(partnerPos).getBlock() == ModBlocks.LINKED_BLOCK.get() &&
+                            level.getBlockEntity(partnerPos) instanceof LinkedBlockEntity) {
+                        BlockState partnerState = level.getBlockState(partnerPos);
+                        level.setBlock(partnerPos, partnerState.setValue(TYPE, LinkedBlockTypes.NONE), 3);
+                    }
+                }
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        }
+        return InteractionResult.FAIL;
     }
 
     @Override
@@ -193,6 +254,10 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
         return ModBlockEntities.LINKED_BLOCK_ENTITY.get();
     }
 
+    public static boolean isLinkedBlock(BlockState state) {
+        return state.getBlock() instanceof LinkedBlock;
+    }
+
     /*
     @Override
     public boolean triggerEvent(BlockState pState, Level pLevel, BlockPos pPos, int pId, int pParam) {
@@ -210,7 +275,8 @@ public class LinkedBlock extends HorizontalKineticBlock implements IBE<LinkedBlo
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(FACING);
-        pBuilder.add(HAS_SHAFT);
+        //pBuilder.add(HAS_SHAFT);
+        pBuilder.add(TYPE);
         //pBuilder.add(IS_PRIMARY_BLOCK);
     }
 }

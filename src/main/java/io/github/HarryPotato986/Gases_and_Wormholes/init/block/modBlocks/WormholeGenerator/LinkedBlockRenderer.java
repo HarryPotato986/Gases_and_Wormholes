@@ -17,8 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlock.FACING;
-import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlock.HAS_SHAFT;
+import static io.github.HarryPotato986.Gases_and_Wormholes.init.block.modBlocks.WormholeGenerator.LinkedBlock.*;
 
 public class LinkedBlockRenderer extends KineticBlockEntityRenderer<LinkedBlockEntity> {
     public LinkedBlockRenderer(BlockEntityRendererProvider.Context context) {
@@ -42,7 +41,7 @@ public class LinkedBlockRenderer extends KineticBlockEntityRenderer<LinkedBlockE
         } else {BEInFrontOfPartnerIsKinetic = false;}
          */
 
-        if(be.getBlockState().getValue(HAS_SHAFT)) {
+        if(be.getBlockState().getValue(TYPE) == LinkedBlockTypes.SHAFT) {
             VertexConsumer vb = buffer.getBuffer(RenderType.cutoutMipped());
 
             int lightInFront = LevelRenderer.getLightColor(be.getLevel(), be.getBlockPos().relative(direction));

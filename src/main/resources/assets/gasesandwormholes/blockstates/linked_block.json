@@ -1,20 +1,36 @@
 {
-  "variants": {
-    "facing=east": {
-      "model": "gasesandwormholes:block/linked_block",
-      "y": 90
+  "multipart": [
+    {
+      "when": { "facing": "north" },
+      "apply": { "model": "gasesandwormholes:block/linked_block", "y": 0 }
     },
-    "facing=north": {
-      "model": "gasesandwormholes:block/linked_block",
-      "y": 0
+    {
+      "when": { "facing": "east" },
+      "apply": { "model": "gasesandwormholes:block/linked_block", "y": 90 }
     },
-    "facing=south": {
-      "model": "gasesandwormholes:block/linked_block",
-      "y": 180
+    {
+      "when": { "facing": "south" },
+      "apply": { "model": "gasesandwormholes:block/linked_block", "y": 180 }
     },
-    "facing=west": {
-      "model": "gasesandwormholes:block/linked_block",
-      "y": 270
+    {
+      "when": { "facing": "west" },
+      "apply": { "model": "gasesandwormholes:block/linked_block", "y": 270 }
+    },
+    {
+      "when": { "type": "pipe", "facing": "north" },
+      "apply": { "model": "gasesandwormholes:block/linked_block_pipe", "y": 0 }
+    },
+    {
+      "when": { "type": "pipe", "facing": "east" },
+      "apply": { "model": "gasesandwormholes:block/linked_block_pipe", "y": 90 }
+    },
+    {
+      "when": { "type": "pipe", "facing": "south" },
+      "apply": { "model": "gasesandwormholes:block/linked_block_pipe", "y": 180 }
+    },
+    {
+      "when": { "type": "pipe", "facing": "west" },
+      "apply": { "model": "gasesandwormholes:block/linked_block_pipe", "y": 270 }
     }
-  }
+  ]
 }

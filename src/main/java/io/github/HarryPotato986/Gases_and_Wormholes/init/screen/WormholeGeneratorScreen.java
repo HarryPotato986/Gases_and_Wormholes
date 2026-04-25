@@ -10,6 +10,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,12 +25,12 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Gases_and_Wormholes.MODID, "textures/gui/wormhole_generator_gui.png");
 
     private FluidTankRenderer fluidRenderer;
-    private EditBox X1;
-    private EditBox Y1;
-    private EditBox Z1;
-    private EditBox X2;
-    private EditBox Y2;
-    private EditBox Z2;
+    private IntEditBox X1;
+    private IntEditBox Y1;
+    private IntEditBox Z1;
+    private IntEditBox X2;
+    private IntEditBox Y2;
+    private IntEditBox Z2;
     private GnWButton startButton;
     private GnWMultiStateIconButton<WormholeSizeButtonStates> wormholeSizeButton;
     private GnWMultiStateButton<HorizontalFacingButtonStates> wormhole1FacingButton;
@@ -101,30 +103,10 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
 
     }
 
-    private EditBox createNewEditBox(int x, int y, int width, int height, Component baseText) {
-        char[] validChars = new char[]{'0','1','2','3','4','5','6','7','8','9'};
-        EditBox box = new EditBox(this.font, x, y, width, height, baseText);
+    private IntEditBox createNewEditBox(int x, int y, int width, int height, Component baseText) {
+        IntEditBox box = new IntEditBox(this.font, x, y, width, height, baseText);
         box.setMaxLength(32500);
-        box.setFilter(s -> {
-            if(s.isEmpty()) {
-                return true;
-            }
 
-            char[] chars = s.toCharArray();
-            for(char c : chars) {
-                boolean isValid = false;
-                for(char validChar : validChars) {
-                    if(c == validChar) {
-                        isValid = true;
-                        break;
-                    }
-                }
-                if(!isValid) {
-                    return false;
-                }
-            }
-            return true;
-        });
         return box;
     }
 
@@ -270,7 +252,32 @@ public class WormholeGeneratorScreen extends AbstractContainerScreen<WormholeGen
     public void onStart() {
         System.out.println("Button is much work");
         if (!menu.blockEntity.isRunning()) {
-            menu.blockEntity.beginStartup(menu.getLevel(), menu.getPlayer());
+            Direction facing1 = switch (wormhole1FacingButton.getState()) {
+                case NORTH -> Direction.NORTH;
+                case SOUTH -> Direction.SOUTH;
+                case EAST -> Direction.EAST;
+                case WEST -> Direction.WEST;
+            };
+            Direction facing2 = switch (wormhole2FacingButton.getState()) {
+                case NORTH -> Direction.NORTH;
+                case SOUTH -> Direction.SOUTH;
+                case EAST -> Direction.EAST;
+                case WEST -> Direction.WEST;
+            };
+            int wormholeSize = switch (wormholeSizeButton.getState()) {
+                case ONE -> 1;
+                case TWO -> 2;
+                case THREE -> 3;
+                case FOUR -> 4;
+                case FIVE -> 5;
+                case SIX -> 6;
+                case SEVEN -> 7;
+            };
+
+            menu.blockEntity.beginStartup(menu.getLevel(), menu.getPlayer(),
+                    new BlockPos(X1.getIntValue(), Y1.getIntValue(), Z1.getIntValue()),
+                    new BlockPos(X2.getIntValue(), Y2.getIntValue(), Z2.getIntValue()),
+                    facing1, facing2, wormholeSize);
             System.out.println("after beginStartup() but printed from screen: " + menu.blockEntity.isRunning());
         } else {
             menu.blockEntity.beginShutdown();

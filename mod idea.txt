@@ -29,42 +29,14 @@ liquid nitrogen for recipes:
 
 
 TODO List:
+Same dimension train portal travel is currently impossible in Create Mod. Best alternative is probably to make a pocket dim
+so that the train enters the pocket dim drives forward like 10 blocks and return to the overworld out the other side of the wormhole.
+The question then is whether it is still worth adding immersive portals. It will suck that you still get a loading screen, but then you can also just walk through.
+Could also drop train support... just use it for walking traval and utilities passthrough (shaft, cog, pipe).
+Maybe I'll just add a second wormhole type. A see through one for walking traval and utilities passthrough, and an end gateway texture one for train pocket dim travel.
 
-wormhole generator:
-    ClientPayloadHandler will receive the two wormhole POSs, the two facing directions, and the size of the wormhole.
-    It will generate a dict where the keys are the chunkPos of the blocks, and the values are lists of arrays, where the array has:
-     - the pos of the linked block
-     - the pos of it's partner
-    the function will then iterate through the key value pairs:
-        It will load the chunk of the key
-        It will iterate through the list of arrays:
-            It will place a linked block at the pos stored in array[0]
-            It will inject the partner pos stored in array[1] into the block entity
-        It will close the chunk
 
-// Assuming all positions are in the same general chunk area
-    BlockPos firstPos = targetPositions.get(0);
-    ChunkPos chunkPos = new ChunkPos(firstPos);
-    String ticketId = "my_multiblock_edit";
 
-    try {
-        // 1. Force load the chunk once!
-        ForcedChunkManager.forceChunk(level, "yourmod", ticketId, chunkPos.x, chunkPos.z, true, true);
-
-        // Allow a quick safety check to ensure it loaded
-        if (level.isLoaded(firstPos)) {
-
-            // 2. Loop through and set all blocks efficiently
-            for (BlockPos pos : targetPositions) {
-                // Example: level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-            }
-
-        }
-
-    } finally {
-        // 3. Close the chunk exactly once when the entire loop finishes!
-        ForcedChunkManager.forceChunk(level, "yourmod", ticketId, chunkPos.x, chunkPos.z, false, false);
-    }
 
 
 DO LATER List:
@@ -79,6 +51,7 @@ Immersive Portals inject:       - do NOT waste time pursuing this until IPs is s
 
 
 Known bugs:
+wormhole generator doesn't save screen data on unload-reload
 look into why the AtmoExtr instantly gains fluid when network is connected to it
 if you setblock a single wormhole generator block (other than a core) and break it, masterpos will return null
     Fix: handle the null so it skips removeAll().
